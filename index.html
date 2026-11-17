@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Snowmad · Ski trips worth the journey</title>
+  <meta name="description" content="Snowmad: a world map of ski trips worth the journey, with how each place's season is going, when to go, and tools to compare and plan multi-stop trips." />
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.6.0/dist/maplibre-gl.css" />
+  <link rel="stylesheet" href="css/app.css" />
+</head>
+<body>
+  <div id="app">
+    <aside id="sidebar">
+      <header class="brand">
+        <h1>Snowmad</h1>
+        <p class="tagline">Ski trips worth the journey</p>
+        <p class="muted" id="asof">Loading snow data…</p>
+      </header>
+
+      <section class="block">
+        <h2>What's the draw? <span class="info" data-info="draw" tabindex="0" role="button" aria-label="What does this mean?">i</span></h2>
+        <div class="cat-toggles" id="catToggles"></div>
+      </section>
+
+      <section class="block">
+        <h2>When are you going? <span class="info" data-info="month" tabindex="0" role="button" aria-label="What does this mean?">i</span></h2>
+        <div class="months" id="months"></div>
+        <label class="check"><input type="checkbox" id="hideOut" /> Hide places out of season</label>
+      </section>
+
+      <section class="block">
+        <h2>Season so far <span class="info" data-info="pct" tabindex="0" role="button" aria-label="What does this mean?">i</span></h2>
+        <div class="seg" id="colorBy">
+          <button data-v="category">Colour by type</button>
+          <button data-v="snow">Colour by snow</button>
+        </div>
+        <label class="range-label">At least <b id="minPctVal">any</b> of normal snowfall to date
+          <input type="range" id="minPct" min="0" max="150" step="10" value="0" />
+        </label>
+        <div class="legend" id="legend"></div>
+      </section>
+
+      <section class="block">
+        <h2>Crowds <span class="info" data-info="crowdFilter" tabindex="0" role="button" aria-label="What does this mean?">i</span></h2>
+        <div class="seg" id="crowdMax">
+          <button data-v="5">Any</button>
+          <button data-v="3">Skip the busiest</button>
+          <button data-v="2">Quiet only</button>
+        </div>
+      </section>
+
+      <section class="block grow">
+        <div class="list-head">
+          <h2><span id="count">0</span> destinations</h2>
+          <select id="sortBy" aria-label="Sort list">
+            <option value="zone">By region</option>
+            <option value="name">A–Z</option>
+            <option value="pct">Best season so far</option>
+            <option value="next7">Most snow next 7 days</option>
+          </select>
+        </div>
+        <div id="hiddenNote" class="hidden-note"></div>
+        <input type="search" id="search" placeholder="Search name, country, region…" />
+        <ul id="list" class="dest-list"></ul>
+      </section>
+      <footer class="credits">
+        Snow data: <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a> (ECMWF IFS, CC BY 4.0) · Map: <a href="https://openfreemap.org" target="_blank" rel="noopener">OpenFreeMap</a>, © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors · Terrain: Mapzen/AWS Terrain Tiles.
+        Modelled data for early trip scoping. Always check official avalanche forecasts and local conditions.
+      </footer>
+    </aside>
+
+    <main id="mapWrap">
+      <div id="map"></div>
+      <div id="zoneLayer"><svg id="zoneLines"></svg></div>
+      <button id="toggleSidebar" class="fab" aria-label="Filters">☰ Filters</button>
+      <button id="showAll" class="map-btn" title="Zoom out to show every destination">Show all</button>
+    </main>
+
+    <aside id="detail" class="hidden" aria-live="polite"></aside>
+
+    <footer id="tray" class="hidden">
+      <div class="tray-tabs">
+        <button data-tab="compare" class="active">Compare <span id="cmpCount">0</span>/6</button>
+        <button data-tab="trip">Trip <span id="tripCount">0</span></button>
+      </div>
+      <div id="trayBody"></div>
+    </footer>
+  </div>
+
+  <div id="modal" class="hidden" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <button class="close" id="modalClose" aria-label="Close">×</button>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+  <div id="tooltip" class="tooltip hidden"></div>
+
+  <script src="https://unpkg.com/maplibre-gl@5.6.0/dist/maplibre-gl.js"></script>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

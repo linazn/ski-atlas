@@ -1,0 +1,35 @@
+// Definitions shown by the (i) hovers. Keep these short: one idea per entry.
+export const DEFS = {
+  draw: `<b>What's the draw</b> = the main reason you'd go.<br>
+    <b>Resort</b>: on-piste, lift-served skiing is the point.<br>
+    <b>Freeride</b>: lifts get you up, but you go for the off-piste (e.g. La Grave, Silverton, Chamonix).<br>
+    <b>Touring</b>: skins, huts, heli, cat or boat; no lifts needed.`,
+  levels: `Click a chip to show or hide it; click <b>Resort</b> itself to toggle all resorts.<br><b>All levels / family</b>: big groomed networks, ski schools, easy village life.<br><b>Known for advanced</b>: famous for steeps, chutes and expert terrain (beginners can still ski there, but that isn't why people go).`,
+  tourTags: `Click a chip to show or hide that kind of trip; click <b>Touring</b> itself to toggle all of them.<br><b>Day tours</b>: human-powered tours from a base (lodge, town, hut used as a base, car); much of Norway, Iceland, Japan backcountry.<br><b>Hut-to-hut</b>: multi-day traverses staying in mountain huts.<br><b>Heli & cat</b>: helicopter or snowcat does the uphill (guided, priced per day).<br><b>Boat-accessed</b>: fjord/sea-to-summit from lodge boats or sailing yachts.<br><b>Expedition</b>: remote, logistics-heavy trips (Antarctica, Greenland, Svalbard).<br>A place can have several types.`,
+  month: `Pick one or more months you could travel. Places in season in any picked month stay solid, places with a <b>best month</b> among them get a ring, and places out of season in all of them fade (or hide with the checkbox). Season windows are curated typical operating periods, not this year's actual opening dates.`,
+  pct: `<b>% of normal to date</b> = snowfall since the snow year began (1 Oct north, 1 Apr south, 1 Jul Antarctica) ÷ the average to the <i>same date</i> over the last 8 seasons.<br>100% = a typical season so far. Above 115% is a good start, below 85% is a poor one.<br>Early in the season the normal is small, so one storm can swing it a lot. Out of season it shows as n/a.`,
+  rank: `Where this season's snowfall to date ranks against the same date in each of the last 8 seasons (9 including this one). 1st = the snowiest start in that period.`,
+  status: `<b>In season</b>: the ski season is on now.<br><b>Pre-season</b>: snow is building but it hasn't opened yet; numbers count from the start of the snow year.<br><b>Season over</b>: the ski period has ended; the % shown is the final one, greyed out and treated as n/a on the map and in filters.<br><b>Off-season</b>: outside the snow year, so n/a.`,
+  toDate: `<b>Snowfall this season</b> = all fresh snow that has fallen since the snow year began (1 Oct north, 1 Apr south, 1 Jul Antarctica), added up day by day. It is <i>not</i> snow on the ground: snow settles, blows away and melts, so the depth is far lower.<br>Total modelled snowfall since the season started, at the destination's reference elevation. Modelled cm usually read <b>lower than resort-reported totals</b> (the 9 km model smooths the terrain), so compare % and rank across places, not raw cm.`,
+  next7: `Forecast snowfall over the next 7 days (Open-Meteo blend of global models) at the reference elevation.`,
+  depth: `Modelled snow depth on the ground right now (cm). A rough guide only: models struggle with wind-scoured or very steep terrain.`,
+  normalTotal: `Average modelled snowfall over a whole season, from the last 8 seasons. Good for comparing places <i>relative</i> to each other; reported resort figures are usually higher.`,
+  swing: `How much season totals vary from year to year (coefficient of variation).<br>±15% = very consistent · ±30% = variable · ±40%+ = boom-or-bust (e.g. Tahoe).`,
+  whenToGo: `<b>Light</b> = typically operating or skiable. <b>Dark</b> = best months (the usual mix of snowpack, light, weather and crowds). Curated, so check this year's dates.`,
+  weather: `Typical conditions per month from the last 8 seasons (modelled). Bars = average snowfall (cm), numbers below = mean temperature (°C). Hover a month for sunshine hours, wind and how much that month varies year to year.`,
+  crowds: `Curated 1–5 rating of how busy it feels in peak season.<br>1 = empty / guided groups only · 3 = normal busy · 5 = notorious lift lines or traffic (e.g. Palisades, Niseko Hirafu, Cottonwood canyon road).`,
+  crowdFilter: `Filters on the crowds rating.<br><b>Skip the busiest</b> hides places rated 4–5.<br><b>Quiet only</b> keeps places rated 1–2.`,
+  cost: `Curated 1–4 rating of on-the-ground cost (lift ticket or guiding, lodging, food), not flights.<br>1 = budget (Georgia, Kashmir) · 2 = moderate · 3 = expensive · 4 = very expensive (Swiss resorts, heli, Antarctic yachts).`,
+  guide: `<b>Required</b>: you can't really go without one (heli, expeditions, guided-only areas).<br><b>Recommended</b>: off-piste/glacier terrain where a local guide is the norm unless you have strong avalanche skills.<br><b>Optional</b>: resort skiing.`,
+  snowpack: `Climate type of the snow:<br><b>Maritime</b>: coastal, wet and deep, generally more stable.<br><b>Intermountain</b>: in between (Utah, interior BC).<br><b>Continental</b>: cold, dry, shallower; prone to persistent weak layers.<br><b>Arctic coastal / polar</b>: wind-affected, long spring days.`,
+  avalanche: `The typical avalanche character of the area (curated): which problems tend to dominate. Always use the live bulletin linked here for actual danger on the day.`,
+  pass: `Multi-resort season passes (Ikon, Epic, Mountain Collective) that include this destination. Partnerships change every year, so verify before buying.`,
+  elevation: `Base to top lift (or valley to summit for touring) in metres. Snow stats are modelled at a single reference elevation (shown under the snow chart), usually mid-to-upper mountain.`,
+  timing: `For the travel month you picked: <b>prime</b> = one of the best months · <b>in season</b> = skiable · <b>out of season</b> = typically closed or no snow.`,
+  lookAround: `<b>Trail map</b>: pistes, lifts and (where mapped) touring routes from OpenSkiMap, built on OpenStreetMap. Coverage is good for resorts and patchy for backcountry.<br><b>Webcams</b>: live cameras near this spot on Windy; useful for checking cover before you go.`,
+  permits: `Official page for a permit, registration or rules that apply here (e.g. Rogers Pass winter permits, Rainier climbing permits, Japan's mountain-plan filing, Svalbard travel rules). Requirements change, so read the page.`,
+  huts: `The hut network or booking system for this area (alpine club huts usually need booking weeks or months ahead in spring).`,
+  legs: `Straight-line distance between stops. Drive times are rough: they assume winding mountain roads at about 1.4× the straight-line distance and ~60 km/h. Long or overseas legs are marked as flights.`,
+};
+
+export const info = (key) => `<span class="info" data-info="${key}" tabindex="0" role="button" aria-label="What does this mean?">i</span>`;
