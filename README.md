@@ -1,6 +1,6 @@
 # Snowmad
 
-*Ski trips worth the journey.* Live at https://snowmad.ski
+*Ski trips worth the journey.* Live at https://snowmad.app
 
 Early-stage ski-trip scoping: a world map of destinations you'd centre a trip around,
 with "how is the season going" snow data, month-of-travel filtering, a compare view (up to 6),
