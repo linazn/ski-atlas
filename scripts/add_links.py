@@ -7,7 +7,9 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 p = os.path.join(ROOT, "data", "destinations.json")
 j = json.load(open(p))
 for d in j["destinations"]:
-    v = L.get(d["id"], {})
+    if d["id"] not in L:
+        continue  # added later with links written directly into destinations.json: keep them
+    v = L[d["id"]]
     links = {}
     if v.get("site"): links["website"] = v["site"]
     if v.get("avy"): links["avalanche"] = AVY[v["avy"]]

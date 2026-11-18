@@ -7,7 +7,7 @@ const CAT = {
   touring:  { label: "Touring",  color: "#199e70", desc: "Skin, heli, boat" },
 };
 const RESORT_LEVELS = { all: "All levels / family", advanced: "Known for advanced" };
-const TOUR_TAGS = { daytour: "Day tours", huts: "Hut-to-hut", heli: "Heli & cat", boat: "Boat-accessed", expedition: "Expedition" };
+const TOUR_TAGS = { daytour: "Day tours", huts: "Hut-to-hut", traverse: "Traverses & crossings", heli: "Heli & cat", boat: "Boat-accessed", expedition: "Expedition" };
 const SLOTS = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300"];
 const SNOW = [
   { key: "low2", max: 60, color: "#c43c3b", label: "< 60%" },
@@ -35,7 +35,7 @@ const saved = JSON.parse(localStorage.getItem("skiatlas") || "{}");
 const state = Object.assign({
   cats: { resort: true, freeride: true, touring: true },
   levels: ["all", "advanced"],
-  tourTypes: ["daytour", "huts", "heli", "boat", "expedition"],
+  tourTypes: Object.keys(TOUR_TAGS),
   months: [],         // travel months (multi-select)
   hideOut: false,
   colorBy: "category",
@@ -49,12 +49,14 @@ const state = Object.assign({
 }, saved, { selected: null, search: "" });
 if (!Array.isArray(state.months)) state.months = state.month ? [state.month] : [];
 delete state.month; delete state.tourTags; delete state.iconicOnly;
+// v2 (Nov 2026): new "traverse" touring type starts switched on for people who had touring on
+if ((state.v || 1) < 2) { if (state.tourTypes.length && !state.tourTypes.includes("traverse")) state.tourTypes.push("traverse"); state.v = 2; }
 const persist = () => {
   const { selected, ...rest } = state;
   localStorage.setItem("skiatlas", JSON.stringify(rest));
 };
 
-let DEST = [], BY_ID = {}, SNOWDATA = { destinations: {} }, ZONES = {}, MACROS = {}, map, popup;
+let DEST = [], BY_ID = {}, SNOWDATA = { destinations: {} }, ZONES = {}, MACROS = {}, STORIES = {}, map, popup;
 const ZONE_TIER_MAX = 4; // below this zoom, show named region pills instead of individual pins
 
 // ---------- helpers ----------
@@ -79,7 +81,8 @@ const snowClass = (pct) => pct == null ? null : SNOW.find(c => pct < c.max);
 const lowConfidence = (s) => s && s.normalToDate != null && s.normalToDate < 15;
 const ordinal = (n) => n + (["th", "st", "nd", "rd"][(n % 100 - 20) % 10] || ["th", "st", "nd", "rd"][n % 100] || "th");
 const meter = (n, max = 5) => `<span class="meter">${Array.from({ length: max }, (_, i) => `<i class="${i < n ? "f" : ""}"></i>`).join("")}</span>`;
-const subLabel = (d) => d.category === "resort" ? RESORT_LEVELS[d.level] : d.category === "touring" ? d.tags.filter(t => TOUR_TAGS[t] || t === "cat").map(t => t === "cat" ? "Cat" : TOUR_TAGS[t]).join(", ") : "";
+const subLabel = (d) => d.category === "touring" ? d.tags.filter(t => TOUR_TAGS[t] || t === "cat").map(t => t === "cat" ? "Cat" : TOUR_TAGS[t]).join(", ")
+  : [d.category === "resort" ? RESORT_LEVELS[d.level] : "", d.tags.includes("daytour") ? "+ backcountry" : ""].filter(Boolean).join(" ");
 function km(a, b) {
   const R = 6371, toR = Math.PI / 180;
   const dLat = (b.lat - a.lat) * toR, dLon = (b.lon - a.lon) * toR;
@@ -137,9 +140,11 @@ function seasonStatus(d) {
 }
 
 // ---------- filtering ----------
+/** Resort/freeride pins with big, documented backcountry from the same base (Tahoe, Wasatch…) also count as day tours. */
+const alsoTouring = (d) => d.category !== "touring" && d.tags.includes("daytour") && state.cats.touring && state.tourTypes.includes("daytour");
 function passes(d) {
-  if (!state.cats[d.category]) return false;
-  if (d.category === "resort" && !state.levels.includes(d.level)) return false;
+  const own = state.cats[d.category] && !(d.category === "resort" && !state.levels.includes(d.level));
+  if (!own && !alsoTouring(d)) return false;
   if (d.category === "touring") {
     const tags = d.tags.includes("cat") ? [...d.tags, "heli"] : d.tags;
     if (!state.tourTypes.some(t => tags.includes(t))) return false;
@@ -163,7 +168,7 @@ function markerColor(d) {
 function kidFeatures() {
   return { type: "FeatureCollection", features: DEST.filter(passes).flatMap(d => (d.children || []).map(c => ({
     type: "Feature", geometry: { type: "Point", coordinates: [c.lon, c.lat] },
-    properties: { name: c.name, note: c.note || "", parent: d.id, color: CAT[d.category].color, dim: outForMonths(d) },
+    properties: { name: c.name, note: c.note || "", parent: d.id, color: CAT[d.category].color, dim: outForMonths(d), bc: c.kind === "bc" },
   }))) };
 }
 function features() {
@@ -234,15 +239,16 @@ function initMap() {
     map.addSource("kids", { type: "geojson", data: kidFeatures() });
     map.addLayer({ id: "kids", type: "circle", source: "kids", minzoom: 5, paint: {
       "circle-radius": ["interpolate", ["linear"], ["zoom"], 5, 3, 9, 5.5],
-      "circle-color": "#fcfcfb", "circle-stroke-color": ["get", "color"], "circle-stroke-width": 2,
+      // backcountry areas: filled touring teal with a white ring; lift areas: white with the parent's colour ring
+      "circle-color": ["case", ["get", "bc"], CAT.touring.color, "#fcfcfb"], "circle-stroke-color": ["case", ["get", "bc"], "#fcfcfb", ["get", "color"]], "circle-stroke-width": 2,
       "circle-opacity": ["case", ["get", "dim"], 0.3, 1], "circle-stroke-opacity": ["case", ["get", "dim"], 0.3, 1],
     } });
     map.addLayer({ id: "kids-labels", type: "symbol", source: "kids", minzoom: 6.3, layout: {
-      "text-field": ["get", "name"], "text-size": 11, "text-font": ["Noto Sans Regular"], "text-offset": [0, 0.8], "text-anchor": "top", "text-optional": true, "text-max-width": 10,
+      "text-field": ["get", "name"], "text-size": 11, "text-font": ["case", ["get", "bc"], ["literal", ["Noto Sans Italic"]], ["literal", ["Noto Sans Regular"]]], "text-offset": [0, 0.8], "text-anchor": "top", "text-optional": true, "text-max-width": 10,
     }, paint: { "text-color": "#52514e", "text-halo-color": "#f5f8fb", "text-halo-width": 1.5, "text-opacity": ["case", ["get", "dim"], 0.4, 1] } });
     map.on("click", "kids", (e) => openDetail(e.features[0].properties.parent, false));
     map.on("mouseenter", "kids", (e) => { map.getCanvas().style.cursor = "pointer"; const f = e.features[0].properties, d = BY_ID[f.parent];
-      popup.setLngLat(e.lngLat).setHTML(`<div class="pop"><h4>${esc(f.name)}</h4><div class="row">${esc(f.note)}</div><div class="row muted">Part of ${esc(d.name)} · click for details</div></div>`).addTo(map); });
+      popup.setLngLat(e.lngLat).setHTML(`<div class="pop"><h4>${esc(f.name)}</h4><div class="row">${esc(f.note)}</div><div class="row muted">${f.bc ? "Backcountry area · " : ""}Part of ${esc(d.name)} · click for details</div></div>`).addTo(map); });
     map.on("mouseleave", "kids", () => { map.getCanvas().style.cursor = ""; popup.remove(); });
 
     map.addSource("children", { type: "geojson", data: { type: "FeatureCollection", features: [] } });
@@ -528,7 +534,7 @@ function renderList() {
   $("#hiddenNote").innerHTML = hidden ? `${hidden} of ${DEST.length} hidden by filters · <a href="#" id="resetFilters">show all</a>` : "";
   $("#resetFilters") && ($("#resetFilters").onclick = (e) => {
     e.preventDefault();
-    Object.assign(state, { cats: { resort: true, freeride: true, touring: true }, levels: ["all", "advanced"], tourTypes: ["daytour", "huts", "heli", "boat", "expedition"],
+    Object.assign(state, { cats: { resort: true, freeride: true, touring: true }, levels: ["all", "advanced"], tourTypes: Object.keys(TOUR_TAGS),
       months: [], hideOut: false, minPct: 0, crowdMax: 5, search: "" });
     $("#search").value = ""; renderControls(); refresh();
   });
@@ -592,6 +598,7 @@ function renderDetail(id) {
       <button class="btn primary" id="addCmp" ${inCmp || state.compare.length >= 6 ? "disabled" : ""}>${inCmp ? "In compare ✓" : "+ Compare"}</button>
       <button class="btn" id="addTrip" ${inTrip ? "disabled" : ""}>${inTrip ? "In trip ✓" : "+ Trip"}</button>
       <button class="btn" id="zoomTo">Zoom to</button>
+      ${STORIES[id] ? `<button class="btn" id="readMore">Read more →</button>` : ""}
     </div>
 
     <div class="section-title">This season · ${s?.season ?? ""}</div>
@@ -627,7 +634,7 @@ function renderDetail(id) {
     <div class="section-title">Essentials</div>
     <dl class="facts">
       <dt>Crowds ${info("crowds")}</dt><dd>${meter(d.crowds)} ${d.crowdNote ? `<div class="note" style="margin-top:2px">${esc(d.crowdNote)}</div>` : ""}</dd>
-      <dt>Cost ${info("cost")}</dt><dd>${meter(d.cost, 4)}</dd>
+      <dt>Cost ${info("cost")}</dt><dd>${meter(d.cost, 5)}</dd>
       <dt>Guide ${info("guide")}</dt><dd>${esc(d.guide)}</dd>
       <dt>Elevation ${info("elevation")}</dt><dd>${d.elev[0]}–${d.elev[1]} m (${d.elev[1] - d.elev[0]} m vertical)</dd>
       <dt>Snowpack ${info("snowpack")}</dt><dd>${esc(d.snowpack)}</dd>
@@ -641,11 +648,12 @@ function renderDetail(id) {
     </dl>
 
     ${d.children ? `<div class="section-title">Areas in this destination</div>
-    <ul class="children">${d.children.map((c, i) => `<li data-i="${i}"><b>${esc(c.name)}</b><span class="kid-link">${c.url ? `<a href="${c.url}" target="_blank" rel="noopener" title="${hostLabel(c.url)}">website ↗</a> · ` : ""}<a href="${trailMapUrl(c.lat, c.lon)}" target="_blank" rel="noopener">trail map ↗</a></span><div class="muted" style="font-size:12px">${esc(c.note)}</div></li>`).join("")}</ul>` : ""}
+    <ul class="children">${d.children.map((c, i) => `<li data-i="${i}"><b>${esc(c.name)}</b>${c.kind === "bc" ? ` <span class="bc-tag">backcountry</span>` : ""}<span class="kid-link">${c.url ? `<a href="${c.url}" target="_blank" rel="noopener" title="${hostLabel(c.url)}">website ↗</a> · ` : ""}<a href="${trailMapUrl(c.lat, c.lon)}" target="_blank" rel="noopener">trail map ↗</a></span><div class="muted" style="font-size:12px">${esc(c.note)}</div></li>`).join("")}</ul>` : ""}
   `;
   $("#detailClose").onclick = closeDetail;
   $("#addCmp").onclick = () => addCompare(id);
   $("#addTrip").onclick = () => addTrip(id);
+  if (STORIES[id]) $("#readMore").onclick = () => openStory(id);
   $("#zoomTo").onclick = () => map.flyTo({ center: [d.lon, d.lat], zoom: d.children ? 8 : 9.5, padding: panelPadding() });
   el.querySelectorAll(".children li").forEach(li => li.onclick = (e) => { if (e.target.closest("a")) return; const c = d.children[+li.dataset.i]; map.flyTo({ center: [c.lon, c.lat], zoom: 11, padding: panelPadding() }); });
   if (s) seasonChart($("#seasonChart"), s, "#0b0b0b");
@@ -732,6 +740,48 @@ function fitTrip() {
   map.fitBounds(b, { padding: 80, maxZoom: 8 });
 }
 
+// ---------- "More about this place" pages (linkable: #place/<id>) ----------
+const richText = (t) => esc(t).split(/\n\s*\n/).map(p => `<p>${p.replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/\*(.+?)\*/g, "<i>$1</i>")}</p>`).join("");
+function openStory(id, push = true) {
+  const d = BY_ID[id], st = STORIES[id]; if (!d || !st) return;
+  const mo = (m) => m.map(x => MONTHS[x - 1]).join(", ");
+  const avy = d.links?.avalanche || AVY_LINKS[d.country]?.[1];
+  const links = [d.links?.website && [hostLabel(d.links.website), d.links.website], avy && ["Avalanche forecast", avy],
+    d.links?.permits && [d.links.permits.label, d.links.permits.url], d.links?.huts && ["Huts", d.links.huts]].filter(Boolean);
+  $("#modalBody").innerHTML = `<article class="story">
+    <div class="d-type"><span class="dot" style="background:${CAT[d.category].color}"></span>${CAT[d.category].label}${subLabel(d) ? " · " + esc(subLabel(d)) : ""}</div>
+    <h2>${esc(d.name)}</h2>
+    <div class="muted">${esc(d.region)}, ${esc(d.country)}</div>
+    <p class="pitch">${esc(d.pitch)}</p>
+    ${d.advisory ? `<div class="callout warn"><b>⚠ Travel advisory.</b> ${esc(d.advisory)}</div>` : ""}
+    <h3>The skiing</h3>${richText(st.skiing)}
+    <h3>Beyond the skiing</h3>${richText(st.beyond)}
+    <h3>Good to know</h3>${richText(st.know)}
+    <dl class="facts">
+      <dt>Season</dt><dd>${MONTHS[d.season[0] - 1]}–${MONTHS[d.season[1] - 1]} · best ${mo(d.best)}</dd>
+      <dt>Cost ${info("cost")}</dt><dd>${meter(d.cost, 5)}</dd>
+      <dt>Crowds ${info("crowds")}</dt><dd>${meter(d.crowds, 5)}</dd>
+      <dt>Guide ${info("guide")}</dt><dd>${esc(d.guide)}</dd>
+      <dt>Getting there</dt><dd>${esc(d.airport)}</dd>
+    </dl>
+    ${links.length ? `<div class="story-links">${links.map(([l, u]) => `<a href="${u}" target="_blank" rel="noopener">${esc(l)} ↗</a>`).join(" · ")}</div>` : ""}
+    ${st.sources?.length ? `<div class="note">Sources: ${st.sources.map(x => `<a href="${x.url}" target="_blank" rel="noopener">${esc(x.label)}</a>`).join(" · ")}</div>` : ""}
+    <div class="note">This page describes what a place is like, not how to ski specific routes. Check current avalanche and travel conditions before you go.</div>
+  </article>`;
+  $("#modal").classList.add("story-mode"); $("#modal").classList.remove("hidden");
+  $("#modal .modal-card").scrollTop = 0;
+  if (push && location.hash !== `#place/${id}`) history.pushState(null, "", `#place/${id}`);
+}
+function closeModal() {
+  $("#modal").classList.add("hidden"); $("#modal").classList.remove("story-mode");
+  if (location.hash.startsWith("#place/")) history.pushState(null, "", location.pathname + location.search);
+}
+function routeFromHash() {
+  const m = location.hash.match(/^#place\/([\w-]+)$/);
+  if (m && BY_ID[m[1]]) { if (state.selected !== m[1]) openDetail(m[1], true); openStory(m[1], false); }
+  else if (!$("#modal").classList.contains("hidden") && $("#modal").classList.contains("story-mode")) { $("#modal").classList.add("hidden"); $("#modal").classList.remove("story-mode"); }
+}
+
 function openCompare() {
   const items = state.compare.map(x => ({ d: BY_ID[x.id], s: snowOf(BY_ID[x.id]), color: SLOTS[x.slot] }));
   let mode = "pct";
@@ -773,7 +823,7 @@ function openCompare() {
         ${row(`Elevation ${info("elevation")}`, it => `${it.d.elev[0]}–${it.d.elev[1]} m<br><span class="muted">${it.d.elev[1] - it.d.elev[0]} m vertical</span>`)}
         ${row(`Snowpack ${info("snowpack")}`, it => esc(it.d.snowpack))}
         ${row(`Crowds ${info("crowds")}`, it => `${meter(it.d.crowds)}${it.d.crowdNote ? `<div class="note">${esc(it.d.crowdNote)}</div>` : ""}`)}
-        ${row(`Cost ${info("cost")}`, it => meter(it.d.cost, 4))}
+        ${row(`Cost ${info("cost")}`, it => meter(it.d.cost, 5))}
         ${row(`Guide ${info("guide")}`, it => esc(it.d.guide))}
         ${row(`Pass ${info("pass")}`, it => it.d.pass.join(", ") || "–")}
         ${items.some(it => it.d.advisory) ? row("Travel advisory", it => it.d.advisory ? `<span style="color:#a3341f">⚠ ${esc(it.d.advisory)}</span>` : "–") : ""}
@@ -786,16 +836,17 @@ function openCompare() {
   draw();
   items.forEach((it, i) => monthBars($(`#sm${i}`), it.s?.climate, { compact: true, width: 200, height: 80, yMax, color: it.color, months: state.months }));
   $("#cmpMode").onclick = (e) => { const b = e.target.closest("button"); if (!b) return; mode = b.dataset.v; $("#cmpMode").querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b)); draw(); };
-  $("#modal").classList.remove("hidden");
+  $("#modal").classList.remove("hidden", "story-mode");
 }
 
 // ---------- boot ----------
 async function boot() {
-  const [dj, sj] = await Promise.all([
+  const [dj, sj, stj] = await Promise.all([
     fetch("data/destinations.json").then(r => r.json()),
     fetch("data/snow.json").then(r => r.ok ? r.json() : { destinations: {} }).catch(() => ({ destinations: {} })),
+    fetch("data/stories.json").then(r => r.ok ? r.json() : {}).catch(() => ({})),
   ]);
-  DEST = dj.destinations; DEST.forEach(d => BY_ID[d.id] = d); SNOWDATA = sj;
+  DEST = dj.destinations; DEST.forEach(d => BY_ID[d.id] = d); SNOWDATA = sj; STORIES = stj; delete STORIES._about;
   ZONES = dj.zones || {}; MACROS = dj.macros || {};
   state.compare = state.compare.filter(x => BY_ID[x.id]); state.trip = state.trip.filter(id => BY_ID[id]);
   const gen = sj.generated ? new Date(sj.generated) : null;
@@ -815,8 +866,11 @@ async function boot() {
   document.addEventListener("click", (e) => { const el = e.target.closest?.("[data-info]"); if (el) { e.stopPropagation(); infoAt(el); } }, true);
   $("#showAll").onclick = () => fitAll(true);
   document.querySelector(".tray-tabs").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; state.tab = b.dataset.tab; refresh(); });
-  $("#modalClose").onclick = () => $("#modal").classList.add("hidden");
-  $("#modal").addEventListener("click", (e) => { if (e.target.id === "modal") $("#modal").classList.add("hidden"); });
-  document.addEventListener("keydown", (e) => { if (e.key === "Escape") { $("#modal").classList.add("hidden"); hideTip(); } });
+  $("#modalClose").onclick = closeModal;
+  $("#modal").addEventListener("click", (e) => { if (e.target.id === "modal") closeModal(); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") { if (!$("#modal").classList.contains("hidden")) closeModal(); hideTip(); } });
+  window.addEventListener("popstate", routeFromHash);
+  window.addEventListener("hashchange", routeFromHash);
+  if (location.hash.startsWith("#place/")) map.once("idle", routeFromHash);
 }
 boot();
