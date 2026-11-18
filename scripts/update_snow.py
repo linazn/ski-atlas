@@ -61,11 +61,11 @@ def current_start_year(d, today):
     return today.year if (today.month, today.day) >= (sm, sd) else today.year - 1
 
 
-def get(url, params, tries=6):
+def get(url, params, tries=4, timeout=30):
     q = url + "?" + urllib.parse.urlencode(params)
     for i in range(tries):
         try:
-            with urllib.request.urlopen(q, timeout=60) as r:
+            with urllib.request.urlopen(q, timeout=timeout) as r:
                 return json.load(r)
         except urllib.error.HTTPError as e:
             body = e.read().decode("utf8", "ignore")
@@ -201,6 +201,7 @@ def build_entry(d, today, cur_daily, clim, fc):
     if fc:
         e["next7"] = fc.get("next7")
         e["snowDepth"] = fc.get("depth")
+        e["forecastAsOf"] = fc.get("asof")
     if past and n:
         at = [p[1][min(n, len(p[1])) - 1] for p in past]
         normal = statistics.mean(at)
@@ -257,7 +258,12 @@ def main():
     ap.add_argument("--no-clim", action="store_true", help="skip fetching missing past seasons")
     ap.add_argument("--only", default="", help="comma-separated destination ids")
     ap.add_argument("--pause", type=float, default=1.5, help="seconds between archive calls")
+    ap.add_argument("--budget", type=float, default=0, help="stop fetching after this many minutes (0 = no limit)")
     args = ap.parse_args()
+    t0 = time.monotonic()
+
+    def over_budget():
+        return args.budget and (time.monotonic() - t0) > args.budget * 60
 
     with open(os.path.join(DATA, "destinations.json")) as f:
         dests = json.load(f)["destinations"]
@@ -275,23 +281,46 @@ def main():
 
     # 1) Current season + forecast (cheap, always)
     current, forecast = {}, {}
+    forecast_fails = 0
     for i, d in enumerate(dests):
         y0 = current_start_year(d, today)
         start, end = season_dates(d, y0)
         stop = min(yesterday, end)
         print(f"[{i+1}/{len(dests)}] current {d['id']} {start}..{stop}", flush=True)
+        if over_budget():
+            print("Time budget used up during current-season fetch; keeping last values for the rest.")
+            break
         try:
             current[d["id"]] = fetch_daily(d, start, stop) if stop >= start else None
-            fj = get(FORECAST, {"latitude": d["lat"], "longitude": d["lon"], "elevation": d["refElev"],
-                                "daily": "snowfall_sum", "current": "snow_depth", "forecast_days": 7, "timezone": "auto"})
-            sd = (fj.get("current") or {}).get("snow_depth")
-            forecast[d["id"]] = {"next7": round(sum(v or 0 for v in fj["daily"]["snowfall_sum"])),
-                                 "depth": round(sd * 100) if sd is not None else None}
         except DailyLimit as e:
             print("Daily API limit reached during current-season fetch:", e)
             break
         except Exception as e:
-            print("  failed:", e)
+            print("  season fetch failed:", e)
+        # The forecast is a separate API; if it is down, keep last week's values and stop asking.
+        if forecast_fails < 3:
+            try:
+                fj = get(FORECAST, {"latitude": d["lat"], "longitude": d["lon"], "elevation": d["refElev"],
+                                    "daily": "snowfall_sum", "current": "snow_depth", "forecast_days": 7,
+                                    "timezone": "auto"}, tries=2, timeout=20)
+                sd = (fj.get("current") or {}).get("snow_depth")
+                forecast[d["id"]] = {"next7": round(sum(v or 0 for v in fj["daily"]["snowfall_sum"])),
+                                     "depth": round(sd * 100) if sd is not None else None,
+                                     "asof": today.isoformat()}
+                forecast_fails = 0
+            except DailyLimit as e:
+                print("Daily API limit reached during forecast fetch:", e)
+                break
+            except Exception as e:
+                forecast_fails += 1
+                print("  forecast failed:", e)
+                if forecast_fails == 3:
+                    print("  forecast API looks down; skipping it for the rest of this run")
+        if d["id"] not in forecast and d["id"] in prev:
+            p = prev[d["id"]]
+            forecast[d["id"]] = {"next7": p.get("next7"), "depth": p.get("snowDepth"),
+                                 "asof": p.get("forecastAsOf") or (p.get("dataThrough") and
+                                         (dt.date.fromisoformat(p["dataThrough"]) + dt.timedelta(days=1)).isoformat())}
         time.sleep(args.pause)
 
     write_output(dests, today, current, forecast, prev, args, out_path)
@@ -305,6 +334,8 @@ def main():
                     yr = current_start_year(d, today) - back
                     if load_cache(d["id"], yr) is not None:
                         continue
+                    if over_budget():
+                        raise TimeoutError("time budget used up")
                     s, e = season_dates(d, yr)
                     print(f"clim {d['id']} {season_label(d, yr)}", flush=True)
                     try:
@@ -319,6 +350,8 @@ def main():
                     time.sleep(args.pause)
         except DailyLimit as e:
             print("Daily API limit reached: climatology will continue on the next run.", e)
+        except TimeoutError:
+            print("Time budget used up: climatology will continue on the next run.")
 
     write_output(dests, today, current, forecast, prev, args, out_path)
 

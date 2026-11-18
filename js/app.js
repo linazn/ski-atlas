@@ -105,6 +105,17 @@ function status(d) {
     ? { key: "pre", live: true, label: `Pre-season · opens ~${MONTHS[d.season[0] - 1]}` }
     : { key: "over", live: false, label: `Season over · ended ~${MONTHS[d.season[1] - 1]}` };
 }
+// ---- staleness: flag data that fell behind (a failed update), not the normal one-day lag ----
+const daysOld = (iso) => iso ? Math.floor((Date.now() - new Date(iso + "T00:00:00Z")) / 864e5) : null;
+const latestThrough = () => Object.values(SNOWDATA?.destinations || {}).map(s => s.dataThrough).filter(Boolean).sort().at(-1);
+/** Text warning if this place's season data or forecast is older than the rest, else "". */
+function staleNote(d) {
+  const s = snowOf(d); if (!s || !status(d).live) return "";
+  const lag = daysOld(s.dataThrough) - daysOld(latestThrough());
+  if (lag >= 3) return `Season data stops at ${fmtDay(s.dataThrough)}, ${lag} days behind the other places: the last updates failed for this one.`;
+  if (s.forecastAsOf && daysOld(s.forecastAsOf) >= 3) return `The forecast and snow-on-the-ground figures are from ${fmtDay(s.forecastAsOf)}: newer ones failed to download.`;
+  return "";
+}
 /** % of normal only while it means something "now"; null when out of season. */
 const livePct = (d) => status(d).live ? snowOf(d)?.pctNormal ?? null : null;
 function pctText(d) {
@@ -430,7 +441,7 @@ function popupHTML(d) {
     <div class="row">${rankText(s)}</div>` : ""}
     ${month ? `<div class="row">${month}</div>` : ""}
     ${d.advisory ? `<div class="row" style="color:#a3341f">⚠ Travel advisory: see details</div>` : ""}
-    <div class="row muted">Data through ${s?.dataThrough ?? "–"} · click for details</div>
+    <div class="row muted">Data through ${s?.dataThrough ?? "–"}${staleNote(d) ? ` <span class="stale-tag">· out of date</span>` : ""} · click for details</div>
   </div>`;
 }
 
@@ -584,6 +595,7 @@ function renderDetail(id) {
     </div>
 
     <div class="section-title">This season · ${s?.season ?? ""}</div>
+    ${staleNote(d) ? `<div class="callout"><b>Out of date.</b> ${staleNote(d)}</div>` : ""}
     <div class="snowcard">
       ${s ? `
       <div class="snow-head">
@@ -788,7 +800,12 @@ async function boot() {
   state.compare = state.compare.filter(x => BY_ID[x.id]); state.trip = state.trip.filter(id => BY_ID[id]);
   const gen = sj.generated ? new Date(sj.generated) : null;
   const through = Object.values(sj.destinations).map(s => s.dataThrough).filter(Boolean).sort().at(-1);
+  const age = gen ? Math.floor((Date.now() - gen) / 864e5) : null;
   $("#asof").innerHTML = gen ? `Snow data pulled <b>${gen.toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" })}</b> · through ${through ?? "–"}` : "No snow data yet: run scripts/update_snow.py";
+  if (age != null && age >= 4) {
+    $("#asof").classList.add("stale");
+    $("#asof").innerHTML += `<br>⚠ Not updated for ${age} days (it normally updates daily), so figures may be out of date.`;
+  }
   renderControls(); bindControls(); initMap(); refresh();
   const infoAt = (el) => { const r = el.getBoundingClientRect(); showTip(DEFS[el.dataset.info] || "", r.right, r.top); };
   document.addEventListener("mouseover", (e) => { const el = e.target.closest?.("[data-info]"); if (el) infoAt(el); });

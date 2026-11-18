@@ -1,8 +1,8 @@
-name: Weekly snow data update
+name: Daily snow data update
 
 on:
   schedule:
-    - cron: "0 6 * * 1"   # every Monday 06:00 UTC
+    - cron: "0 6 * * *"   # every day 06:00 UTC
   workflow_dispatch:       # "Run workflow" button in the Actions tab
 
 permissions:
@@ -15,7 +15,7 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
 
@@ -24,9 +24,10 @@ jobs:
           python-version: "3.12"
 
       - name: Fetch latest snow data (Open-Meteo)
-        run: python3 scripts/update_snow.py --pause 1.0
+        run: python3 scripts/update_snow.py --pause 1.0 --budget 90
 
       - name: Commit if anything changed
+        if: always()   # save whatever was fetched, even if the step above failed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -34,6 +35,6 @@ jobs:
           if git diff --cached --quiet; then
             echo "No changes"
           else
-            git commit -m "Weekly snow data update ($(date -u +%Y-%m-%d))"
+            git commit -m "Snow data update ($(date -u +%Y-%m-%d))"
             git push
           fi

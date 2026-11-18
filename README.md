@@ -35,13 +35,13 @@ Then open http://localhost:8765.
   ÷ the average to the same date over the last 8 complete seasons. **Rank** = where this season sits among them.
 * **Absolute cm are modelled.** A 9 km model smooths terrain and under-reads resort-reported totals
   (it says Niseko averages ~280 cm against ~1,500 cm reported). % and rank are the robust signals.
-* Weekly refresh: `python3 scripts/update_snow.py`. The first full build needs about 18k API "units",
+* Refresh: `python3 scripts/update_snow.py`. The first full build needs about 18k API "units",
   more than the free 10k/day, so it may take two runs. The script resumes from the cache.
 
 ## Publishing (GitHub Pages + weekly refresh)
 
 * Hosted on GitHub Pages from the `main` branch root; `CNAME` holds the custom domain.
-* `.github/workflows/update-snow.yml` runs every Monday (and on demand from the Actions tab), refreshes `data/snow.json` and commits it, which republishes the site.
+* `.github/workflows/update-snow.yml` runs every day at 06:00 UTC (and on demand from the Actions tab), refreshes `data/snow.json` and commits it, which republishes the site.
 * Open-Meteo's free API is for non-commercial use with attribution (see the footer credits).
 
 ## Older notes

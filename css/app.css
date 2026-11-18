@@ -195,6 +195,8 @@ svg.chart .grid { stroke: var(--border); stroke-width: 1; }
 .callout { background: #fff7e6; border: 1px solid #f3dca8; border-radius: 8px; padding: 8px 10px; font-size: 13px; line-height: 1.4; margin: -4px 0 10px; }
 .hidden-note { font-size: 12px; color: #9a5b00; margin: -2px 0 6px; }
 .hidden-note:empty { display: none; }
+#asof.stale { color: #8a5a00; }
+.stale-tag { color: #8a5a00; }
 .callout.warn { background: #fdf0ed; border-color: #f0c4b8; color: #5c1d10; }
 .kid-link { font-size: 11px; margin-left: 4px; }
 #detail a { color: var(--accent); }
