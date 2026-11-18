@@ -1540,5 +1540,279 @@
       }
     ],
     "draft": true
+  },
+  "portillo": {
+    "skiing": "Portillo is one of the oldest and most famous ski resorts in South America, sitting high in the Andes beside the frozen Laguna del Inca, close to the Argentine border. It hosted the 1966 Alpine World Ski Championships, the first held in the Southern Hemisphere.\n\nThe terrain is steep and big, with classic couloirs such as the Super C, reached by a hike from the top of the lifts. Some lifts are unusual slingshot-style surface lifts built for steep, avalanche-prone slopes.",
+    "beyond": "Life revolves around the yellow Hotel Portillo, with a small, sociable crowd that often returns year after year. There's no town: it's the hotel, the lake and the mountains.",
+    "know": "About 2.5 hours from Santiago, on the main road to Mendoza. Stays are usually sold as weekly packages, and there are cheaper lodge and hostel-style options alongside the hotel.\n\nBig Andean storms can close the pass road for days. Wind slabs are common; the steep terrain outside the resort needs a guide.",
+    "sources": [
+      {
+        "label": "Official site",
+        "url": "https://www.skiportillo.com"
+      }
+    ],
+    "draft": true
+  },
+  "tresvalles": {
+    "skiing": "Three neighbouring resorts above Santiago: Valle Nevado, La Parva and El Colorado. Together they form one of the largest ski areas in the Southern Hemisphere, with wide, high, treeless terrain and big views of the Andes.\n\nThe snow is often dry and the sun strong. Off-piste and heli-skiing are available, and the resorts can be skied as a day trip from the city.",
+    "beyond": "Santiago, with its restaurants, markets and wine valleys (Maipo, Casablanca), is close enough for city days between ski days.",
+    "know": "About 1 to 1.5 hours from Santiago, up a road with dozens of hairpin bends. Weekends and Chilean school holidays (July) are very busy, and traffic can be slow.\n\nThe altitude is high, around 3,000 m or more at the top. Wind slabs are the main hazard, and there is limited public avalanche forecasting, so go with a guide off-piste.",
+    "sources": [],
+    "draft": true
+  },
+  "laslenas": {
+    "skiing": "Las Leñas, in Mendoza province, is famous among freeriders for the **Marte** lift, which opens huge, steep terrain: long couloirs and big open faces with serious vertical. When Marte runs, it's some of the best lift-served freeride in the world.\n\nThe catch is the wind: Marte often closes for wind or avalanche danger, so a trip can include days of mostly piste skiing.",
+    "beyond": "A purpose-built resort with not much else around. Mendoza, the heart of Argentine wine country, is worth a visit before or after.",
+    "know": "Remote: a long drive from Mendoza, with Malargüe and San Rafael as closer airports when flights run. Plan for flexibility.\n\nThe snowpack is dry and wind-affected, with wind slabs and some persistent layers. The Marte terrain is big avalanche terrain: go with a local guide.",
+    "sources": [
+      {
+        "label": "Official site",
+        "url": "https://laslenas.com"
+      }
+    ],
+    "draft": true
+  },
+  "chillan": {
+    "skiing": "Nevados de Chillán sits on the flanks of a volcanic complex in southern-central Chile, and catches more snow than the resorts near Santiago. The terrain is big and open above the trees, with good tree skiing lower down and lots of sidecountry.\n\nStorms are wet and heavy, but the powder days can be excellent.",
+    "beyond": "Natural hot springs are a big part of the experience. The village of Las Trancas, down the road, has cabins, restaurants and a relaxed feel.",
+    "know": "About 1.5 hours from the city of Chillán, and around 5 to 6 hours from Santiago. Concepción has the nearest larger airport.\n\nThe volcanic complex has been active in recent years, so check for restrictions. Storm slabs and rain-on-snow are common hazards.",
+    "sources": [
+      {
+        "label": "Official site",
+        "url": "https://www.nevadosdechillan.com"
+      }
+    ],
+    "draft": true
+  },
+  "bariloche": {
+    "skiing": "Cerro Catedral, near Bariloche, is one of the largest ski areas in South America, with lots of varied terrain from easy runs to steep bowls, and views down to the Nahuel Huapi lake.\n\nThe snow is maritime, and conditions vary with altitude: the top is often great while the base can be wet.",
+    "beyond": "Bariloche is a lakeside town in the Patagonian Lake District, known for chocolate, Argentine steak and Swiss-style architecture. Lakes, forests and hiking surround it.",
+    "know": "Bariloche has direct flights from Buenos Aires. July, during the Argentine winter holidays, is very busy.\n\nWind and storm slabs are common after storms, but the snowpack usually settles quickly.",
+    "sources": [
+      {
+        "label": "Official site",
+        "url": "https://www.catedralaltapatagonia.com"
+      }
+    ],
+    "draft": true
+  },
+  "patagoniabc": {
+    "skiing": "Ski touring around Refugio Frey, a hut run by Club Andino Bariloche, set beneath granite spires above Cerro Catedral. The terrain mixes couloirs, open bowls and tree runs, with dramatic rock towers all around.\n\nIt's a rugged, adventurous setting, and the season can run into spring.",
+    "beyond": "The granite around Frey is famous for rock climbing in summer. Bariloche is close for food, gear and rest days.",
+    "know": "Access is on foot or ski from Catedral. The hut is basic; check with Club Andino Bariloche about services and booking.\n\nThere's no regular public avalanche forecast, so go with a local guide. Wind and storm slabs are the main hazards.",
+    "sources": [
+      {
+        "label": "Club Andino Bariloche",
+        "url": "https://www.clubandino.org"
+      }
+    ],
+    "draft": true
+  },
+  "chilevolcanoes": {
+    "skiing": "A spring trip to ski the volcanoes of the Araucanía, around Pucón. Villarrica, Lanín (across the border in Argentina), Llaima and others offer climbs on skins and crampons and long descents on corn snow with views of lakes and other volcanoes.\n\nThe cones are open and fairly uniform, but the summits can be icy, and some have crevasses.",
+    "beyond": "Pucón is an outdoor town with hot springs, lakes and forests of monkey-puzzle trees (araucarias). It makes a great base for a road trip.",
+    "know": "Villarrica is an active volcano with a lava lake, so access may be restricted; check current rules, which may require a guide.\n\nSpring (roughly September to November) is the main season. Start early to catch the corn before afternoon wet slides.",
+    "sources": [],
+    "draft": true
+  },
+  "ushuaia": {
+    "skiing": "Cerro Castor, near Ushuaia, is one of the southernmost ski areas in the world, at the tip of South America. The resort is fairly low, but the cold, southern climate keeps the snow good, and the season often runs longer than in the rest of Argentina.\n\nThe terrain is varied, with views over the mountains of Tierra del Fuego.",
+    "beyond": "Ushuaia is the main port for Antarctic cruises, on the Beagle Channel. Tierra del Fuego National Park, dog-sledding and cross-country skiing fill rest days.",
+    "know": "Ushuaia has direct flights from Buenos Aires. The resort is about 30 minutes from town.\n\nThe weather is windy and changeable, with temperatures near freezing. Wind slabs are the main hazard.",
+    "sources": [
+      {
+        "label": "Official site",
+        "url": "https://www.cerrocastor.com"
+      }
+    ],
+    "draft": true
+  },
+  "ecuador": {
+    "skiing": "Ski mountaineering on Ecuador's big volcanoes: Cayambe, on the equator; Cotopaxi, one of the highest active volcanoes in the world; and Chimborazo, whose summit is the farthest point from the centre of the Earth.\n\nThis is high-altitude climbing with skis, at well over 5,000 m. Conditions are variable, and good ski descents aren't guaranteed.",
+    "beyond": "Quito, at about 2,850 m, has a beautiful old town and helps with acclimatisation. Haciendas, markets and the Andean highlands make good rest days.",
+    "know": "Certified guides are required for the main volcanoes in national parks. Acclimatise slowly; altitude sickness is the main risk.\n\nThere's no avalanche forecast. Crevasses, rime ice and fast changes in snow conditions are the main hazards. The season runs all year, with some months better than others.",
+    "sources": [
+      {
+        "label": "Ecuador mountain guides association (ASEGUIM)",
+        "url": "https://aseguim.org"
+      }
+    ],
+    "draft": true
+  },
+  "patagoniaicefield": {
+    "skiing": "The Southern Patagonian Ice Field is one of the largest ice masses outside the polar regions. Crossing it is a multi-week expedition with sleds, skis and tents, past peaks such as Fitz Roy and Cerro Torre.\n\nIt's not about the descents: it's about the journey and the wild scenery.",
+    "beyond": "El Chaltén is a small town and the trekking capital of Argentina. The Perito Moreno glacier, in Los Glaciares National Park, is one of the most famous glaciers in the world.",
+    "know": "Expeditions usually need permits and registration with the national parks. Weather is extreme, with strong winds and long storms, so you need storm-proof camping and glacier skills, or a guide.\n\nThere's no avalanche forecast. El Calafate has the nearest airport.",
+    "sources": [
+      {
+        "label": "Los Glaciares National Park",
+        "url": "https://www.argentina.gob.ar/parquesnacionales/losglaciares"
+      }
+    ],
+    "draft": true
+  },
+  "niseko": {
+    "skiing": "Niseko is where Japan's powder reputation began. Cold air off the Sea of Japan brings light snow almost every day in midwinter. The four linked resorts on Mount Niseko Annupuri (Grand Hirafu, Hanazono, Niseko Village and Annupuri) share one pass, with tree runs, bowls and night skiing, and views of Mount Yōtei across the valley.\n\nOff-piste is reached through **gates**: under the local Niseko Rules, you may leave the resort only through these gates, which close when the danger is high. Rusutsu, nearby, has excellent tree skiing and is usually quieter.",
+    "beyond": "Onsen (hot spring baths) after skiing are part of the routine. Hirafu has lots of restaurants and bars, though it's very international and prices are high.",
+    "know": "New Chitose Airport, near Sapporo, is about 2 to 2.5 hours away by bus or car. Book restaurants ahead in peak season.\n\nIt's often grey and snowing, so visibility can be poor. Respect the gates and closures. Tree wells and deep-snow immersion are real risks.",
+    "sources": [
+      {
+        "label": "Official site",
+        "url": "https://www.niseko.ne.jp/en/"
+      },
+      {
+        "label": "File a climbing plan (Compass)",
+        "url": "https://www.mt-compass.com"
+      },
+      {
+        "label": "Japan Avalanche Network",
+        "url": "https://nadare.jp"
+      }
+    ],
+    "draft": true
+  },
+  "sapporo": {
+    "skiing": "Kiroro gets some of the deepest snow in Hokkaido and is much quieter than Niseko, with good tree skiing and sidecountry. Closer to the city, Teine (an Olympic venue in 1972) and Sapporo Kokusai are easy day trips.\n\nTogether they make a good mix of city and powder.",
+    "beyond": "Sapporo is a big, fun city with excellent ramen, seafood and beer, and the Snow Festival in February. Otaru, with its canal and glassworks, is on the way to Kiroro.",
+    "know": "New Chitose Airport is about 1.5 hours from Kiroro. Public buses and trains link the city and resorts.\n\nDaily snowfall builds storm slabs off-piste. Watch for tree wells and sluffs.",
+    "sources": [
+      {
+        "label": "File a climbing plan (Compass)",
+        "url": "https://www.mt-compass.com"
+      },
+      {
+        "label": "Japan Avalanche Network",
+        "url": "https://nadare.jp"
+      }
+    ],
+    "draft": true
+  },
+  "furano": {
+    "skiing": "Inland Hokkaido is colder and drier than the coast, so the powder is especially light. **Furano** has long groomed runs and good tree skiing, and has hosted World Cup races. **Tomamu** and **Kamui** are quieter, and Kamui is known for its powder.\n\nIt's a good area for a road trip, with Asahidake close by.",
+    "beyond": "Much more Japanese than Niseko, with local izakaya and onsen. Asahikawa is known for its ramen, and the hills of Biei are beautiful in snow.",
+    "know": "Asahikawa airport is about 1 hour away; Sapporo is about 2.5 hours. A car makes it easier to move between resorts.\n\nThe colder snowpack can develop buried weak layers. Midwinter temperatures can be very low.",
+    "sources": [
+      {
+        "label": "File a climbing plan (Compass)",
+        "url": "https://www.mt-compass.com"
+      },
+      {
+        "label": "Japan Avalanche Network",
+        "url": "https://nadare.jp"
+      }
+    ],
+    "draft": true
+  },
+  "asahidake": {
+    "skiing": "A single ropeway climbs Asahidake, Hokkaido's highest peak, an active volcano with steaming vents. There's almost no grooming: just cold, dry powder in open terrain and birch forest.\n\nThe terrain is big for one lift, and it's best enjoyed with a guide who knows the routes.",
+    "beyond": "Asahidake Onsen, at the base, has hot spring baths. It sits in Daisetsuzan National Park, Japan's largest national park.",
+    "know": "Asahikawa airport is about 1 hour away. The ropeway can close in strong winds, and powder mornings bring queues.\n\nWhiteouts are frequent and navigation is hard in the open terrain. The cold snowpack can have weak layers; check the Japan Avalanche Network.",
+    "sources": [
+      {
+        "label": "Official site",
+        "url": "https://wakasaresort.com"
+      },
+      {
+        "label": "File a climbing plan (Compass)",
+        "url": "https://www.mt-compass.com"
+      },
+      {
+        "label": "Japan Avalanche Network",
+        "url": "https://nadare.jp"
+      }
+    ],
+    "draft": true
+  },
+  "tokachi": {
+    "skiing": "Backcountry touring in the Tokachi range and Daisetsuzan, in central Hokkaido, in famously dry snow. Popular areas such as Fukiage and Sandan-yama are reached by road, with open slopes and birch forests.\n\nThe terrain suits tourers who want quiet days in cold, deep powder.",
+    "beyond": "Fukiage has a famous free outdoor hot spring. Furano and Biei are nearby for rest days.",
+    "know": "Asahikawa is the nearest airport. A car is needed. Tokachidake is an active volcano; check for restrictions.\n\nThe cold inland snowpack develops persistent weak layers more often than the coast. Go with a local guide, and check the Japan Avalanche Network.",
+    "sources": [
+      {
+        "label": "File a climbing plan (Compass)",
+        "url": "https://www.mt-compass.com"
+      },
+      {
+        "label": "Japan Avalanche Network",
+        "url": "https://nadare.jp"
+      }
+    ],
+    "draft": true
+  },
+  "hakuba": {
+    "skiing": "Hakuba Valley has around ten resorts under the Northern Alps, including Happo-One, which hosted downhill races at the 1998 Nagano Olympics, as well as Cortina, Tsugaike and Goryu. The snow is heavy in volume, and the terrain ranges from family slopes to steep alpine bowls.\n\nAbove the resorts, the Hakuba mountains offer serious backcountry with big lines.",
+    "beyond": "The town has lots of restaurants, bars and onsen. The snow monkeys of Jigokudani and Nagano city are within day-trip distance.",
+    "know": "From Tokyo, take the Hokuriku Shinkansen to Nagano, then a bus to Hakuba: about 3 to 4 hours in total.\n\nVery heavy snowfall loads slopes quickly, causing storm slabs and glide cracks. The big alpine terrain needs a guide. Check the Japan Avalanche Network.",
+    "sources": [
+      {
+        "label": "Official site",
+        "url": "https://www.hakubavalley.com"
+      },
+      {
+        "label": "File a climbing plan (Compass)",
+        "url": "https://www.mt-compass.com"
+      },
+      {
+        "label": "Japan Avalanche Network",
+        "url": "https://nadare.jp"
+      }
+    ],
+    "draft": true
+  },
+  "hakkoda": {
+    "skiing": "A ropeway climbs into the Hakkoda mountains, giving access to backcountry among the famous 'snow monsters': trees coated in thick rime ice. The snow is deep and cold, and there are few foreign skiers.\n\nThe terrain is mostly moderate, but navigation is the main challenge in frequent whiteouts. It pairs well with Zao, further south, which is also known for snow monsters.",
+    "beyond": "Sukayu Onsen, at the foot of the mountains, is a famous old hot spring with a huge wooden bath. Aomori city has excellent seafood.",
+    "know": "Aomori airport is about 1 hour away. Guides are strongly recommended because the terrain is hard to navigate in whiteout.\n\nIn 1902, a military exercise here ended in disaster when soldiers were lost in a blizzard: a reminder of how severe the weather can be.",
+    "sources": [
+      {
+        "label": "Official site",
+        "url": "https://www.hakkoda-ropeway.jp"
+      },
+      {
+        "label": "File a climbing plan (Compass)",
+        "url": "https://www.mt-compass.com"
+      },
+      {
+        "label": "Japan Avalanche Network",
+        "url": "https://nadare.jp"
+      }
+    ],
+    "draft": true
+  },
+  "tateyama": {
+    "skiing": "The Tateyama Kurobe Alpine Route crosses the Northern Alps and opens in mid-April, giving access to huge couloirs and open slopes from mountain huts at Murodo. It's spring skiing on a deep snowpack, with big views of the Northern Alps.\n\nThe terrain ranges from moderate slopes near Murodo to steep, serious couloirs on peaks such as Tsurugi.",
+    "beyond": "The snow walls along the road at Murodo can reach many metres tall. The Kurobe Dam is one of the largest in Japan.",
+    "know": "The Alpine Route is mainly a sightseeing route, with buses and cable cars. Toyama airport is about 1.5 hours away. Book huts ahead in Golden Week (late April to early May).\n\nWet-snow avalanches and cornice collapses are the main spring hazards. Weather can turn fast in the high Alps.",
+    "sources": [
+      {
+        "label": "Official site",
+        "url": "https://www.alpen-route.com/en/"
+      },
+      {
+        "label": "File a climbing plan (Compass)",
+        "url": "https://www.mt-compass.com"
+      },
+      {
+        "label": "Japan Avalanche Network",
+        "url": "https://nadare.jp"
+      }
+    ],
+    "draft": true
+  },
+  "fuji": {
+    "skiing": "In late spring, you can climb Mount Fuji, Japan's highest peak, and ski from near the crater rim: a descent of around 1,500 m with views across the country.\n\nThe snow is often hard and icy, especially early in the day, and a slip can be fatal on the long, uniform slopes.",
+    "beyond": "The Fuji Five Lakes, at the foot of the mountain, have onsen, views and good food. Tokyo is close for a city day.",
+    "know": "The official climbing season is in summer, so the mountain has no services in spring. File a climbing plan before you go.\n\nCrampons and an ice axe are essential. Turn around if the snow is too hard or the weather turns. Winds near the summit can be extreme.",
+    "sources": [
+      {
+        "label": "Official site",
+        "url": "https://www.fujisan-climb.jp/en/"
+      },
+      {
+        "label": "File a climbing plan (Compass)",
+        "url": "https://www.mt-compass.com"
+      }
+    ],
+    "draft": true
   }
 }
