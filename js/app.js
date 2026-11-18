@@ -34,8 +34,8 @@ const AVY_LINKS = {
 const saved = JSON.parse(localStorage.getItem("skiatlas") || "{}");
 const state = Object.assign({
   cats: { resort: true, freeride: true, touring: true },
-  levels: ["all", "advanced"],
-  tourTypes: Object.keys(TOUR_TAGS),
+  levels: [],         // resort levels to narrow to; empty = all levels
+  tourTypes: [],      // touring types to narrow to; empty = all types
   months: [],         // travel months (multi-select)
   hideOut: false,
   colorBy: "category",
@@ -49,7 +49,10 @@ if (!Array.isArray(state.months)) state.months = state.month ? [state.month] : [
 delete state.month; delete state.tourTags; delete state.iconicOnly;
 delete state.trip; delete state.tab; // trip planning removed Nov 2026 (in git history if it comes back)
 // v2 (Nov 2026): new "traverse" touring type starts switched on for people who had touring on
-if ((state.v || 1) < 2) { if (state.tourTypes.length && !state.tourTypes.includes("traverse")) state.tourTypes.push("traverse"); state.v = 2; }
+// v3 (Nov 2026): touring chips narrow the map (none selected = all types) instead of hiding types, so start everyone at "all"
+if ((state.v || 1) < 3) { state.tourTypes = []; state.v = 3; }
+// v4 (Nov 2026): resort level chips work the same way (none selected = all levels)
+if (state.v < 4) { state.levels = []; state.v = 4; }
 const persist = () => {
   const { selected, ...rest } = state;
   localStorage.setItem("skiatlas", JSON.stringify(rest));
@@ -138,13 +141,13 @@ function seasonStatus(d) {
 
 // ---------- filtering ----------
 /** Resort/freeride pins with big, documented backcountry from the same base (Tahoe, Wasatch…) also count as day tours. */
-const alsoTouring = (d) => d.category !== "touring" && d.tags.includes("daytour") && state.cats.touring && state.tourTypes.includes("daytour");
+const alsoTouring = (d) => d.category !== "touring" && d.tags.includes("daytour") && state.cats.touring && (!state.tourTypes.length || state.tourTypes.includes("daytour"));
 function passes(d) {
-  const own = state.cats[d.category] && !(d.category === "resort" && !state.levels.includes(d.level));
+  const own = state.cats[d.category] && !(d.category === "resort" && state.levels.length && !state.levels.includes(d.level));
   if (!own && !alsoTouring(d)) return false;
   if (d.category === "touring") {
     const tags = d.tags.includes("cat") ? [...d.tags, "heli"] : d.tags;
-    if (!state.tourTypes.some(t => tags.includes(t))) return false;
+    if (state.tourTypes.length && !state.tourTypes.some(t => tags.includes(t))) return false;
   }
   if (state.crowdMax < 5 && d.crowds > state.crowdMax) return false;
   if (state.minPct > 0) { const p = livePct(d); if (p == null || p < state.minPct) return false; }
@@ -493,8 +496,8 @@ function refresh() {
 function renderControls() {
   $("#catToggles").innerHTML = Object.entries(CAT).map(([k, c]) => `
     <button type="button" class="cat-row ${state.cats[k] ? "" : "off"}" data-cat="${k}" aria-pressed="${state.cats[k]}" style="--c:${c.color}"><span class="dot" aria-hidden="true"></span><b>${c.label}</b><span class="muted" style="font-size:12px">${c.desc}</span></button>
-    ${k === "resort" ? `<div class="subs">${Object.entries(RESORT_LEVELS).map(([lk, l]) => `<button class="chip ${state.cats.resort && state.levels.includes(lk) ? "on" : ""}" data-level="${lk}">${l}</button>`).join("")}${info("levels")}</div>` : ""}
-    ${k === "touring" ? `<div class="subs">${Object.entries(TOUR_TAGS).map(([tk, l]) => `<button class="chip ${state.cats.touring && state.tourTypes.includes(tk) ? "on" : ""}" data-tag="${tk}">${l}</button>`).join("")}${info("tourTags")}</div>` : ""}
+    ${k === "resort" ? `<div class="subs">${Object.entries(RESORT_LEVELS).map(([lk, l]) => `<button class="chip ${state.cats.resort && state.levels.includes(lk) ? "on" : ""}" data-level="${lk}" aria-pressed="${state.cats.resort && state.levels.includes(lk)}">${l}</button>`).join("")}${info("levels")}${state.cats.resort && !state.levels.length ? `<span class="muted" style="font-size:11px">All levels shown · tap to narrow</span>` : ""}</div>` : ""}
+    ${k === "touring" ? `<div class="subs">${Object.entries(TOUR_TAGS).map(([tk, l]) => `<button class="chip ${state.cats.touring && state.tourTypes.includes(tk) ? "on" : ""}" data-tag="${tk}" aria-pressed="${state.cats.touring && state.tourTypes.includes(tk)}">${l}</button>`).join("")}${info("tourTags")}${state.cats.touring && !state.tourTypes.length ? `<span class="muted" style="font-size:11px">All types shown · tap to narrow</span>` : ""}</div>` : ""}
   `).join("");
   $("#months").innerHTML = MONTHS.map((m, i) => `<button data-m="${i + 1}" class="${state.months.includes(i + 1) ? "on" : ""}">${m}</button>`).join("") +
     `<button data-m="" class="any ${state.months.length ? "" : "on"}">Any time</button>`;
@@ -509,19 +512,17 @@ function renderControls() {
 function bindControls() {
   $("#catToggles").addEventListener("click", (e) => {
     const row = e.target.closest("[data-cat]"), lv = e.target.closest("[data-level]"), tg = e.target.closest("[data-tag]");
-    const ALL = { resort: Object.keys(RESORT_LEVELS), touring: Object.keys(TOUR_TAGS) };
     const listKey = { resort: "levels", touring: "tourTypes" };
     if (lv || tg) {
-      // chips toggle individually; the category is on while any of its chips is on
+      // chips narrow their category to the selected ones; none selected = show all of it
       const cat = lv ? "resort" : "touring", key = listKey[cat], v = lv ? lv.dataset.level : tg.dataset.tag;
-      if (!state.cats[cat]) state[key] = [];
-      state[key] = state[key].includes(v) ? state[key].filter(x => x !== v) : [...state[key], v];
-      state.cats[cat] = state[key].length > 0;
+      if (!state.cats[cat]) { state.cats[cat] = true; state[key] = [v]; }
+      else state[key] = state[key].includes(v) ? state[key].filter(x => x !== v) : [...state[key], v];
     } else if (row) {
-      // the category name toggles the whole category
+      // the category name toggles the whole category, and turning it on resets its chips to "all"
       const cat = row.dataset.cat;
       state.cats[cat] = !state.cats[cat];
-      if (state.cats[cat] && listKey[cat]) state[listKey[cat]] = [...ALL[cat]];
+      if (state.cats[cat] && listKey[cat]) state[listKey[cat]] = [];
     }
     renderControls(); refresh();
   });
@@ -564,7 +565,7 @@ function renderList() {
   $("#hiddenNote").innerHTML = hidden ? `${hidden} of ${DEST.length} hidden by filters · <a href="#" id="resetFilters">show all</a>` : "";
   $("#resetFilters") && ($("#resetFilters").onclick = (e) => {
     e.preventDefault();
-    Object.assign(state, { cats: { resort: true, freeride: true, touring: true }, levels: ["all", "advanced"], tourTypes: Object.keys(TOUR_TAGS),
+    Object.assign(state, { cats: { resort: true, freeride: true, touring: true }, levels: [], tourTypes: [],
       months: [], hideOut: false, minPct: 0, crowdMax: 5, search: "" });
     $("#search").value = ""; renderControls(); refresh();
   });

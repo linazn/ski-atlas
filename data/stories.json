@@ -1187,7 +1187,12 @@
     "skiing": "Karakol, in the Tian Shan of Kyrgyzstan, has a small ski resort with a few lifts and wide open slopes, and around it a huge range of backcountry. Yurt camps and small guesthouses are bases for touring, and cat-skiing operators take skiers deep into the mountains. The snow is dry and continental, often light and cold.\n\nNearby, the Jyrgalan valley has developed a community-based touring scene, with marked tours and local guides.",
     "beyond": "Lake Issyk-Kul, one of the largest mountain lakes in the world, never freezes. Karakol itself has a wooden Russian Orthodox cathedral and a Chinese-style wooden mosque built by the Dungan community. Try *ashlyan-fu*, the local cold noodle soup. Hot springs at Altyn-Arashan make a good rest day.",
     "know": "Bishkek is about 6 hours away by road. Infrastructure is simple and prices are low. Pack for real cold.\n\nThe continental snowpack is often weak, with persistent layers. There's no public avalanche forecast, so go with a local guide or operator.",
-    "sources": []
+    "sources": [
+      {
+        "label": "Karakol ski base",
+        "url": "https://karakol-ski.kg"
+      }
+    ]
   },
   "iranresorts": {
     "skiing": "Iran's Alborz Mountains rise just north of Tehran, and their resorts sit high, at around 2,500 to 3,600 m, with dry, light snow. **Dizin**, opened in 1969, is big and open, with long descents. **Shemshak** is steep and known for moguls. **Tochal**, reached by a long gondola from the northern edge of Tehran, has some of the highest pistes in the region.\n\nThe resorts are popular with locals, and weekends (Thursday and Friday) are busy.",
@@ -1211,7 +1216,12 @@
     "skiing": "Almaty is a big, green city at the foot of the Tian Shan, and its ski resort, **Shymbulak**, is reached by a gondola from Medeu, just above town. The lifts climb to the Talgar pass at about 3,200 m, with freeride terrain off both sides and a wall of 4,000 m peaks behind.\n\nIt's lift-served freeride with a city at the bottom, and prices are low.",
     "beyond": "Medeu, at the gondola base, is a huge outdoor ice rink where many Soviet speed-skating records were set. Almaty means \"father of apples\": wild apple forests here are the ancestors of the apples we eat today. The Green Bazaar is the place to try Kazakh food like *beshbarmak* and horse-meat sausage.",
     "know": "Almaty's international airport is about 45 minutes from the gondola. Many nationalities can visit Kazakhstan without a visa.\n\nThe continental snowpack can be weak. Kazakhstan has a local avalanche service, but information in English is limited, so go with a local guide off-piste.",
-    "sources": []
+    "sources": [
+      {
+        "label": "Shymbulak",
+        "url": "https://shymbulak.com"
+      }
+    ]
   },
   "almatytouring": {
     "skiing": "Above Almaty, the Trans-Ili Alatau range offers multi-day touring from yurts, mountain huts and old Soviet scientific stations. The Bogdanovich and Tuyuksu glaciers, above Shymbulak, give high, glaciated terrain; the Tuyuksu glacier is one of the most closely studied in the world. Further east, the Turgen gorge and the Ketmen ridge are wilder and quieter.\n\nThe terrain ranges from gentle glaciers to big, steep faces.",
@@ -1234,7 +1244,12 @@
     "skiing": "The Annapurna Sanctuary is a high glacial basin surrounded by a ring of 7,000 and 8,000 m peaks, including Annapurna I, the first 8,000 m peak ever climbed, in 1950. Ski touring from the lodges at Annapurna Base Camp (about 4,130 m) means slopes and moraines in one of the most dramatic settings in the world.\n\nThe skiing is modest; the setting is extraordinary.",
     "beyond": "Machapuchare, the \"Fishtail\" peak, is sacred and closed to climbers. Pokhara, at the start of the trek, is a relaxed lakeside town with views of the Annapurna range. The trek passes Gurung villages and rhododendron forests.",
     "know": "The trek in takes several days from near Pokhara. Permits are required for the Annapurna Conservation Area.\n\nThe approach trail crosses avalanche paths in the narrow valley below the sanctuary, which can be deadly after heavy snow. Check local conditions and go with an experienced guide.",
-    "sources": []
+    "sources": [
+      {
+        "label": "Annapurna Conservation Area permits (NTNC)",
+        "url": "https://ntnc.org.np"
+      }
+    ]
   },
   "muztagh": {
     "skiing": "Muztagh Ata (7,546 m), the \"father of ice mountains\", is a huge, rounded peak in the Chinese Pamirs and the classic first 7,000 m peak to ski. Its broad glacier allows a ski descent from near the summit, making it one of the highest ski descents that isn't technically extreme.\n\nThe skiing is gentle, but the altitude and cold are serious.",
@@ -1458,7 +1473,20 @@
     "skiing": "Three neighbouring resorts sit above Santiago: **Valle Nevado**, **La Parva** and **El Colorado**. Together they form one of the largest ski areas in the Southern Hemisphere, with wide, high, treeless terrain and big views of the Andes. The snow is often dry and the sun strong; off-piste is everywhere, and heli-skiing runs from Valle Nevado.\n\nLa Parva has a local, family feel; Valle Nevado is the most modern; El Colorado sits at the heart of the linked terrain.",
     "beyond": "Santiago, with its restaurants, markets and nearby wine valleys (Maipo and Casablanca), is close enough for city days between ski days. Valparaíso, with its colourful hillside streets, is about 1.5 hours to the coast.",
     "know": "About 1 to 1.5 hours from Santiago, up a road with dozens of numbered hairpin bends. Weekends and Chilean school holidays (July) are very busy, and traffic up the road can crawl; some days it's restricted to one direction at certain hours.\n\nThe tops are around 3,000 m or more, so the sun and altitude hit hard. Wind slabs are the main hazard, and there's limited public avalanche forecasting, so go with a guide off-piste.",
-    "sources": []
+    "sources": [
+      {
+        "label": "Valle Nevado",
+        "url": "https://www.vallenevado.com"
+      },
+      {
+        "label": "La Parva",
+        "url": "https://laparva.cl"
+      },
+      {
+        "label": "El Colorado",
+        "url": "https://www.elcolorado.cl"
+      }
+    ]
   },
   "laslenas": {
     "skiing": "Las Leñas, in Mendoza province, is famous among freeriders for the **Marte** lift, which opens huge, steep terrain: long couloirs, big open faces and serious vertical. When Marte runs, it's some of the best lift-served freeride in the world, and a whole subculture of ski bums has spent seasons here for it.\n\nThe catch is the wind: Marte often closes for wind or avalanche danger, so a trip can include days of mostly piste skiing.",
@@ -1508,7 +1536,16 @@
     "skiing": "A spring trip to ski the volcanoes of Chile's Araucanía, with Pucón as the base. **Villarrica** is the classic, an active volcano with a smoking crater. **Lanín**, across the border in Argentina, is a striking, isolated cone. **Llaima** and **Lonquimay** add more choices. Each offers a climb on skins and crampons and a long descent on corn snow, with views of lakes and other volcanoes.\n\nThe cones are open and fairly uniform, but the summits can be icy, and some have crevasses.",
     "beyond": "Pucón is an outdoor town with hot springs, lakes and forests of monkey-puzzle trees (araucarias), which give the region its name. The Mapuche people have lived here for centuries.",
     "know": "Villarrica's access rules change with its volcanic activity and may require a guide, so check before you go. Temuco is the nearest major airport.\n\nSpring (roughly September to November) is the main season. Start early to catch the corn before afternoon wet slides.",
-    "sources": []
+    "sources": [
+      {
+        "label": "National parks (CONAF)",
+        "url": "https://www.conaf.cl"
+      },
+      {
+        "label": "Volcano alerts (SERNAGEOMIN)",
+        "url": "https://www.sernageomin.cl"
+      }
+    ]
   },
   "ushuaia": {
     "skiing": "Cerro Castor, near Ushuaia, is one of the southernmost ski areas in the world, at the tip of South America. The resort is fairly low, but the cold, southern climate keeps the snow dry and good, and the season often runs longer than in the rest of Argentina, into October.\n\nThe terrain is varied, with views over the mountains of Tierra del Fuego. National teams from the north train here in their off-season.",
@@ -1739,13 +1776,23 @@
     "skiing": "Ski touring in the empty fjords of West Greenland, around Maniitsoq and Sisimiut, usually from an expedition yacht or by helicopter. Peaks rise straight from the sea to 1,000 to 2,000 m, and many slopes have rarely or never been skied.\n\nSpring weather is often cold and stable, with long days, and the skiing ends at the shoreline among icebergs.",
     "beyond": "Maniitsoq is called the \"Venice of the Arctic\" for its channels. Sisimiut has a strong Inuit culture and dog-sledding, and hosts the Arctic Circle Race, one of the toughest cross-country ski races in the world. Near Kangerlussuaq, musk oxen roam the tundra.",
     "know": "International flights reach Nuuk and Kangerlussuaq, then boats or helicopters continue. Trips are expensive and need booking well ahead, usually with a specialist operator.\n\nThere's no public avalanche forecast, so go guided. Wind slabs are the main hazard, and rescue can be very far away.",
-    "sources": []
+    "sources": [
+      {
+        "label": "Visit Greenland (official tourism)",
+        "url": "https://visitgreenland.com"
+      }
+    ]
   },
   "eastgreenland": {
     "skiing": "The Ammassalik Alps, around Tasiilaq, are a range of jagged peaks above sea ice and icebergs on Greenland's remote east coast. Touring and heli-skiing here mean steep coastal peaks, glaciers and couloirs, with the frozen sea below.\n\nIt's very remote and wild, with few people and no infrastructure beyond the town.",
     "beyond": "Tasiilaq is a small Inuit town of brightly painted houses, where hunting, fishing and dog-sledding are still part of daily life. The icebergs and sea ice are spectacular, and in spring, dog-sled trips across the sea ice are possible.",
     "know": "Flights go to Kulusuk from Reykjavík, then by helicopter or boat to Tasiilaq. Most trips are run by specialist operators, with local hunters often providing transport.\n\nThe piteraq, a powerful wind that falls from the ice cap, can be extremely strong. There's no public avalanche forecast; go guided.\n\nTrips usually run in spring (March to May), when the days are long and the sea ice is still there. Book well ahead, as group sizes are small.",
-    "sources": []
+    "sources": [
+      {
+        "label": "Visit Greenland (official tourism)",
+        "url": "https://visitgreenland.com"
+      }
+    ]
   },
   "baffin": {
     "skiing": "Around Clyde River and Sam Ford Fjord, on Baffin Island, huge granite walls rise from the sea ice, with couloirs of around 1,000 m running between them. Teams camp on the sea ice and travel by snowmobile with Inuit outfitters.\n\nIt's one of the most remote and dramatic ski destinations in the world, visited by only a handful of teams each spring, and it featured in some famous ski films.",
@@ -1762,7 +1809,12 @@
     "skiing": "Crossing the Greenland ice cap is the classic polar ski journey: about 550 km from coast to coast, usually around four weeks, pulling a heavy sled across the vast, flat ice to a high point of about 2,500 m. Fridtjof Nansen made the first crossing in 1888, and modern teams follow much the same line.\n\nIt's not about descents. It's about endurance, cold and the emptiness of the ice.",
     "beyond": "The endless white of the ice cap, the silence, the long light and the moment you reach the far coast and see rock again.",
     "know": "Expeditions need permission from the Greenland authorities, including proof of rescue insurance. Most teams start from the east coast (via Kulusuk) and finish near Kangerlussuaq. Guided crossings are available from specialist operators.\n\nCrevasses near the coasts, piteraq storms and cold injuries are the main risks. Nights can reach −30 °C in spring.",
-    "sources": []
+    "sources": [
+      {
+        "label": "Visit Greenland (official tourism)",
+        "url": "https://visitgreenland.com"
+      }
+    ]
   },
   "vatnajokull": {
     "skiing": "Vatnajökull is the largest ice cap in Iceland and one of the largest in Europe. Crossing it takes a week or more, pulling sleds over the ice, past active volcanoes buried under the glacier, such as Grímsvötn, which erupts every few years. A hut run by the Iceland Glaciological Society on the rim of Grímsvötn is a famous stop.\n\nThe terrain is mostly flat to rolling, and the challenge is the weather and the distance.",
@@ -1779,19 +1831,62 @@
     "skiing": "The Snowy Mountains of New South Wales hold Australia's biggest resorts. **Perisher** is the largest, spread over several linked areas, with wide, rolling terrain among snow gums. **Thredbo** has the most vertical in Australia and the highest lift-served point, with long runs from the top of the Kosciuszko Express. **Charlotte Pass**, the highest resort village, is reached only by snowcat in winter.\n\nThe natural snow is variable, and rain is possible even in midwinter, so snowmaking matters. On a good day after a storm, the snow gum glades are a uniquely Australian experience.",
     "beyond": "Jindabyne, on its lake, is the main town, with restaurants and a relaxed feel. Wombats and kangaroos are common, and the snow gums, twisted and multicoloured, are beautiful in themselves.",
     "know": "Canberra is about 2.5 hours away; Sydney is about 6 hours. The Skitube, a rack railway, runs from Bullocks Flat to Perisher and Blue Cow, avoiding the road. A national park entry fee applies, and chains are required in season.\n\nSchool holidays and weekends are very busy. Perisher is on the Epic Pass and Thredbo on the Ikon Pass.",
-    "sources": []
+    "sources": [
+      {
+        "label": "Thredbo",
+        "url": "https://www.thredbo.com.au"
+      },
+      {
+        "label": "Backcountry forecast (Mountain Safety Collective)",
+        "url": "https://mountainsafetycollective.org"
+      },
+      {
+        "label": "Perisher",
+        "url": "https://www.perisher.com.au"
+      },
+      {
+        "label": "Kosciuszko National Park (NSW Parks)",
+        "url": "https://www.nationalparks.nsw.gov.au/visit-a-park/parks/kosciuszko-national-park"
+      }
+    ]
   },
   "mainrange": {
     "skiing": "The Main Range is the roof of Australia, a high, treeless ridge that includes Mount Kosciuszko (2,228 m), the country's highest peak. Day tours and overnight trips start from Thredbo or Charlotte Pass, onto rolling plateaus, glacial lakes like Blue Lake, and peaks like Mount Townsend.\n\nThe **Western Faces** are the highlight: long, steep slopes dropping more than 1,000 m toward the Geehi valley, which feel more like New Zealand than Australia.",
     "beyond": "Seaman's Hut, a small stone shelter on the range, was built in memory of two skiers who died in a blizzard in 1928. Snow camping under the stars on the Main Range is an unforgettable experience.",
-    "know": "Canberra is the nearest airport. Fill in a trip-intentions form with the national park, and carry a personal locator beacon.\n\nThe weather on the Main Range can be extreme, with blizzards and whiteouts arriving fast. Australia has no official avalanche forecast, but avalanches do happen, especially on the Western Faces and under cornices.",
-    "sources": []
+    "know": "Canberra is the nearest airport. Fill in a trip-intentions form with the national park, and carry a personal locator beacon.\n\nThe weather on the Main Range can be extreme, with blizzards and whiteouts arriving fast. Australia has no government avalanche service, but the Mountain Safety Collective, a non-profit, publishes backcountry forecasts for the main alpine areas. Avalanches do happen, especially on the Western Faces and under cornices.",
+    "sources": [
+      {
+        "label": "Kosciuszko National Park (NSW Parks)",
+        "url": "https://www.nationalparks.nsw.gov.au/visit-a-park/parks/kosciuszko-national-park"
+      },
+      {
+        "label": "Backcountry forecast (Mountain Safety Collective)",
+        "url": "https://mountainsafetycollective.org"
+      }
+    ]
   },
   "victoria": {
     "skiing": "Three resorts in the Victorian Alps serve Melbourne. **Mt Buller**, the closest, has a big village and a good variety of terrain. **Mt Hotham** is an \"upside-down\" resort, with the village on the ridge and runs dropping below it, and has the most expert terrain in Australia. **Falls Creek** is a ski-in, ski-out village with wide, rolling runs and access to the Bogong High Plains.\n\nThe snow is variable, and snowmaking keeps the season going.",
     "beyond": "Falls Creek hosts the Kangaroo Hoppet, a cross-country race on the Bogong High Plains that's part of the international Worldloppet series. Mansfield and Bright are pleasant country towns, with good food and wine in the valleys.",
     "know": "Melbourne is about 3 to 4.5 hours away. Carrying chains is mandatory in the alpine areas during the season. A resort entry fee applies.\n\nSchool holidays and weekends are very busy. Falls Creek and Mt Hotham are on the Epic Pass.",
-    "sources": []
+    "sources": [
+      {
+        "label": "Falls Creek",
+        "url": "https://www.fallscreek.com.au"
+      },
+      {
+        "label": "Backcountry forecast (Mountain Safety Collective)",
+        "url": "https://mountainsafetycollective.org"
+      },
+      {
+        "label": "Mt Hotham",
+        "url": "https://www.mthotham.com.au"
+      },
+      {
+        "label": "Mt Buller",
+        "url": "https://www.mtbuller.com.au"
+      }
+    ]
   },
   "queenstown": {
     "skiing": "Four resorts surround Queenstown and Wanaka. **The Remarkables** has dramatic views and good freeride chutes. **Coronet Peak**, New Zealand's first commercial ski field, has night skiing and is closest to town. **Cardrona** is big, family-friendly and known for its parks. **Treble Cone** has the biggest vertical in the area and steep, natural terrain with views over Lake Wanaka.\n\nHeli-skiing is available from both towns.",
@@ -1931,7 +2026,24 @@
     "skiing": "Northern Vermont has the best snow in the US Northeast, with classic New England tree skiing. **Stowe**, on Mount Mansfield, has the famous \"Front Four\", steep, narrow trails. **Jay Peak**, near the Canadian border, gets the most snow in the East, thanks to the \"Jay Cloud\". **Sugarbush** has varied terrain and a laid-back vibe, and **Mad River Glen** next door is a skiers-only cooperative with a single chair: \"Ski it if you can\".\n\nThe snow can be icy, but powder days in the trees are excellent.",
     "beyond": "The Trapp Family Lodge, near Stowe, was founded by the family from *The Sound of Music*. Ben & Jerry's factory, maple syrup, Vermont cheddar and craft beer are local highlights.",
     "know": "Burlington airport is about 1 hour away; Montréal is about 2 hours. Freeze-thaw cycles make conditions variable.\n\nThe backcountry is mostly in the trees; the Vermont Backcountry Alliance maintains glades.",
-    "sources": []
+    "sources": [
+      {
+        "label": "Stowe",
+        "url": "https://www.stowe.com"
+      },
+      {
+        "label": "Jay Peak",
+        "url": "https://jaypeakresort.com"
+      },
+      {
+        "label": "Sugarbush",
+        "url": "https://www.sugarbush.com"
+      },
+      {
+        "label": "Mad River Glen",
+        "url": "https://www.madriverglen.com"
+      }
+    ]
   },
   "tuckerman": {
     "skiing": "Tuckerman Ravine, on Mount Washington, is the classic Eastern spring pilgrimage. Each spring, skiers hike up to the ravine to ski its steep headwall, with slopes of around 50°, while crowds watch from a pile of boulders called Lunch Rocks.\n\nIn 1939, Toni Matt famously schussed the headwall in a race, and the ravine has drawn skiers since the 1930s.\n\nBeyond the headwall, the ravine has gullies like Left Gully and Hillman's Highway, which offer slightly gentler options. The atmosphere on a sunny spring weekend is part party, part pilgrimage.",
@@ -1974,7 +2086,12 @@
     "skiing": "Mauna Kea, on Hawaii's Big Island, rises to about 4,200 m and gets snow after rare winter storms. Skiing here means driving up in a 4x4 and skiing short runs on thin snow over volcanic rock, then surfing the same day.\n\nIt's an opportunistic trip: you go only when it snows, and conditions are often thin.\n\nThe skiing is short and opportunistic, with thin snow over lava. Most people come for the novelty and the views of the Pacific and Mauna Loa.",
     "beyond": "Mauna Kea is sacred to Native Hawaiians, and the summit has world-class observatories. Respect the cultural significance of the mountain and stay on established routes.",
     "know": "Kona and Hilo are about 2 hours away. A 4x4 is needed beyond the visitor centre. The road can close in storms or ice.\n\nThe altitude is high and you drive up from sea level quickly, so altitude sickness is a real risk.",
-    "sources": []
+    "sources": [
+      {
+        "label": "Center for Maunakea Stewardship",
+        "url": "https://hilo.hawaii.edu/maunakea/"
+      }
+    ]
   },
   "antarctica": {
     "skiing": "Ski touring on the Antarctic Peninsula, from expedition yachts or small ships, among icebergs, penguins and whales. Peaks rise straight from the sea, and descents end at the shoreline, where zodiacs wait to take you back to the boat.\n\nIt's the trip of a lifetime, and the scenery is unlike anywhere else on Earth.\n\nDays are spent touring from anchorages, with short to medium climbs and long descents back to the sea. Small groups and expert guides keep it safe.",
@@ -2057,7 +2174,16 @@
     "skiing": "Bansko sits at the foot of the Pirin Mountains, a UNESCO-listed national park with alpine limestone and marble peaks up to Vihren (2,914 m). The resort has a gondola from town and good pistes, and the surrounding mountains offer touring from huts.\n\nBansko is cheap and lively, and the touring is quiet and wild.\n\nFor tourers, Vihren's marble faces and the cirques around the Vihren and Banderitsa huts are the highlights, with steep gullies and wide, open bowls. The resort has hosted women's World Cup races, and its long ski road down to town is a classic end to the day.",
     "beyond": "Bansko's old town has stone houses and traditional taverns (*mehanas*) serving hearty dishes like *kapama* (slow-cooked meat). The Rila Monastery, a UNESCO site, is about 1.5 hours away.",
     "know": "Sofia is about 2.5 hours away. Prices are low compared with the Alps.\n\nThe Bulgarian mountain rescue service publishes avalanche information.\n\nBansko gets busy in February, and the gondola queues from town can be long in the morning; staying near the lift or starting early helps. Guides in Bansko can arrange hut-to-hut tours in the national park.",
-    "sources": []
+    "sources": [
+      {
+        "label": "Bansko ski resort",
+        "url": "https://www.banskoski.com"
+      },
+      {
+        "label": "Pirin National Park",
+        "url": "https://www.pirin.bg"
+      }
+    ]
   },
   "scotland": {
     "skiing": "Scotland's Highlands have wild, wind-scoured plateaus and gullies, with five ski areas (Cairngorm, Glenshee, The Lecht, Nevis Range and Glencoe) and backcountry touring when conditions allow. The Cairngorms plateau feels Arctic, and Ben Nevis has steep gullies.\n\nThe snow is unpredictable, but when it's on, Scottish skiing can be brilliant.\n\nSki touring on the Cairngorms plateau feels closer to the Arctic than to the Alps: vast, rounded, and often swept by wind into hard snow and cornices. On the west coast, Glencoe, Scotland's oldest commercial ski area, sits at the edge of Rannoch Moor, and the Nevis Range gondola gives access to the steep back corries of Aonach Mòr.",
@@ -2103,7 +2229,12 @@
     "skiing": "Mount Etna, Europe's most active volcano, offers ski touring above the Mediterranean through steaming vents and black ash, with two small ski areas: **Etna Sud**, at Nicolosi, and **Etna Nord**, at Piano Provenzana. Touring from the lifts takes you up to near the summit craters.\n\nThe snow can be dusted with black ash from eruptions, which makes for surreal skiing.\n\nThe lifts are small and simple, but touring opens up big, open slopes and long descents toward the sea. On clear days, the views stretch across Sicily.",
     "beyond": "Catania, at the foot of the volcano, has excellent street food: arancini and granita. Taormina, on the coast, has views of Etna, and the volcano's slopes produce some of Italy's most interesting wines.",
     "know": "Catania airport is about 1 hour away. Access to the summit area is regulated by the civil protection authorities, and guides are required above certain altitudes.\n\nEruptions can close areas at short notice. Check the latest volcanic activity before going.",
-    "sources": []
+    "sources": [
+      {
+        "label": "Etna Park (Parco dell'Etna)",
+        "url": "https://parcoetna.it"
+      }
+    ]
   },
   "afriski": {
     "skiing": "Afriski, in Lesotho's Maluti Mountains, is one of only two ski resorts in Southern Africa, at about 3,000 m. The terrain is small (a single main run of about 1 km), and most of the snow comes from snowmaking, but the experience of skiing in Africa is unique.\n\nThe season is short, roughly June to August.",
@@ -2135,7 +2266,12 @@
     "skiing": "The resorts of Krasnaya Polyana, above Sochi, were built or rebuilt for the 2014 Winter Olympics. **Rosa Khutor**, which hosted the alpine events, has big modern lifts and long runs, and **Gazprom** (Laura and Alpika) and **Gorki Gorod** add more terrain. There's lots of tree skiing and sidecountry, and the snow can be deep, though it's often heavy and wet.\n\nThe base is low, so conditions vary with altitude.\n\nRosa Khutor's terrain is big, with long runs from about 2,300 m and a good mix of pistes and trees. The resorts are linked by gondolas and buses.",
     "beyond": "The Black Sea coast, with palm trees, is about an hour away. The Olympic Park in Adler has the old venues. Georgian and Caucasian food is excellent.",
     "know": "Check your government's travel advice: many Western governments advise against all travel to Russia, and bank cards issued abroad don't work there.\n\nSochi airport is about 1 hour away. Fog and heavy snow can close lifts. Off-piste is uncontrolled.",
-    "sources": []
+    "sources": [
+      {
+        "label": "Rosa Khutor",
+        "url": "https://rosakhutor.ru"
+      }
+    ]
   },
   "elbrusarea": {
     "skiing": "The Elbrus region, in the Baksan valley, has huge, cheap freeride under Europe's highest peak. **Cheget** has old Soviet lifts and steep, varied terrain with views of the Donguz-Orun face. **Elbrus**, on the other side of the valley, has a modern cable car to about 3,850 m, with wide open slopes and big views.\n\nThe terrain is big and largely uncontrolled.\n\nCheget's freeride is steep and varied, with long, open descents through forest and couloirs. Elbrus's slopes are wide and high, with spectacular views of the Caucasus.",
@@ -2159,7 +2295,12 @@
     "skiing": "The Khibiny Mountains, on the Kola Peninsula above the Arctic Circle, offer Arctic freeride and touring: open bowls, cirques and long spring days. The resort of Bolshoy Vudyavr, above Kirovsk, has modern lifts and big terrain.\n\nThe season is long, running into June, and in May the sun barely sets.\n\nThe terrain includes open bowls, steep chutes and long valley runs, with views over frozen lakes. Touring from Kirovsk opens up big terrain in the surrounding cirques.",
     "beyond": "Kirovsk and Apatity are mining towns, named for the apatite mined here. In winter, a snow village with ice sculptures and a snow hotel opens in Kirovsk. The northern lights are common in the dark months.",
     "know": "Check your government's travel advice: many Western governments advise against all travel to Russia, and bank cards issued abroad don't work there.\n\nApatity airport is about 30 minutes away. The Khibiny has one of Russia's oldest avalanche services, because of the mining.",
-    "sources": []
+    "sources": [
+      {
+        "label": "BigWood (Bolshoy Vudyavr)",
+        "url": "https://bigwood.ru"
+      }
+    ]
   },
   "sheregesh": {
     "skiing": "Sheregesh, in the Gornaya Shoria region of Siberia, is famous for its deep, very cold, dry snow in birch and fir forests. The trees are often coated with snow and rime, and the tree skiing can be excellent.\n\nThe terrain is mostly moderate, but the snow quality is the draw.\n\nThe resort, on Mount Zelenaya, has several lift areas around a single peak, with lots of tree skiing and sidecountry between them. Many skiers come for the off-piste, where the snow stays light for days after a storm in the cold.",
