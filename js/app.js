@@ -10,11 +10,11 @@ const RESORT_LEVELS = { all: "All levels / family", advanced: "Known for advance
 const TOUR_TAGS = { daytour: "Day tours", huts: "Huts", traverse: "Traverses", heli: "Heli & cat", boat: "Boat-accessed", expedition: "Expedition" };
 const SLOTS = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300"];
 const SNOW = [
-  { key: "low2", max: 60, color: "#c43c3b", label: "< 60%" },
-  { key: "low1", max: 85, color: "#ee9a99", label: "60–85%" },
-  { key: "mid", max: 115, color: "#c9c8c3", label: "85–115%" },
-  { key: "high1", max: 150, color: "#86b6ef", label: "115–150%" },
-  { key: "high2", max: Infinity, color: "#1c5cab", label: "> 150%" },
+  { key: "low2", max: 60, color: "#c43c3b", label: "< 60%", word: "very poor start" },
+  { key: "low1", max: 85, color: "#ee9a99", label: "60–85%", word: "poor start" },
+  { key: "mid", max: 115, color: "#c9c8c3", label: "85–115%", word: "about normal" },
+  { key: "high1", max: 150, color: "#86b6ef", label: "115–150%", word: "good start" },
+  { key: "high2", max: Infinity, color: "#1c5cab", label: "> 150%", word: "great start" },
 ];
 const NODATA = "#ffffff";
 const AVY_LINKS = {
@@ -44,11 +44,10 @@ const state = Object.assign({
   search: "",
   sort: "zone",
   compare: [],        // [{id, slot}]
-  trip: [],           // [id]
-  tab: "compare",
 }, saved, { selected: null, search: "" });
 if (!Array.isArray(state.months)) state.months = state.month ? [state.month] : [];
 delete state.month; delete state.tourTags; delete state.iconicOnly;
+delete state.trip; delete state.tab; // trip planning removed Nov 2026 (in git history if it comes back)
 // v2 (Nov 2026): new "traverse" touring type starts switched on for people who had touring on
 if ((state.v || 1) < 2) { if (state.tourTypes.length && !state.tourTypes.includes("traverse")) state.tourTypes.push("traverse"); state.v = 2; }
 const persist = () => {
@@ -83,13 +82,9 @@ const ordinal = (n) => n + (["th", "st", "nd", "rd"][(n % 100 - 20) % 10] || ["t
 const meter = (n, max = 5) => `<span class="meter">${Array.from({ length: max }, (_, i) => `<i class="${i < n ? "f" : ""}"></i>`).join("")}</span>`;
 const subLabel = (d) => d.category === "touring" ? d.tags.filter(t => TOUR_TAGS[t] || t === "cat").map(t => t === "cat" ? "Cat" : TOUR_TAGS[t]).join(", ")
   : [d.category === "resort" ? RESORT_LEVELS[d.level] : "", d.tags.includes("daytour") ? "+ backcountry" : ""].filter(Boolean).join(" ");
-function km(a, b) {
-  const R = 6371, toR = Math.PI / 180;
-  const dLat = (b.lat - a.lat) * toR, dLon = (b.lon - a.lon) * toR;
-  const h = Math.sin(dLat / 2) ** 2 + Math.cos(a.lat * toR) * Math.cos(b.lat * toR) * Math.sin(dLon / 2) ** 2;
-  return 2 * R * Math.asin(Math.sqrt(h));
-}
-const fmtDay = (iso) => { const d = new Date(iso); return `${d.getUTCDate()} ${MONTHS[d.getUTCMonth()]}`; };
+const fmtDay = (iso) => { const d = new Date(iso); return `${MONTHS[d.getUTCMonth()]} ${d.getUTCDate()}`; };
+/** "Nov 18, 2026": month spelled out so it reads the same in every country */
+const fmtDate = (iso) => { if (!iso) return "–"; const d = new Date(iso.length === 10 ? iso + "T00:00:00Z" : iso); return `${MONTHS[d.getUTCMonth()]} ${d.getUTCDate()}, ${d.getUTCFullYear()}`; };
 /** Where a destination is in its season today.
  *  in   = operating season now                      → live numbers
  *  pre  = snow is accumulating but it hasn't opened → live numbers (base-building)
@@ -130,8 +125,10 @@ function pctText(d) {
 }
 function rankText(s, final = false) {
   if (!s || s.rank == null) return "";
-  const n = s.nSeasons + 1, w = final ? "" : " start";
-  return s.rank === 1 ? `best${w} of the last ${n} seasons` : s.rank === n ? `worst${w} of the last ${n} seasons` : `${ordinal(s.rank)} of the last ${n} seasons`;
+  const n = s.nSeasons + 1, w = final ? "season" : "start", top = s.rank, bottom = n - s.rank + 1;
+  // say it from whichever end is closer, so the direction is obvious ("2nd-least snowy", not "8th of 9")
+  const t = top === 1 ? `Snowiest ${w}` : bottom === 1 ? `Least snowy ${w}` : top <= bottom ? `${ordinal(top)}-snowiest ${w}` : `${ordinal(bottom)}-least snowy ${w}`;
+  return `${t} of the last ${n} seasons`;
 }
 function seasonStatus(d) {
   const s = snowOf(d);
@@ -203,7 +200,7 @@ function initMap() {
     map.addSource("dem", {
       type: "raster-dem", encoding: "terrarium", tileSize: 256, maxzoom: 12,
       tiles: ["https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png"],
-      attribution: "Terrain: Mapzen/AWS Terrain Tiles",
+      attribution: "Terrain: Mapzen/AWS",
     });
     winterizeBasemap();
     const waterLayer = map.getStyle().layers.find(l => l.id.includes("water"))?.id;
@@ -211,9 +208,6 @@ function initMap() {
       "hillshade-exaggeration": 0.6, "hillshade-shadow-color": "#4f6a88", "hillshade-highlight-color": "#ffffff", "hillshade-accent-color": "#7f98b3",
       "hillshade-illumination-direction": 315,
     } }, waterLayer);
-
-    map.addSource("route", { type: "geojson", data: { type: "FeatureCollection", features: [] } });
-    map.addLayer({ id: "route", type: "line", source: "route", paint: { "line-color": "#17395c", "line-width": 2, "line-dasharray": [2, 2] } });
 
     map.addSource("dest", { type: "geojson", data: features(), cluster: true, clusterRadius: 16, clusterMaxZoom: 7 });
     map.addLayer({ id: "clusters", type: "circle", source: "dest", filter: ["has", "point_count"], paint: {
@@ -259,7 +253,6 @@ function initMap() {
     map.addSource("sel", { type: "geojson", data: { type: "FeatureCollection", features: [] } });
     map.addLayer({ id: "sel", type: "circle", source: "sel", paint: { "circle-radius": 14, "circle-color": "transparent", "circle-stroke-color": "#17395c", "circle-stroke-width": 2 } }, "points");
 
-    updateRoute();
     bindZoneEvents();
     fitAll(false);
     renderZones();
@@ -290,11 +283,13 @@ function initMap() {
 const zoneOrder = (d) => { const keys = Object.keys(ZONES); return keys.indexOf(d.zone); };
 let zoneTier = null, zoneEls = [], zoneRaf = 0;
 
-function groupsFor(level) {
+/** merged = set of macro keys shown as one big pill; every other region keeps its own pill. "all" merges everything. */
+function groupsFor(merged) {
   const groups = new Map();
   for (const d of DEST) {
-    const key = level === "macro" ? ZONES[d.zone]?.macro : d.zone;
-    if (!groups.has(key)) groups.set(key, { key, name: level === "macro" ? MACROS[key] : ZONES[key]?.name, all: [], shown: [] });
+    const macro = ZONES[d.zone]?.macro, big = merged === "all" || merged.has(macro);
+    const key = big ? "m:" + macro : d.zone;
+    if (!groups.has(key)) groups.set(key, { key, macro, name: big ? MACROS[macro] : ZONES[d.zone]?.name, all: [], shown: [] });
     const g = groups.get(key); g.all.push(d);
     if (passes(d)) g.shown.push(d);
   }
@@ -314,10 +309,10 @@ function pillHTML(g) {
   return `<div class="zname" data-zone="${g.key}">${esc(g.name)} <span>${g.shown.length}</span></div><div class="zdots">${dots}</div>`;
 }
 
-function buildZones(level) {
+function buildZones(merged) {
   const layer = $("#zoneLayer");
   layer.querySelectorAll(".zpill").forEach(e => e.remove());
-  zoneEls = groupsFor(level).map(g => {
+  zoneEls = groupsFor(merged).map(g => {
     const el = document.createElement("div");
     el.className = "zpill"; el.innerHTML = pillHTML(g);
     layer.appendChild(el);
@@ -330,12 +325,20 @@ function buildZones(level) {
 function layoutZones() {
   const W = map.getContainer().clientWidth, H = map.getContainer().clientHeight, pad = 6, margin = 24;
   const boxes = [];
+  // On a phone the whole world can't fit across the screen, so regions off to the side get a small
+  // edge tab ("‹ Japan 10") instead of disappearing. Only in the world view, not once zoomed in.
+  const hints = W < 600 && map.getZoom() < 1.5;
   zoneEls.forEach(z => {
     const p = map.project([z.g.lon, z.g.lat]);
-    // only regions whose real location is on screen get a pill (no edge-clamped labels for off-screen places)
     const onScreen = p.x > -margin && p.x < W + margin && p.y > -margin && p.y < H + margin;
-    z.el.style.display = onScreen ? "" : "none";
+    const side = !onScreen && hints && p.y > -margin && p.y < H + margin ? (p.x < 0 ? "left" : "right") : null;
+    if (z.el.classList.contains("edge") !== !!side || z.el.dataset.side !== (side || "")) {
+      z.el.classList.toggle("edge", !!side); z.el.dataset.side = side || "";
+      z.w = z.el.offsetWidth; z.h = z.el.offsetHeight;
+    }
+    z.el.style.display = onScreen || side ? "" : "none";
     if (onScreen) boxes.push({ z, ax: p.x, ay: p.y, x: p.x - z.w / 2, y: p.y - z.h / 2, w: z.w, h: z.h });
+    else if (side) boxes.push({ z, ax: p.x, ay: p.y, x: side === "left" ? 4 : W - z.w - 4, y: p.y - z.h / 2, w: z.w, h: z.h, edge: true });
   });
   for (let it = 0; it < 120; it++) {
     let moved = false;
@@ -356,6 +359,8 @@ function layoutZones() {
   boxes.forEach(b => {
     b.z.el.style.transform = `translate(${Math.round(b.x)}px, ${Math.round(b.y)}px)`;
     const cx = b.x + b.w / 2, cy = b.y + b.h / 2, disp = Math.hypot(cx - b.ax, cy - b.ay);
+    b.z.disp = b.edge ? 0 : disp;
+    if (b.edge) return;
     maxDisp = Math.max(maxDisp, disp);
     if (disp > b.h / 2 + 4) {
       // leader line from the true location to the nearest edge of the pill
@@ -379,11 +384,19 @@ function renderZones() {
     zoneTier = "pins"; layer.classList.add("hidden"); setPinLayers(true); zoneEls = []; return;
   }
   layer.classList.remove("hidden"); setPinLayers(false);
-  buildZones("zone");
-  const stress = layoutZones();
-  zoneTier = "zone";
-  // merge into big regions only when zoomed far out AND the regional pills can't fit; zooming in never makes it coarser
-  if (map.getZoom() < 1.8 && stress > Math.min(160, map.getContainer().clientWidth / 6)) { buildZones("macro"); layoutZones(); zoneTier = "macro"; }
+  // Start with one pill per region. Where pills had to be pushed far from their real location to fit
+  // (crowded parts of the world, small screens), merge that part of the world into one bigger pill.
+  // Roomy areas keep their detail, and zooming in brings the regions back.
+  const merged = new Set(), limit = Math.max(28, Math.min(70, map.getContainer().clientWidth / 18));
+  buildZones(merged); layoutZones();
+  // only at world scale: once someone zooms in to a part of the world, always show its regions
+  for (let pass = 0; pass < 4 && map.getZoom() < 2.2; pass++) {
+    const crowded = zoneEls.filter(z => z.el.style.display !== "none" && z.disp > limit && !merged.has(z.g.macro)).map(z => z.g.macro);
+    if (!crowded.length) break;
+    crowded.forEach(m => merged.add(m));
+    buildZones(merged); layoutZones();
+  }
+  zoneTier = merged.size ? "mixed" : "zone";
 }
 
 function bindZoneEvents() {
@@ -409,7 +422,8 @@ function bindZoneEvents() {
     if (pill) {
       const z = zoneEls.find(z => z.el === pill); if (!z) return;
       const b = new maplibregl.LngLatBounds(); z.g.shown.forEach(d => b.extend([d.lon, d.lat]));
-      map.fitBounds(b, { padding: 80, maxZoom: 7, minZoom: ZONE_TIER_MAX + 0.2 });
+      // a merged pill opens up into its regions; a region pill zooms on to the individual places
+      map.fitBounds(b, z.g.key.startsWith("m:") ? { padding: 60, maxZoom: ZONE_TIER_MAX - 0.3 } : { padding: 80, maxZoom: 7, minZoom: ZONE_TIER_MAX + 0.2 });
     }
   });
 }
@@ -431,6 +445,19 @@ function winterizeBasemap() {
 }
 
 function fitAll(animate = true) {
+  const c = map.getContainer(), W = c.clientWidth, H = c.clientHeight;
+  // the map can't zoom out past the point where the world fills the screen's height
+  const zMin = Math.log2(H / 512), span = W / (512 * 2 ** zMin) * 360;
+  if (span < 300) {
+    // narrow screen: the whole world doesn't fit across, so centre on the stretch with the most places
+    let best = 0, bestN = -1;
+    for (let lon = -180 + span / 2; lon <= 180 - span / 2; lon += 5) {
+      const n = DEST.filter(d => Math.abs(d.lon - lon) < span / 2 - 8).length;
+      if (n > bestN) { bestN = n; best = lon; }
+    }
+    map[animate ? "easeTo" : "jumpTo"]({ center: [best, 25], zoom: zMin + 0.01 });
+    return;
+  }
   const b = new maplibregl.LngLatBounds();
   DEST.forEach(d => b.extend([d.lon, d.lat]));
   map.fitBounds(b, { padding: { top: 40, bottom: 40, left: 40, right: 90 }, animate });
@@ -447,7 +474,7 @@ function popupHTML(d) {
     <div class="row">${rankText(s)}</div>` : ""}
     ${month ? `<div class="row">${month}</div>` : ""}
     ${d.advisory ? `<div class="row" style="color:#a3341f">⚠ Travel advisory: see details</div>` : ""}
-    <div class="row muted">Data through ${s?.dataThrough ?? "–"}${staleNote(d) ? ` <span class="stale-tag">· out of date</span>` : ""} · click for details</div>
+    <div class="row muted">Data through ${fmtDate(s?.dataThrough)}${staleNote(d) ? ` <span class="stale-tag">· out of date</span>` : ""} · click for details</div>
   </div>`;
 }
 
@@ -583,7 +610,7 @@ function closeDetail() {
 
 function renderDetail(id) {
   const d = BY_ID[id], s = snowOf(d), st = status(d), c = snowClass(s?.pctNormal);
-  const inCmp = state.compare.some(x => x.id === id), inTrip = state.trip.includes(id);
+  const inCmp = state.compare.some(x => x.id === id);
   const avyUrl = d.links?.avalanche || AVY_LINKS[d.country]?.[1];
   const avy = avyUrl ? [hostLabel(avyUrl), avyUrl] : null;
   const relLabel = s?.reliabilityCV == null ? "" : s.reliabilityCV < 0.2 ? "very consistent" : s.reliabilityCV < 0.3 ? "fairly consistent" : s.reliabilityCV < 0.4 ? "variable" : "very variable (boom or bust)";
@@ -599,7 +626,6 @@ function renderDetail(id) {
     ${d.tags.includes("novelty") ? `<div class="callout"><b>Go for the place.</b> The location is the draw more than the skiing: expect a small area, a short or unreliable season, and weather that can cancel plans. Have a non-ski backup and treat good snow as a bonus.</div>` : ""}
     <div class="actions">
       <button class="btn primary" id="addCmp" ${inCmp || state.compare.length >= 6 ? "disabled" : ""}>${inCmp ? "In compare ✓" : "+ Compare"}</button>
-      <button class="btn" id="addTrip" ${inTrip ? "disabled" : ""}>${inTrip ? "In trip ✓" : "+ Trip"}</button>
       <button class="btn" id="zoomTo">Zoom to</button>
       ${STORIES[id] ? `<button class="btn" id="readMore">Read more →</button>` : ""}
     </div>
@@ -609,7 +635,7 @@ function renderDetail(id) {
     <div class="snowcard">
       ${s ? `
       <div class="snow-head">
-        <div><div class="hero" style="${st.live ? "" : "color:#8a8984"}">${s.pctNormal != null ? s.pctNormal + "%" : "–"}</div><div class="hero-sub">${st.live ? "of normal to date" : "of normal (final)"} ${info("pct")} ${c && st.live ? `<span class="badge"><i style="width:8px;height:8px;border-radius:50%;background:${c.color};display:inline-block"></i>${c.label}</span>` : ""}</div></div>
+        <div><div class="hero" style="${st.live ? "" : "color:#8a8984"}">${s.pctNormal != null ? s.pctNormal + "%" : "–"}</div><div class="hero-sub">${st.live ? "of normal to date" : "of normal (final)"} ${info("pct")} ${c && st.live ? `<span class="badge"><i style="width:8px;height:8px;border-radius:50%;background:${c.color};display:inline-block"></i>${c.word}</span>` : ""}</div></div>
         <div class="hero-sub" style="flex:1">${rankText(s) ? `<b style="color:var(--text-primary)">${rankText(s, !st.live)}</b> ${info("rank")}<br>` : ""}<span class="badge">${esc(st.label)}</span> ${info("status")}<br>counting since ${fmtDay(s.seasonStart)} (day ${s.dayOfSeason})</div>
       </div>
       ${lowConfidence(s) ? `<div class="note">⚠ Early season: the normal to date is only ${s.normalToDate} cm, so the % swings a lot on one storm.</div>` : ""}
@@ -622,7 +648,7 @@ function renderDetail(id) {
         <div class="stat"><b>${s.reliabilityCV != null ? "±" + Math.round(s.reliabilityCV * 100) + "%" : "–"}</b><span>season-to-season swing ${info("swing")}</span></div>
       </div>
       <div id="seasonChart" style="margin-top:10px"></div>
-      <div class="note">Modelled snowfall (ECMWF 9 km via Open-Meteo) at ~${d.refElev} m. Data through ${s.dataThrough}. Raw data: <a href="${rawUrl(d, s)}" target="_blank" rel="noopener">this season, daily ↗</a> · <a href="${fcUrl(d)}" target="_blank" rel="noopener">forecast ↗</a>. A 9 km model under-reads resort-reported totals, especially in Japan and coastal ranges, so trust the % and rank more than the cm.</div>`
+      <div class="note">Modelled snowfall (ECMWF 9 km via Open-Meteo) at ~${d.refElev} m. Data through ${fmtDate(s.dataThrough)}. Raw data: <a href="${rawUrl(d, s)}" target="_blank" rel="noopener">this season, daily ↗</a> · <a href="${fcUrl(d)}" target="_blank" rel="noopener">forecast ↗</a>. A 9 km model under-reads resort-reported totals, especially in Japan and coastal ranges, so trust the % and rank more than the cm.</div>`
       : `<p class="note">No snow data yet for this destination.</p>`}
     </div>
 
@@ -655,7 +681,6 @@ function renderDetail(id) {
   `;
   $("#detailClose").onclick = closeDetail;
   $("#addCmp").onclick = () => addCompare(id);
-  $("#addTrip").onclick = () => addTrip(id);
   if (STORIES[id]) $("#readMore").onclick = () => openStory(id);
   $("#zoomTo").onclick = () => map.flyTo({ center: [d.lon, d.lat], zoom: d.children ? 8 : 9.5, padding: panelPadding() });
   el.querySelectorAll(".children li").forEach(li => li.onclick = (e) => { if (e.target.closest("a")) return; const c = d.children[+li.dataset.i]; map.flyTo({ center: [c.lon, c.lat], zoom: 11, padding: panelPadding() }); });
@@ -663,84 +688,27 @@ function renderDetail(id) {
   monthBars($("#monthBars"), s?.climate, { months: state.months, best: d.best });
 }
 
-// ---------- compare & trip ----------
+// ---------- compare ----------
 function addCompare(id) {
   if (state.compare.some(x => x.id === id) || state.compare.length >= 6) return;
   const used = state.compare.map(x => x.slot);
   const slot = [0, 1, 2, 3, 4, 5].find(i => !used.includes(i));
   state.compare.push({ id, slot });
-  state.tab = "compare";
   refresh();
 }
-function addTrip(id) { if (!state.trip.includes(id)) state.trip.push(id); state.tab = "trip"; refresh(); }
-
-function legInfo(a, b) {
-  const dist = km(a, b);
-  if (dist < 12) return { dist, text: "same area" };
-  const sameLand = a.country.split(" / ").some(c => b.country.includes(c)) || (a.lon * b.lon > 0 && dist < 900 && Math.abs(a.lat - b.lat) < 12);
-  if (dist < 700 && sameLand) {
-    // straight line → rough road time: winding mountain roads ≈ 1.4× distance at ~60 km/h
-    const h = (dist * 1.4) / 60;
-    return { dist, text: h < 1 ? `~${Math.max(20, Math.round(h * 6) * 10)} min drive` : `~${Math.round(h * 2) / 2}h drive` };
-  }
-  return { dist, text: "flight" };
-}
-
 function renderTray() {
   const tray = $("#tray");
-  const any = state.compare.length || state.trip.length;
-  tray.classList.toggle("hidden", !any);
+  tray.classList.toggle("hidden", !state.compare.length);
   $("#cmpCount").textContent = state.compare.length;
-  $("#tripCount").textContent = state.trip.length;
-  document.querySelectorAll(".tray-tabs button").forEach(b => b.classList.toggle("active", b.dataset.tab === state.tab));
   const body = $("#trayBody");
-  if (state.tab === "compare") {
-    body.innerHTML = `<div class="tray-row">
-      ${state.compare.map(x => `<span class="tchip"><i style="background:${SLOTS[x.slot]}"></i>${esc(BY_ID[x.id].name)}<button data-rm="${x.id}" aria-label="Remove">×</button></span>`).join("") || `<span class="muted" style="font-size:13px">Add up to 6 destinations from their detail panel.</span>`}
-      ${state.compare.length ? `<button class="btn primary" id="openCmp">Compare ${state.compare.length}</button><button class="btn" id="cmpToTrip">Use as trip</button><button class="btn" id="clrCmp">Clear</button>` : ""}
-    </div>`;
-    body.querySelectorAll("[data-rm]").forEach(b => b.onclick = () => { state.compare = state.compare.filter(x => x.id !== b.dataset.rm); refresh(); });
-    $("#openCmp") && ($("#openCmp").onclick = openCompare);
-    $("#clrCmp") && ($("#clrCmp").onclick = () => { state.compare = []; refresh(); });
-    $("#cmpToTrip") && ($("#cmpToTrip").onclick = () => { state.compare.forEach(x => { if (!state.trip.includes(x.id)) state.trip.push(x.id); }); state.tab = "trip"; refresh(); });
-  } else {
-    const stops = state.trip.map(id => BY_ID[id]);
-    let total = 0;
-    body.innerHTML = `
-      <div class="tray-row" style="margin-bottom:6px;font-size:13px">
-        <span class="muted">Travel months: <b style="color:var(--text-primary)">${state.months.length ? monthsLabel() : "none picked"}</b> (set in the sidebar) ${info("timing")}</span>
-        <span id="tripTotal" class="muted"></span>${info("legs")}
-        ${stops.length ? `<button class="btn" id="fitTrip">Show on map</button><button class="btn" id="clrTrip">Clear</button>` : ""}
-      </div>
-      <div class="trip-stops">${stops.map((d, i) => {
-        let leg = "";
-        if (i > 0) { const l = legInfo(stops[i - 1], d); total += l.dist; leg = `<div class="leg">${Math.round(l.dist).toLocaleString()} km<br>${l.text}</div>`; }
-        const ft = fitText(d), fit = ft ? `<span class="${ft.cls}">● ${ft.text}</span>` : "";
-        const s = snowOf(d);
-        return `${leg}<div class="stop"><b>${i + 1}. ${esc(d.name)}</b><span class="muted">${esc(d.country)}</span><br>${fit}${s?.pctNormal != null ? `<br><span class="muted">${pctText(d)}</span>` : ""}
-          <div class="ctl"><button data-mv="${i}" data-dir="-1" ${i === 0 ? "disabled" : ""}>◀</button><button data-mv="${i}" data-dir="1" ${i === stops.length - 1 ? "disabled" : ""}>▶</button><button data-rmt="${d.id}">remove</button></div></div>`;
-      }).join("") || `<span class="muted" style="font-size:13px">Add stops from a destination's detail panel, or move your compare list over.</span>`}</div>`;
-    $("#tripTotal").textContent = stops.length > 1 ? `${stops.length} stops · ${Math.round(total).toLocaleString()} km between stops (straight line)` : "";
-    body.querySelectorAll("[data-mv]").forEach(b => b.onclick = () => { const i = +b.dataset.mv, j = i + +b.dataset.dir; [state.trip[i], state.trip[j]] = [state.trip[j], state.trip[i]]; refresh(); });
-    body.querySelectorAll("[data-rmt]").forEach(b => b.onclick = () => { state.trip = state.trip.filter(x => x !== b.dataset.rmt); refresh(); });
-    $("#clrTrip") && ($("#clrTrip").onclick = () => { state.trip = []; refresh(); });
-    $("#fitTrip") && ($("#fitTrip").onclick = fitTrip);
-  }
-  updateRoute();
+  body.innerHTML = `<div class="tray-row">
+    ${state.compare.map(x => `<span class="tchip"><i style="background:${SLOTS[x.slot]}"></i>${esc(BY_ID[x.id].name)}<button data-rm="${x.id}" aria-label="Remove ${esc(BY_ID[x.id].name)}">×</button></span>`).join("")}
+    ${state.compare.length ? `<button class="btn primary" id="openCmp">Compare ${state.compare.length}</button><button class="btn" id="clrCmp">Clear</button>` : ""}
+  </div>`;
+  body.querySelectorAll("[data-rm]").forEach(b => b.onclick = () => { state.compare = state.compare.filter(x => x.id !== b.dataset.rm); refresh(); });
+  $("#openCmp") && ($("#openCmp").onclick = openCompare);
+  $("#clrCmp") && ($("#clrCmp").onclick = () => { state.compare = []; refresh(); });
   setTimeout(() => map?.resize(), 0);
-}
-
-function updateRoute() {
-  const src = map?.getSource("route");
-  if (!src) return;
-  const coords = state.trip.map(id => [BY_ID[id].lon, BY_ID[id].lat]);
-  src.setData({ type: "FeatureCollection", features: coords.length > 1 ? [{ type: "Feature", geometry: { type: "LineString", coordinates: coords }, properties: {} }] : [] });
-}
-function fitTrip() {
-  if (!state.trip.length) return;
-  const b = new maplibregl.LngLatBounds();
-  state.trip.forEach(id => b.extend([BY_ID[id].lon, BY_ID[id].lat]));
-  map.fitBounds(b, { padding: 80, maxZoom: 8 });
 }
 
 // ---------- "More about this place" pages (linkable: #place/<id>) ----------
@@ -795,14 +763,14 @@ function openCompare() {
   const row = (label, f) => `<tr><th>${label}</th>${items.map(it => `<td>${f(it)}</td>`).join("")}</tr>`;
   $("#modalBody").innerHTML = `
     <h2>Compare ${items.length} destinations</h2>
-    <div class="muted" style="font-size:13px">Snow data through ${items[0]?.s?.dataThrough ?? "–"}${m ? ` · travel months: <b>${monthsLabel()}</b>` : " · pick months in the sidebar to compare timing"}</div>
+    <div class="muted" style="font-size:13px">Snow data through ${fmtDate(items[0]?.s?.dataThrough)}${m ? ` · travel months: <b>${monthsLabel()}</b>` : " · pick months in the sidebar to compare timing"}</div>
     <div class="cmp-grid">
       <div>
         <div class="section-title" style="display:flex;justify-content:space-between;align-items:center">This season so far
-          <span class="seg" id="cmpMode" style="margin:0;width:220px"><button data-v="pct" class="on">% of a typical season</button><button data-v="cm">cm</button></span></div>
+          <span class="seg" id="cmpMode" style="margin:0;width:220px"><button data-v="pct" class="on">% of normal to date</button><button data-v="cm">cm</button></span></div>
         <div class="chart-legend">${items.map(it => `<span><i style="background:${it.color}"></i>${esc(it.d.name)}</span>`).join("")}</div>
         <div id="cmpChart"></div>
-        <div class="note">x-axis = days since each place's season started (1 Oct north, 1 Apr south), so hemispheres line up. "% of a typical season" divides by each place's own normal season total, which makes Hokkaido and Australia comparable.</div>
+        <div class="note">x-axis = days since each place's season started (Oct 1 north, Apr 1 south), so hemispheres line up. "% of normal to date" is the same measure as in each detail panel: 100% (dashed line) = a typical season so far. Lines start once the normal reaches 10 cm, because before that one storm swings the % wildly.</div>
       </div>
       <div>
         <div class="section-title">Typical snowfall by month (same scale)</div>
@@ -851,11 +819,12 @@ async function boot() {
   ]);
   DEST = dj.destinations; DEST.forEach(d => BY_ID[d.id] = d); SNOWDATA = sj; STORIES = stj; delete STORIES._about;
   ZONES = dj.zones || {}; MACROS = dj.macros || {};
-  state.compare = state.compare.filter(x => BY_ID[x.id]); state.trip = state.trip.filter(id => BY_ID[id]);
+  state.compare = state.compare.filter(x => BY_ID[x.id]);
   const gen = sj.generated ? new Date(sj.generated) : null;
   const through = Object.values(sj.destinations).map(s => s.dataThrough).filter(Boolean).sort().at(-1);
   const age = gen ? Math.floor((Date.now() - gen) / 864e5) : null;
-  $("#asof").innerHTML = gen ? `Snow data pulled <b>${gen.toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" })}</b> · through ${through ?? "–"}` : "No snow data yet: run scripts/update_snow.py";
+  $("#asof").innerHTML = gen ? `Snow data through <b>${fmtDate(through)}</b>` : "No snow data yet: run scripts/update_snow.py";
+  if (gen) $("#asof").title = `Last updated ${fmtDate(sj.generated)}`;
   if (age != null && age >= 4) {
     $("#asof").classList.add("stale");
     $("#asof").innerHTML += `<br>⚠ Not updated for ${age} days (it normally updates daily), so figures may be out of date.`;
@@ -868,7 +837,6 @@ async function boot() {
   document.addEventListener("focusout", (e) => { if (e.target.closest?.("[data-info]")) hideTip(); });
   document.addEventListener("click", (e) => { const el = e.target.closest?.("[data-info]"); if (el) { e.stopPropagation(); infoAt(el); } }, true);
   $("#showAll").onclick = () => fitAll(true);
-  document.querySelector(".tray-tabs").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; state.tab = b.dataset.tab; refresh(); });
   $("#modalClose").onclick = closeModal;
   $("#modal").addEventListener("click", (e) => { if (e.target.id === "modal") closeModal(); });
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") { if (!$("#modal").classList.contains("hidden")) closeModal(); else if ($("#sidebar").classList.contains("open")) { $("#sidebar").classList.remove("open"); document.body.classList.remove("sb-open"); } hideTip(); } });

@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Wayward Ski · Ski trips worth the journey</title>
-  <meta name="description" content="Wayward Ski: a world map of ski trips worth the journey, with how each place's season is going, when to go, and tools to compare and plan multi-stop trips." />
+  <meta name="description" content="Wayward Ski: a world map of ski trips worth the journey, with how each place's season is going, when to go, and a side-by-side compare." />
   <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@5.6.0/dist/maplibre-gl.css" />
   <link rel="stylesheet" href="css/app.css" />
 </head>
@@ -35,7 +35,7 @@
           <button data-v="category">Colour by type</button>
           <button data-v="snow">Colour by snow</button>
         </div>
-        <label class="range-label">At least <b id="minPctVal">any</b> of normal snowfall to date
+        <label class="range-label">Minimum % of normal snowfall to date: <b id="minPctVal">any</b>
           <input type="range" id="minPct" min="0" max="150" step="10" value="0" />
         </label>
         <div class="legend" id="legend"></div>
@@ -76,16 +76,13 @@
       <div id="map"></div>
       <div id="zoneLayer"><svg id="zoneLines"></svg></div>
       <button id="toggleSidebar" class="fab" aria-label="Filters">☰ Filters</button>
-      <button id="showAll" class="map-btn" title="Zoom out to show every destination">Show all</button>
+      <button id="showAll" class="map-btn" title="Zoom out to show every destination">World view</button>
     </main>
 
     <aside id="detail" class="hidden" aria-live="polite"></aside>
 
     <footer id="tray" class="hidden">
-      <div class="tray-tabs">
-        <button data-tab="compare" class="active">Compare <span id="cmpCount">0</span>/6</button>
-        <button data-tab="trip">Trip <span id="tripCount">0</span></button>
-      </div>
+      <div class="tray-title">Compare <span id="cmpCount">0</span>/6</div>
       <div id="trayBody"></div>
     </footer>
   </div>

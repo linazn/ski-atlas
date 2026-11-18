@@ -18,7 +18,7 @@ export function toDays(points, totalDays) {
 }
 export function daysBetween(a, b) { return Math.round((new Date(b) - new Date(a)) / 864e5); }
 export function addDays(iso, n) { const d = new Date(iso); d.setUTCDate(d.getUTCDate() + n); return d; }
-const fmtDate = (d) => `${d.getUTCDate()} ${MONTHS[d.getUTCMonth()]}`;
+const fmtDate = (d) => `${MONTHS[d.getUTCMonth()]} ${d.getUTCDate()}`;
 
 function niceMax(v) {
   if (v <= 0) return 10;
@@ -118,26 +118,43 @@ export function monthBars(container, climate, opts = {}) {
   });
 }
 
-/** Compare: one line per destination; x = days since its season start. mode: "cm" | "pct" (of normal season total). */
+/** Normal (mean of past seasons) cumulative snowfall on a given day, interpolated from the weekly samples. */
+function normalOn(snow, day) {
+  const nor = toDays(snow.normalCurve, daysBetween(snow.seasonStart, snow.seasonEnd) + 1);
+  const i = nor.findIndex(p => p.day >= day);
+  if (i <= 0) return nor[Math.max(0, i)]?.v ?? null;
+  const a = nor[i - 1], b = nor[i];
+  return a.v + (b.v - a.v) * (day - a.day) / (b.day - a.day);
+}
+const MIN_NORMAL = 10; // cm: below this the % swings wildly on one storm, so the line starts once the normal reaches it
+
+/** Compare: one line per destination; x = days since its season start.
+ *  mode "pct" = % of normal to date (same measure as the detail panel); "cm" = cumulative snowfall. */
 export function compareLines(container, series, mode) {
   const W = 560, H = 260, m = { l: 40, r: 10, t: 10, b: 24 };
   const ser = series.filter(s => s.snow && s.snow.curve && s.snow.curve.length).map(s => {
     const pts = toDays(s.snow.curve, s.snow.dayOfSeason);
-    const k = mode === "pct" ? (s.snow.normalTotal ? 100 / s.snow.normalTotal : null) : 1;
-    return { ...s, pts: k == null ? [] : pts.map(p => ({ day: p.day, v: p.v * k })) };
+    if (mode !== "pct") return { ...s, pts };
+    if (!s.snow.normalCurve) return { ...s, pts: [] };
+    return { ...s, pts: pts.map(p => { const nv = normalOn(s.snow, p.day); return nv != null && nv >= MIN_NORMAL ? { day: p.day, v: 100 * p.v / nv } : null; }).filter(Boolean) };
   });
   const xMax = Math.max(60, ...ser.map(s => s.pts.length ? s.pts[s.pts.length - 1].day : 0));
-  const yMax = niceMax(Math.max(1, ...ser.flatMap(s => s.pts.map(p => p.v))));
+  const top = Math.max(mode === "pct" ? 120 : 1, ...ser.flatMap(s => s.pts.map(p => p.v)));
+  // % axis in round steps (0, 50, 100, 150…) so the 100% "normal" line sits on a gridline
+  const pStep = top > 300 ? 100 : 50, yMax = mode === "pct" ? Math.ceil(top / pStep) * pStep : niceMax(top);
   const x = (d) => m.l + (d / xMax) * (W - m.l - m.r);
   const y = (v) => H - m.b - (v / yMax) * (H - m.t - m.b);
-  const yt = [0, .25, .5, .75, 1].map(f => f * yMax).map(v => `<line class="grid" x1="${m.l}" x2="${W - m.r}" y1="${y(v)}" y2="${y(v)}"/><text x="${m.l - 4}" y="${y(v) + 3}" text-anchor="end">${Math.round(v)}${mode === "pct" ? "%" : ""}</text>`).join("");
+  const ticks = mode === "pct" ? Array.from({ length: yMax / pStep + 1 }, (_, i) => i * pStep) : [0, .25, .5, .75, 1].map(f => f * yMax);
+  const yt = ticks.map(v => `<line class="grid" x1="${m.l}" x2="${W - m.r}" y1="${y(v)}" y2="${y(v)}"/><text x="${m.l - 4}" y="${y(v) + 3}" text-anchor="end">${Math.round(v)}${mode === "pct" ? "%" : ""}</text>`).join("");
   const xt = [];
   for (let d = 0; d <= xMax; d += 30) xt.push(`<text x="${x(d)}" y="${H - 6}" text-anchor="middle">${d === 0 ? "start" : `day ${d}`}</text>`);
   const lines = ser.map(s => s.pts.length ? `<path d="${path(s.pts, x, y)}" fill="none" stroke="${s.color}" stroke-width="2" stroke-linejoin="round"/>
     <circle cx="${x(s.pts.at(-1).day)}" cy="${y(s.pts.at(-1).v)}" r="4" fill="${s.color}" stroke="#fcfcfb" stroke-width="2"/>` : "").join("");
   container.innerHTML = `
-    <svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Cumulative snowfall this season">
-      ${yt}${xt.join("")}${lines}
+    <svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="${mode === "pct" ? "Snowfall this season as a percentage of normal to date" : "Cumulative snowfall this season"}">
+      ${yt}${xt.join("")}
+      ${mode === "pct" ? `<line x1="${m.l}" x2="${W - m.r}" y1="${y(100)}" y2="${y(100)}" stroke="#52514e" stroke-width="1.2" stroke-dasharray="4 3"/><text x="${W - m.r - 2}" y="${y(100) - 4}" text-anchor="end" style="fill:#52514e">normal</text>` : ""}
+      ${lines}
       <line class="xh" y1="${m.t}" y2="${H - m.b}" stroke="#52514e" visibility="hidden"/>
       <rect class="hit" x="${m.l}" y="0" width="${W - m.l - m.r}" height="${H}" fill="transparent"/>
     </svg>`;

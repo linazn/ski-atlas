@@ -3,8 +3,7 @@
 *Ski trips worth the journey.* Live at https://waywardski.com
 
 Early-stage ski-trip scoping: a world map of destinations you'd centre a trip around,
-with "how is the season going" snow data, month-of-travel filtering, a compare view (up to 6),
-and a simple multi-stop trip builder.
+with "how is the season going" snow data, month-of-travel filtering and a compare view (up to 6).
 
 ## Run locally
 
