@@ -7,7 +7,7 @@ const CAT = {
   touring:  { label: "Touring",  color: "#199e70", desc: "Skin, heli, boat" },
 };
 const RESORT_LEVELS = { all: "All levels / family", advanced: "Known for advanced" };
-const TOUR_TAGS = { daytour: "Day tours", huts: "Hut-to-hut", traverse: "Traverses & crossings", heli: "Heli & cat", boat: "Boat-accessed", expedition: "Expedition" };
+const TOUR_TAGS = { daytour: "Day tours", huts: "Huts", traverse: "Traverses", heli: "Heli & cat", boat: "Boat-accessed", expedition: "Expedition" };
 const SLOTS = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300"];
 const SNOW = [
   { key: "low2", max: 60, color: "#c43c3b", label: "< 60%" },
