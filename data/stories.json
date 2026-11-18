@@ -4,18 +4,645 @@
     "skiing": "Nozawa is a proper mountain above a proper village: about 1,000 m of vertical, from tree runs at the top to long cruisers that end in town. Austrian Hannes Schneider demonstrated skiing here in 1930, and a course still carries his name. Snow arrives from the Sea of Japan in long storm cycles, so January and February bring regular deep days, and the beech glades are the local speciality.\n\nShiga Kogen, an hour away, is a different animal: a high plateau of interlinked areas that hosted 1998 Olympic events, with the most reliable snow in Honshu and a quieter, more domestic feel.",
     "beyond": "Nozawa's 13 free public bathhouses (*soto-yu*) are run by the villagers, and bathing your way down the main street after skiing is the real après. At the Ōgama spring, locals boil vegetables and eggs in water hot enough to cook them. Try *nozawana* pickles, the village's namesake greens, and soba at a family counter.\n\nOn 15 January the Dōsojin Fire Festival, one of Japan's three great fire festivals, has village men defend a wooden shrine against torch-wielding attackers. Near Shiga, Shibu Onsen's lantern-lit ryokan street and the snow monkeys of Jigokudani are an easy half-day.",
     "know": "Stay in a ryokan at least once: dinner and breakfast are included and the bath is on site. Bathhouse etiquette (wash first, no swimsuits, tattoos may need covering) matters more here than in the resorts. The old village is compact and walkable; you won't need a car.",
-    "sources": [{"label": "Nozawa Onsen tourism association", "url": "https://www.nozawakanko.jp/english/"}]
+    "sources": [
+      {
+        "label": "Nozawa Onsen tourism association",
+        "url": "https://www.nozawakanko.jp/english/"
+      }
+    ]
   },
   "tahoe": {
     "skiing": "A dozen resorts ring North America's largest alpine lake, from Palisades (1960 Winter Olympics, the steeps of KT-22) to Heavenly's lake views and Kirkwood's high, steep bowls.\n\nWhat makes Tahoe unusual is how much **backcountry** sits right beside the resorts: Donner Summit, Carson Pass, the Mt Rose highlands and the Desolation Wilderness above Emerald Bay all have deep guidebook coverage and decades of trip reports. Storms come off the Pacific as heavy \"Sierra cement\" that settles fast and stays stable, and spring brings some of the most reliable corn snow in the West, often into May.",
     "beyond": "Truckee's railroad-era downtown, Donner Lake and its pioneer history, Royal Gorge (North America's largest cross-country area), sledding, and the Emerald Bay overlook. Reno is 45 minutes away if you want neon.",
     "know": "Atmospheric rivers can bring 2 m of snow in days, close I-80, and turn the drive into the crux. Check the Sierra Avalanche Center before anything outside the ropes; guide services and avalanche courses run all winter. Weekends are busy, so midweek is noticeably better.",
-    "sources": [{"label": "Sierra Avalanche Center", "url": "https://www.sierraavalanchecenter.org"}, {"label": "Visit Lake Tahoe", "url": "https://www.visitlaketahoe.com"}]
+    "sources": [
+      {
+        "label": "Sierra Avalanche Center",
+        "url": "https://www.sierraavalanchecenter.org"
+      },
+      {
+        "label": "Visit Lake Tahoe",
+        "url": "https://www.visitlaketahoe.com"
+      }
+    ]
   },
   "lyngen": {
     "skiing": "Summit to sea: peaks around 1,500–1,800 m rise straight from the fjords, and most tours end a few steps from salt water. It's a ski-touring destination first (there are no lifts), with descents above the Arctic Circle in open, glaciated terrain. Late winter (March–April) brings stable spring snow and long days. By late May the midnight sun lets you ski at 2 a.m.",
     "beyond": "Northern lights in the dark early season, Sámi reindeer herding culture, orcas and humpbacks off Skjervøy in midwinter, saunas and cold plunges, and Tromsø's Arctic Cathedral on the way in.",
     "know": "There are three ways to do it, from cheapest to priciest. **Camper van or a rented cabin with a car:** most classic tours start from the road along the fjords, so this is the most flexible way to chase the weather, and how many Scandinavians do it. **A lodge with guides:** in the middle, with local knowledge and saunas included. **A sail-and-ski boat:** the top end, more of a tourist experience, using the boat as a floating hut to reach fjords without roads.\n\nNorway's regional avalanche forecast (varsom.no) covers Lyngen. Weather off the coast changes fast, and planning around it is part of the trip.",
-    "sources": [{"label": "Varsom avalanche forecast (NVE)", "url": "https://www.varsom.no/en/"}]
+    "sources": [
+      {
+        "label": "Varsom avalanche forecast (NVE)",
+        "url": "https://www.varsom.no/en/"
+      }
+    ]
+  },
+  "chamonix": {
+    "skiing": "Chamonix isn't one ski area but several, strung along the valley under Mont Blanc: Brévent–Flégère on the sunny side, the Grands Montets above Argentière, Balme–Le Tour at the head of the valley, and Les Houches at the bottom. They aren't linked by lift, so you move between them by bus or train.\n\nThe pistes are fine, but people come for the high-mountain freeride. The **Aiguille du Midi** cable car climbs to 3,842 m and is the start of the **Vallée Blanche**, a long glacier descent that most visitors do with a guide. The Grands Montets is the steep, glaciated freeride hill. The terrain is huge and much of it is serious mountaineering ground, with crevasses, seracs and exposure.",
+    "beyond": "A real mountain town with year-round life: climbing history (the Compagnie des Guides was founded here in 1821), museums, good bars and restaurants, and the Montenvers rack railway to the Mer de Glace. The Mont Blanc tunnel puts Courmayeur and Italian food about 20 minutes away.",
+    "know": "Geneva airport is about an hour away by road. A guest card usually gives free valley buses and trains. The Mont-Blanc Unlimited pass also covers Courmayeur across the tunnel.\n\nThe off-piste here is glaciated: if you don't have glacier skills, hire a guide. Bad weather closes the high lifts often, so build spare days into the trip. Midwinter is cold and shady on the valley floor; spring brings long days and the classic glacier runs.",
+    "sources": [
+      {
+        "label": "Official site",
+        "url": "https://www.chamonix.com"
+      },
+      {
+        "label": "Météo-France mountain bulletin",
+        "url": "https://meteofrance.com/meteo-montagne"
+      }
+    ],
+    "draft": true
+  },
+  "lagrave": {
+    "skiing": "One old cable car, in two sections, takes you to about 3,200 m on the glacier below La Meije. From there it's roughly 2,000 m of vertical back to the village, and almost none of it is groomed or patrolled. Below the top it's all high-mountain terrain: open bowls, couloirs, cliffs and crevasses.\n\nThere are no pistes to fall back on, which is the point. On a good day it's one of the purest lift-served freeride experiences in the world; on a bad one the lift stays shut.",
+    "beyond": "A small, quiet village of stone houses facing the Meije, one of the great peaks of the French Alps. The Écrins National Park surrounds it. For groomed skiing, Serre Chevalier and Les Deux Alpes are close by.",
+    "know": "Treat La Grave as guided terrain unless you have strong avalanche and glacier skills: getting lost here means cliffs or crevasses. Wind closes the cable car regularly, so plan flexible days and have a backup (Serre Chevalier is about 40 minutes away).\n\nAccess is via Grenoble or Briançon. The road over the Col du Lautaret is kept open in winter but can close in storms.",
+    "sources": [
+      {
+        "label": "Official site",
+        "url": "https://www.la-grave.com"
+      },
+      {
+        "label": "Météo-France mountain bulletin",
+        "url": "https://meteofrance.com/meteo-montagne"
+      }
+    ],
+    "draft": true
+  },
+  "3vallees": {
+    "skiing": "The world's largest linked ski area, about 600 km of pistes across three valleys: Courchevel, Méribel, and Les Menuires–Val Thorens, plus Orelle and Saint-Martin-de-Belleville. You can ski valley to valley all day without repeating a run.\n\nVal Thorens, at about 2,300 m, is the highest resort in Europe and the most snow-sure. Courchevel has long, beautifully groomed runs and good tree skiing lower down. Off-piste is extensive between the lifts, but none of it is controlled.",
+    "beyond": "Ranges from very luxurious (Courchevel 1850's hotels and restaurants) to simple, car-free apartment villages. Saint-Martin-de-Belleville is the traditional Savoyard village among the purpose-built resorts.",
+    "know": "Moûtiers is the train station for the valley, with direct TGV and seasonal trains from Paris and further afield. Geneva, Lyon and Chambéry are the airports, all a couple of hours away.\n\nCosts vary a lot by village: Courchevel 1850 is among the most expensive places to ski in the world, while Les Menuires and Saint-Martin are much cheaper on the same lift pass. French school holidays (February in particular) are very busy.",
+    "sources": [
+      {
+        "label": "Official site",
+        "url": "https://www.les3vallees.com"
+      },
+      {
+        "label": "Météo-France mountain bulletin",
+        "url": "https://meteofrance.com/meteo-montagne"
+      }
+    ],
+    "draft": true
+  },
+  "valisere": {
+    "skiing": "Val d'Isère and Tignes share one big, high area of about 300 km, with lifts up to around 3,450 m on the Grande Motte glacier above Tignes. It's one of the most snow-sure places in the Alps, with a season from late November to early May.\n\nPistes range from long cruisers to the Face de Bellevarde, the 1992 Olympic downhill. The off-piste is legendary for its variety and is reachable straight from the lifts, which makes it popular and also involved in accidents every winter.",
+    "beyond": "Val d'Isère is an old village with a lively après scene; Tignes is a set of purpose-built, mostly car-free stations around a lake. Both are self-contained and very ski-focused.",
+    "know": "The nearest train station is Bourg-Saint-Maurice, about 45 minutes away by bus. Geneva, Lyon and Chambéry are the usual airports.\n\nThe off-piste is uncontrolled and the terrain is big: hire a guide or join a group with the local ski schools if you're new to it. Altitude makes it cold in midwinter; spring here is long and reliable.",
+    "sources": [
+      {
+        "label": "Official site",
+        "url": "https://www.valdisere.com"
+      },
+      {
+        "label": "Météo-France mountain bulletin",
+        "url": "https://meteofrance.com/meteo-montagne"
+      }
+    ],
+    "draft": true
+  },
+  "paradiski": {
+    "skiing": "Les Arcs and La Plagne, linked by the Vanoise Express, a double-decker cable car over the valley. Together they have about 425 km of pistes, much of it wide, intermediate and above the trees.\n\nLes Arcs has steeper terrain and a big vertical from the Aiguille Rouge, and Peisey-Vallandry has good tree runs for storm days. La Plagne has two glaciers and lots of easy, sunny cruising.",
+    "beyond": "Mostly purpose-built ski villages designed for families, with ski-in, ski-out apartments. La Plagne keeps its bobsleigh track from the 1992 Olympics, and you can ride it.",
+    "know": "One of the easiest places in the Alps to reach without a car: a funicular runs from the Bourg-Saint-Maurice train station straight up to Arc 1600.\n\nGood value for big families and mixed groups; less so if you want a traditional village. French school holidays (February) are crowded.",
+    "sources": [
+      {
+        "label": "Official site",
+        "url": "https://www.paradiski.com"
+      },
+      {
+        "label": "Météo-France mountain bulletin",
+        "url": "https://meteofrance.com/meteo-montagne"
+      }
+    ],
+    "draft": true
+  },
+  "portesdusoleil": {
+    "skiing": "A cross-border circuit of about 12 resorts between France and Switzerland, with around 600 km of pistes. You can ski a big loop through both countries in a day.\n\nAvoriaz is the highest and most snow-sure part, with good parks; Morzine and Les Gets are lower and wooded; Champéry on the Swiss side has the famous Swiss Wall, a long, steep mogul face. Much of the area sits between about 1,000 and 2,300 m, so low snow and rain are real risks in a warm winter.",
+    "beyond": "Morzine and Châtel are year-round mountain towns with plenty of life. Avoriaz is a car-free village built into the cliff, with sleigh rides and an aquatic centre. Lake Geneva is about an hour away.",
+    "know": "Geneva airport is about 1 to 1.5 hours away, which makes this one of the easiest big areas to reach for a short trip.\n\nCheck the snow before you book, especially in early season or a warm spell: the lower villages can be green while Avoriaz is still good. Weekends bring day-trippers from Geneva.",
+    "sources": [
+      {
+        "label": "Official site",
+        "url": "https://www.portesdusoleil.com"
+      },
+      {
+        "label": "Météo-France mountain bulletin",
+        "url": "https://meteofrance.com/meteo-montagne"
+      }
+    ],
+    "draft": true
+  },
+  "alpedhuez": {
+    "skiing": "A big, sunny, south-facing area of about 250 km, from around 1,100 m up to the Pic Blanc at 3,330 m. The **Sarenne** is one of the longest black runs in the Alps, about 16 km from the top. Off-piste from the Pic Blanc is big and varied.\n\nThe linked satellite villages (Oz, Vaujany, Auris and others) add tree skiing for storm days.",
+    "beyond": "Known for its sunshine and a lively, relaxed resort town. In summer it's the finish of the Tour de France's famous 21-hairpin climb, and you drive up those hairpins to get there.",
+    "know": "About an hour from Grenoble, 2 hours from Lyon. The sunny aspect means good light but also softer, heavier snow on south faces in spring: ski north-facing terrain in the afternoon.\n\nOff-piste is uncontrolled; local guides know where the snow stays good.",
+    "sources": [
+      {
+        "label": "Official site",
+        "url": "https://www.alpedhuez.com"
+      },
+      {
+        "label": "Météo-France mountain bulletin",
+        "url": "https://meteofrance.com/meteo-montagne"
+      }
+    ],
+    "draft": true
+  },
+  "courmayeur": {
+    "skiing": "The Italian side of Mont Blanc. The resort itself is mid-sized, with sunny, tree-lined pistes that are good on storm days. The big draw is the **Skyway Monte Bianco**, a rotating cable car that climbs to Punta Helbronner at about 3,466 m. From there, glaciated freeride runs drop back towards Italy, and the Vallée Blanche descends to Chamonix.\n\nTreat everything off the Skyway as glacier terrain, with crevasses and changeable conditions.",
+    "beyond": "A handsome, very Italian mountain town with excellent food, long lunches on the mountain and good coffee. The Aosta Valley adds Roman ruins and castles. Chamonix is about 20 minutes away through the tunnel.",
+    "know": "Turin and Geneva are both about 1.5–2 hours away. The Mont-Blanc Unlimited pass covers Courmayeur, the Skyway and Chamonix.\n\nThe Skyway closes in strong wind. Hire a guide for the glacier descents unless you have glacier skills and gear. Courmayeur often catches storms from the south that miss the French side, so it's a good backup when Chamonix is dry.",
+    "sources": [
+      {
+        "label": "Official site",
+        "url": "https://www.courmayeur-montblanc.com"
+      },
+      {
+        "label": "AINEVA avalanche bulletins (Italy)",
+        "url": "https://bollettini.aineva.it"
+      }
+    ],
+    "draft": true
+  },
+  "hautroute": {
+    "skiing": "The classic Haute Route links Chamonix and Zermatt over about six to seven days of high, glaciated terrain, staying in mountain huts each night. Most days involve long climbs on skins, some crampon sections and big glacier descents, mostly between about 2,500 and 3,800 m.\n\nIt's a demanding trip: you need solid skiing in all snow conditions, good fitness for several long days in a row, and glacier travel skills. Most people do it with a guide.",
+    "beyond": "Few trips in the Alps match it for scenery: Mont Blanc at one end, the Matterhorn at the other, and a week of high mountain huts in between, each with its own character and a shared dinner.",
+    "know": "The main season is roughly April to mid-May, when days are long and the snowpack is usually more stable. Huts fill up and need booking well ahead.\n\nPlan for weather: storms can pin you in a hut or force a change of plan, so leave spare days at the end. The SLF bulletin covers the Swiss section and Météo-France the French start.",
+    "sources": [
+      {
+        "label": "Swiss Alpine Club huts",
+        "url": "https://www.sac-cas.ch/en/huts-and-tours/"
+      },
+      {
+        "label": "SLF avalanche bulletin (Switzerland)",
+        "url": "https://www.slf.ch/en/avalanche-bulletin-and-snow-situation.html"
+      }
+    ],
+    "draft": true
+  },
+  "granparadiso": {
+    "skiing": "Gran Paradiso, at 4,061 m, is the only 4,000 m peak entirely in Italy and one of the more approachable big ones on skis. It's usually done from a hut over two days, on a long glacier climb with a big descent.\n\nThe summit itself is a short, exposed rock section that you climb without skis. Around it, the valleys offer more touring and a quieter atmosphere than the bigger Alpine centres.",
+    "beyond": "Gran Paradiso National Park, founded in 1922 from a royal hunting reserve, is famous for its ibex and chamois, often seen close to the huts. The valleys are small and traditional, with simple, good food.",
+    "know": "Spring (roughly April to May) is the main season, when the huts are staffed. Book huts ahead; weekends get busy.\n\nThe final ridge is crowded on good days and needs crampons and care. The glacier has crevasses: go with a guide unless your group has glacier skills. Turin and Geneva are the closest airports.",
+    "sources": [
+      {
+        "label": "Italian Alpine Club (CAI)",
+        "url": "https://www.cai.it"
+      },
+      {
+        "label": "AINEVA avalanche bulletins (Italy)",
+        "url": "https://bollettini.aineva.it"
+      }
+    ],
+    "draft": true
+  },
+  "ecrins": {
+    "skiing": "A big, wild, glaciated massif in the southern French Alps, centred on the Barre des Écrins (4,102 m), the southernmost 4,000 m peak in the Alps. Hut-based touring here means long glacier days and high summits, including the Dôme de Neige des Écrins.\n\nIt feels more remote than the northern Alps, with fewer lifts and more empty space.",
+    "beyond": "The Écrins National Park protects most of the massif. Briançon, one of the highest towns in Europe, has old fortifications and good food. La Grave and Serre Chevalier are close for lift-served days.",
+    "know": "Most huts are staffed in spring (roughly March to May) and need booking. Glacier and crevasse skills are essential here, as is a guide unless your team has them.\n\nThe southern location brings more sun, and storms from the south can bring big snowfalls. Météo-France covers the massif in its daily mountain bulletin. Access is via Grenoble, Briançon or Turin.",
+    "sources": [
+      {
+        "label": "Refuges.info (French huts)",
+        "url": "https://www.refuges.info"
+      },
+      {
+        "label": "Météo-France mountain bulletin",
+        "url": "https://meteofrance.com/meteo-montagne"
+      }
+    ],
+    "draft": true
+  },
+  "vanoise": {
+    "skiing": "A multi-day hut traverse through the Vanoise, between Pralognan and the Maurienne and Tarentaise valleys. Days cross glaciers and high passes at about 2,500–3,600 m, with several summits within reach of the huts.\n\nIt's a good alternative to the Chamonix–Zermatt Haute Route: similar high-glacier terrain, usually with fewer people.",
+    "beyond": "The Vanoise was France's first national park (1963) and is a good place to see ibex. Pralognan is a small, traditional village rather than a big resort.",
+    "know": "Best in spring, roughly March to May, when the huts are staffed; book ahead. You need glacier skills or a guide.\n\nThe nearest train stations are Moûtiers and Modane. Weather days are common: leave spare time and have a plan for shortening the trip.",
+    "sources": [
+      {
+        "label": "Refuges.info (French huts)",
+        "url": "https://www.refuges.info"
+      },
+      {
+        "label": "Météo-France mountain bulletin",
+        "url": "https://meteofrance.com/meteo-montagne"
+      }
+    ],
+    "draft": true
+  },
+  "maira": {
+    "skiing": "A long valley in Piedmont with no ski lifts at all, but hundreds of mapped ski tours on peaks of roughly 2,500 to 3,000 m. The terrain is open, varied and mostly moderate, which makes it a favourite for intermediate tourers as well as experienced ones.\n\nYou tour from a village base each day rather than going hut to hut, so you can tailor each day to the conditions.",
+    "beyond": "This is Occitan country, with its own language, music and stone hamlets. The food is a big part of the trip: guesthouses serve long, generous dinners, and Piedmont's wine is close by.",
+    "know": "The season runs roughly from December to April, with the best touring usually in February and March. Snow can be variable because storms come from different directions; check the Piedmont regional bulletin before you go.\n\nTurin and Nice are about 2 hours away; a car is the easiest way to get around. Many guesthouses work with local guides.",
+    "sources": [
+      {
+        "label": "Local tourism office: ski touring",
+        "url": "https://vallemaira.org/en/ski-mountaineering"
+      },
+      {
+        "label": "AINEVA avalanche bulletins (Italy)",
+        "url": "https://bollettini.aineva.it"
+      }
+    ],
+    "draft": true
+  },
+  "verbier": {
+    "skiing": "Verbier is the hub of the 4 Vallées, a linked area of about 400 km that also takes in Nendaz, Veysonnaz, Thyon and La Tzoumaz. The pistes are good, but Verbier's reputation is freeride: steep, varied off-piste is reachable straight from the lifts, from the top of Mont Fort (3,330 m) down.\n\nThe Bec des Rosses face hosts the Xtreme Verbier, the final of the Freeride World Tour. Much of the best terrain is ungroomed 'itinéraire' runs and off-piste, so conditions vary a lot day to day.",
+    "beyond": "A chalet village with a big international crowd and one of the liveliest nightlife scenes in the Alps. Quieter villages around the 4 Vallées are cheaper bases. The Rhône valley below has vineyards and the thermal baths at Saillon and Lavey.",
+    "know": "Le Châble, in the valley, has a train station and a cable car up to Verbier, so you can arrive by train from Geneva (about 2 hours). Verbier is expensive, especially in high season.\n\nThe off-piste is popular, which means tracked out fast after storms and involved in accidents every winter. A local guide finds the good snow and keeps you out of trouble.",
+    "sources": [
+      {
+        "label": "Official site",
+        "url": "https://www.verbier4vallees.ch"
+      },
+      {
+        "label": "SLF avalanche bulletin (Switzerland)",
+        "url": "https://www.slf.ch/en/avalanche-bulletin-and-snow-situation.html"
+      }
+    ],
+    "draft": true
+  },
+  "zermatt": {
+    "skiing": "Three main sectors (Sunnegga–Rothorn, Gornergrat and Matterhorn Glacier Paradise) linked with Cervinia and Valtournenche in Italy, for about 360 km of pistes. The top station at the Klein Matterhorn, around 3,880 m, is the highest lift station in Europe, and its glacier keeps skiing open into summer.\n\nRuns are long and high, with the Matterhorn in view almost everywhere. Off-piste is big and largely glaciated, so it's guided terrain.",
+    "beyond": "A car-free village of old larch chalets, luxury hotels and excellent mountain restaurants. The Gornergrat rack railway is a highlight even for non-skiers. Lunch in Italy is part of the routine.",
+    "know": "You arrive by train: cars stop in Täsch, with a shuttle train for the last stretch. Expect around 3.5 hours by train from Geneva or Zurich.\n\nZermatt is one of the most expensive places to ski. The international pass is needed to ski over to Cervinia. High wind often closes the Italian link and the glacier lifts.",
+    "sources": [
+      {
+        "label": "Official site",
+        "url": "https://www.zermatt.ch"
+      },
+      {
+        "label": "SLF avalanche bulletin (Switzerland)",
+        "url": "https://www.slf.ch/en/avalanche-bulletin-and-snow-situation.html"
+      }
+    ],
+    "draft": true
+  },
+  "saasfee": {
+    "skiing": "A compact, high glacier area surrounded by about a dozen 4,000 m peaks. The Metro Alpin, an underground funicular, climbs to about 3,500 m on the Allalin, so the snow at the top is reliable from autumn to spring.\n\nThe pistes are mostly glacier cruising with huge views. Off-piste is limited by crevasses, and the other areas in the Saas valley (Saas-Grund, Saas-Almagell) add variety.",
+    "beyond": "A car-free village that feels quieter and more down-to-earth than Zermatt. The revolving restaurant at the Allalin top station and the ice pavilion inside the glacier are popular stops.",
+    "know": "Reached by bus from Visp, which has fast trains from Geneva, Bern and Zurich. Glacier lifts close in strong wind, so plan a backup day.\n\nThe glacier is crevassed: stay on marked runs unless you're with a guide. Saas-Fee is usually better value than Zermatt, by Swiss standards.",
+    "sources": [
+      {
+        "label": "Official site",
+        "url": "https://www.saas-fee.ch"
+      },
+      {
+        "label": "SLF avalanche bulletin (Switzerland)",
+        "url": "https://www.slf.ch/en/avalanche-bulletin-and-snow-situation.html"
+      }
+    ],
+    "draft": true
+  },
+  "engelberg": {
+    "skiing": "Titlis rises to about 3,000 m above the village, and from the top there are freeride descents of up to around 2,000 m. The best known are the **Laub**, a big, steep open face, and the long **Galtiberg** run back down to the valley.\n\nThe pistes themselves are modest; Engelberg is a freeride place first. Much of the terrain is above treeline and glaciated near the top.",
+    "beyond": "A small town around a Benedictine monastery, which has its own cheese dairy. There's a strong Scandinavian freeride community, and Lucerne is less than an hour away for a day off the hill.",
+    "know": "About 45 minutes from Lucerne and 1.5 hours from Zurich by train, making it one of the easiest freeride trips to reach.\n\nThe north-facing terrain keeps powder well but is shady and cold in midwinter. Avalanches are common on the big faces after storms: go with a guide if you don't know the terrain, and check the SLF bulletin.",
+    "sources": [
+      {
+        "label": "Official site",
+        "url": "https://www.titlis.ch"
+      },
+      {
+        "label": "SLF avalanche bulletin (Switzerland)",
+        "url": "https://www.slf.ch/en/avalanche-bulletin-and-snow-situation.html"
+      }
+    ],
+    "draft": true
+  },
+  "andermatt": {
+    "skiing": "Andermatt sits at a weather crossroads in the middle of the Swiss Alps, catching storms from both north and south, so it often gets more snow than its neighbours. The Gemsstock (2,961 m) is the main attraction: steep, mostly north-facing terrain with big freeride lines and around 1,500 m of vertical.\n\nOver the Oberalp Pass, the lift system links to Sedrun and Disentis for gentler, sunnier pistes.",
+    "beyond": "An old village on the Gotthard route that has been transformed by a big new resort development, with hotels and a golf course. The Matterhorn Gotthard railway and the Glacier Express pass through.",
+    "know": "Easy to reach by train from Zurich or Lucerne, in about 2 hours. The Gemsstock is serious avalanche terrain with few easy ways down, so go with a guide unless you know it well.\n\nIt's cold and shady in midwinter; the best freeride days often come right after a storm.",
+    "sources": [
+      {
+        "label": "Official site",
+        "url": "https://www.andermatt-sedrun-disentis.ch"
+      },
+      {
+        "label": "SLF avalanche bulletin (Switzerland)",
+        "url": "https://www.slf.ch/en/avalanche-bulletin-and-snow-situation.html"
+      }
+    ],
+    "draft": true
+  },
+  "engadin": {
+    "skiing": "The Engadin is a high, sunny valley with several separate ski areas around St. Moritz and Pontresina. Corviglia is the main resort hill; Corvatsch rises to about 3,300 m and has long runs and a night-skiing evening; Diavolezza has glacier skiing and a long descent across the Morteratsch glacier.\n\nThe valley is dry and cold, so snow stays light, but the snowpack can be thin and weak.",
+    "beyond": "St. Moritz is famously glamorous, with frozen-lake events, the Cresta Run and horse racing on the ice. Pontresina and the smaller villages are quieter. Cross-country skiing on the frozen lakes is superb, and the Bernina railway is a highlight.",
+    "know": "The Rhaetian Railway reaches St. Moritz from Chur; it's about 3.5 hours from Zurich. A car isn't needed: buses and trains link the ski areas.\n\nPrices in St. Moritz are high, but Pontresina and other villages are more reasonable. The dry climate means persistent weak layers are common, so be cautious off-piste.",
+    "sources": [
+      {
+        "label": "Official site",
+        "url": "https://www.engadin.ch"
+      },
+      {
+        "label": "SLF avalanche bulletin (Switzerland)",
+        "url": "https://www.slf.ch/en/avalanche-bulletin-and-snow-situation.html"
+      }
+    ],
+    "draft": true
+  },
+  "davos": {
+    "skiing": "Davos and Klosters share several separate ski mountains: the Parsenn is the largest, with famously long descents to villages down the valley, while Jakobshorn, Rinerhorn, Pischa and Madrisa each have their own character. Together they offer around 300 km of pistes.\n\nThe off-piste is extensive and varied, and the long runs back to the valley make for memorable days.",
+    "beyond": "Davos is a real town, home to the World Economic Forum and the SLF, Switzerland's avalanche research institute. Klosters is a quieter village. Sledging runs, cross-country tracks and the Kirchner Museum fill days off.",
+    "know": "About 2.5 hours from Zurich by train. The mountains are spread out, so you'll use buses and trains between them; a guest card usually includes them.\n\nThe inner-Alpine snowpack can be weak in thin winters. The SLF bulletin, produced right here, is the one to check.",
+    "sources": [
+      {
+        "label": "Official site",
+        "url": "https://www.davos.ch"
+      },
+      {
+        "label": "SLF avalanche bulletin (Switzerland)",
+        "url": "https://www.slf.ch/en/avalanche-bulletin-and-snow-situation.html"
+      }
+    ],
+    "draft": true
+  },
+  "laax": {
+    "skiing": "Laax, Flims and Falera share about 220 km of pistes, rising to the Vorab glacier at around 3,000 m. Laax is famous for freestyle: several big terrain parks and one of the world's largest halfpipes.\n\nBeyond the parks there's plenty of wide piste cruising and good off-piste, including tree runs lower down.",
+    "beyond": "The Caumasee, a turquoise lake in the forest, and the Rhine Gorge (Ruinaulta) are nearby. Laax has a young, design-led feel; Flims is a quieter, older village.",
+    "know": "About 2 hours from Zurich, by train to Chur and then a bus. A good choice for mixed groups where some people want parks and some want cruising.\n\nThe Vorab glacier is exposed to wind. Off-piste is uncontrolled; check the SLF bulletin.",
+    "sources": [
+      {
+        "label": "Official site",
+        "url": "https://www.laax.com"
+      },
+      {
+        "label": "SLF avalanche bulletin (Switzerland)",
+        "url": "https://www.slf.ch/en/avalanche-bulletin-and-snow-situation.html"
+      }
+    ],
+    "draft": true
+  },
+  "jungfrau": {
+    "skiing": "Three ski areas below the Eiger, Mönch and Jungfrau: Grindelwald–First, Kleine Scheidegg–Männlichen (linked to Wengen), and Mürren–Schilthorn. The pistes are long and scenic rather than steep; the scenery is the point.\n\nWengen hosts the Lauberhorn, the longest downhill on the World Cup circuit, and Mürren's Schilthorn hosts the Inferno, a famous amateur race.",
+    "beyond": "Wengen and Mürren are car-free villages reached by train or cable car, with very traditional Swiss character. The railway to the Jungfraujoch, at about 3,450 m, is the classic day out; the Schilthorn's revolving restaurant appeared in a James Bond film.",
+    "know": "Interlaken is the gateway, with trains from Bern, Zurich and Geneva. The Eiger Express gondola cuts the trip up from Grindelwald to the slopes.\n\nThe area is lower than much of Switzerland, so snow can be thin early and late in the season. Expensive, but non-skiers have plenty to do.",
+    "sources": [
+      {
+        "label": "Official site",
+        "url": "https://www.jungfrau.ch"
+      },
+      {
+        "label": "SLF avalanche bulletin (Switzerland)",
+        "url": "https://www.slf.ch/en/avalanche-bulletin-and-snow-situation.html"
+      }
+    ],
+    "draft": true
+  },
+  "monterosa": {
+    "skiing": "Monterosa Ski links three valleys (Alagna, Gressoney and Champoluc) on the Italian side of Monte Rosa. The pistes are pleasant, but Alagna is the attraction for freeriders: a high lift to about 3,275 m opens huge, mostly ungroomed descents.\n\nHeli-skiing is legal in Italy, so heli drops on the Monte Rosa glaciers are an option.",
+    "beyond": "The valleys keep their Walser culture, with wooden houses built by German-speaking settlers centuries ago. The food is excellent and prices are lower than across the border in Switzerland.",
+    "know": "Milan and Turin are about 2 hours away. The freeride terrain at Alagna is big, glaciated and serious: go with a guide.\n\nStorms from the south can bring big snowfalls here when the north side of the Alps is dry. Weekends can be busy with skiers from Milan and Turin.",
+    "sources": [
+      {
+        "label": "Official site",
+        "url": "https://www.monterosaski.com"
+      },
+      {
+        "label": "AINEVA avalanche bulletins (Italy)",
+        "url": "https://bollettini.aineva.it"
+      }
+    ],
+    "draft": true
+  },
+  "bernese": {
+    "skiing": "A multi-day hut tour through the glaciers of the Bernese Oberland. It usually starts by train to the Jungfraujoch at about 3,450 m, then crosses the Aletsch region, the largest glacier system in the Alps, between big huts such as Konkordia, Hollandia and Finsteraarhorn.\n\nThe peaks include the Finsteraarhorn (4,274 m), the highest in the Bernese Alps. The terrain is high, glaciated and remote.",
+    "beyond": "The Aletsch glacier is part of a UNESCO World Heritage site, and the scale of the ice is unlike anywhere else in the Alps. Starting a ski tour from a railway station inside a mountain is part of the appeal.",
+    "know": "The main season is roughly April to May. Book huts well ahead. Glacier travel skills, crampons and ice axe are needed, or a guide.\n\nWeather comes in fast up here, and whiteouts on the big glaciers are serious. Leave spare days and check the SLF bulletin.",
+    "sources": [
+      {
+        "label": "Swiss Alpine Club huts",
+        "url": "https://www.sac-cas.ch/en/huts-and-tours/"
+      },
+      {
+        "label": "SLF avalanche bulletin (Switzerland)",
+        "url": "https://www.slf.ch/en/avalanche-bulletin-and-snow-situation.html"
+      }
+    ],
+    "draft": true
+  },
+  "arlberg": {
+    "skiing": "The Arlberg links St. Anton, St. Christoph, Stuben, Lech, Zürs and Warth-Schröcken into one of the biggest areas in Austria, with around 300 km of runs. It's known for steep, challenging terrain and for its **ski routes**: marked, avalanche-controlled runs that are never groomed, somewhere between a piste and off-piste.\n\nThe off-piste from the Valluga and around Lech and Zürs is huge, varied and among the best lift-served freeride in the Alps.",
+    "beyond": "The Arlberg is where modern ski technique and teaching began, in the early 20th century. St. Anton has one of the liveliest après scenes in the Alps; Lech and Zürs are quieter and more exclusive, with excellent hotels and restaurants.",
+    "know": "St. Anton has its own train station on the main line between Zurich and Innsbruck, about 2.5 hours from Zurich and 1 hour from Innsbruck.\n\nLech limits how many day passes it sells, which keeps it uncrowded. The ski routes aren't patrolled like pistes, and the off-piste is uncontrolled: go with a guide to explore. It's a very snowy area, and avalanche danger can be high after storms.",
+    "sources": [
+      {
+        "label": "Official site",
+        "url": "https://www.skiarlberg.at"
+      },
+      {
+        "label": "Avalanche.report (Tyrol, South Tyrol, Trentino)",
+        "url": "https://avalanche.report"
+      }
+    ],
+    "draft": true
+  },
+  "ischgl": {
+    "skiing": "The Silvretta Arena links Ischgl in Austria with Samnaun in Switzerland, with around 240 km of pistes. Most of the skiing is above about 2,000 m, high and open, so the snow is reliable from late November to the end of April.\n\nThe terrain suits confident intermediates best: long, wide reds and blues with big views. There is good off-piste between the lifts.",
+    "beyond": "Ischgl is famous for its party scene and for the big open-air concerts that open and close the season. Samnaun, on the Swiss side, is duty-free. Galtür, further up the Paznaun valley, is a much quieter base.",
+    "know": "Innsbruck is about 1.5 hours away; Landeck is the nearest train station, with buses up the valley. Ischgl is busy and not cheap, especially in high season.\n\nThe inner-Alpine snowpack can be weak in thin winters, so be careful off-piste, and check the Tyrol avalanche bulletin.",
+    "sources": [
+      {
+        "label": "Official site",
+        "url": "https://www.ischgl.com"
+      },
+      {
+        "label": "Avalanche.report (Tyrol, South Tyrol, Trentino)",
+        "url": "https://avalanche.report"
+      }
+    ],
+    "draft": true
+  },
+  "otztal": {
+    "skiing": "Two very different resorts in one long valley. **Sölden** is big and lively, with two glaciers and three peaks above 3,000 m reachable by lift; it hosts the opening race of the World Cup season each October. **Obergurgl-Hochgurgl**, at about 1,900 m, is high, quiet and snow-sure, with mostly easy and intermediate terrain.\n\nTogether they make the Ötztal one of the most reliable places to ski in Austria.",
+    "beyond": "Sölden is a party town; Obergurgl is calm and family-oriented. The Aqua Dome spa in Längenfeld is a good rest-day stop, and the 007 Elements exhibition sits on the Gaislachkogl summit.",
+    "know": "About 1 hour from Innsbruck by car or bus. Obergurgl and Sölden are on different lift passes, though combined passes exist.\n\nThe glacier terrain makes early and late season possible, but the glaciers close in strong wind. Off-piste is uncontrolled and the snowpack is often weak; check the Tyrol bulletin.",
+    "sources": [
+      {
+        "label": "Official site",
+        "url": "https://www.oetztal.com"
+      },
+      {
+        "label": "Avalanche.report (Tyrol, South Tyrol, Trentino)",
+        "url": "https://avalanche.report"
+      }
+    ],
+    "draft": true
+  },
+  "kitzbuhel": {
+    "skiing": "KitzSki covers around 230 km of pistes on several mountains around Kitzbühel, and the neighbouring SkiWelt Wilder Kaiser–Brixental adds a similar amount. Runs are long, varied and mostly intermediate, with lots of mountain huts.\n\nThe Streif, home of the Hahnenkamm downhill each January, is the most famous race course in the world. The resorts sit fairly low (mostly under 2,000 m), so snowmaking matters and the season can be short in a warm winter.",
+    "beyond": "Kitzbühel is a pretty medieval town with good shops, restaurants and nightlife. The Hahnenkamm race weekend is a huge party.",
+    "know": "Salzburg and Innsbruck are about 1 hour away, Munich about 1.5 hours, and the town has its own train station.\n\nCheck the snow before booking early or late in the season. January race week is busy and expensive.",
+    "sources": [
+      {
+        "label": "Official site",
+        "url": "https://www.kitzski.at"
+      },
+      {
+        "label": "Avalanche.report (Tyrol, South Tyrol, Trentino)",
+        "url": "https://avalanche.report"
+      }
+    ],
+    "draft": true
+  },
+  "zillertal": {
+    "skiing": "The Zillertal is a valley of several linked and separate ski areas covered by one pass, with more than 500 km of pistes in total. **Mayrhofen** has the Penken and the Harakiri, one of the steepest groomed runs in Austria. **Hintertux** has year-round glacier skiing up to about 3,250 m.\n\nThe Zillertal Arena, Hochfügen and Hochzillertal add plenty of variety, from easy cruising to good freeride.",
+    "beyond": "Lively valley towns with lots of après and a steam railway along the valley floor in summer. Innsbruck is close for a city day.",
+    "know": "Jenbach is the main train station, about 1 hour from Innsbruck, with the Zillertalbahn running up the valley. A car or the ski buses link the areas.\n\nThe lower areas can be thin in a warm winter, but Hintertux almost always has snow. Off-piste is uncontrolled; check the Tyrol bulletin.",
+    "sources": [
+      {
+        "label": "Official site",
+        "url": "https://www.zillertal.at"
+      },
+      {
+        "label": "Avalanche.report (Tyrol, South Tyrol, Trentino)",
+        "url": "https://avalanche.report"
+      }
+    ],
+    "draft": true
+  },
+  "saalbach": {
+    "skiing": "The Skicircus links Saalbach, Hinterglemm, Leogang and Fieberbrunn into about 270 km of pistes. You can ski a full circuit around the valley in either direction, which makes it great for intermediate skiers who like covering distance.\n\nFieberbrunn hosts a Freeride World Tour stop and catches more snow than the rest. Saalbach hosted the Alpine World Ski Championships in 2025.",
+    "beyond": "Famous for its après, with busy mountain huts and bars in both villages. Zell am See, with its frozen lake, is close by.",
+    "know": "Salzburg is about 1.5 hours away. The area is mid-altitude, mostly below about 2,100 m, so conditions vary with the winter; snowmaking is extensive.\n\nGood value for a big area, and popular with groups.",
+    "sources": [
+      {
+        "label": "Official site",
+        "url": "https://www.saalbach.com"
+      },
+      {
+        "label": "EAWS (European avalanche services)",
+        "url": "https://www.avalanches.org"
+      }
+    ],
+    "draft": true
+  },
+  "dolomiti": {
+    "skiing": "Dolomiti Superski is one pass covering about 12 valleys and around 1,200 km of pistes, including Val Gardena, Alta Badia, Arabba and Cortina d'Ampezzo. The **Sella Ronda** is the classic: a loop around the Sella massif, skiable in either direction in a day.\n\nThe skiing is mostly groomed and intermediate, among dramatic pale limestone towers. The Marmolada glacier and the long run through the Hidden Valley from Lagazuoi are highlights.",
+    "beyond": "The food is a big part of the trip: mountain huts serve excellent South Tyrolean and Italian cooking, and Alta Badia has several Michelin-starred restaurants. The Ladin culture, the open-air WWI museums along the old front line, and Cortina (an Olympic host in 1956 and 2026) add depth.",
+    "know": "Venice, Verona and Innsbruck are 2 to 3 hours away. A car helps, though buses link the valleys.\n\nNatural snowfall can be thin, but snowmaking is excellent and the pistes are usually in great shape. Off-piste is limited and often steep and rocky: the Dolomites are a groomed-skiing and touring destination more than a freeride one.",
+    "sources": [
+      {
+        "label": "Official site",
+        "url": "https://www.dolomitisuperski.com"
+      },
+      {
+        "label": "Avalanche.report (Tyrol, South Tyrol, Trentino)",
+        "url": "https://avalanche.report"
+      }
+    ],
+    "draft": true
+  },
+  "livigno": {
+    "skiing": "Livigno sits high, at around 1,800 m, in a remote valley near the Swiss border, so it's cold and snow-sure. Two sides of the valley, Mottolino and Carosello, offer about 115 km of mostly wide, open intermediate pistes and some of the best terrain parks in Italy.\n\nLivigno hosted the freestyle and snowboard events of the 2026 Winter Olympics.",
+    "beyond": "Livigno is duty-free, so fuel, alcohol and shopping are cheaper. The town is long and lively. Bormio, with its thermal baths, is close by.",
+    "know": "Remote to reach: about 3 to 3.5 hours from Milan or Zurich, via a toll tunnel from Switzerland or a high pass from Italy that can close in storms.\n\nThe altitude makes it cold in midwinter. Off-piste is uncontrolled; check the regional bulletin.",
+    "sources": [
+      {
+        "label": "Official site",
+        "url": "https://www.livigno.eu"
+      },
+      {
+        "label": "AINEVA avalanche bulletins (Italy)",
+        "url": "https://bollettini.aineva.it"
+      }
+    ],
+    "draft": true
+  },
+  "silvretta": {
+    "skiing": "Gentle, glaciated hut touring on the border between Austria and Switzerland, with lots of peaks around 3,000 m. Big huts such as the Jamtalhütte and Wiesbadener Hütte make good bases, and Piz Buin (3,312 m) is the best-known summit.\n\nThe terrain is friendlier than many high Alpine areas, which makes it a good first hut trip, though the glaciers still need care.",
+    "beyond": "The huts are comfortable by Alpine standards, with good food and a sociable atmosphere. The Rätikon, to the west, adds limestone peaks and the Lünersee.",
+    "know": "The usual starting points are Galtür, in the Paznaun valley, and the Montafon. Huts are staffed in spring (roughly February to May) and need booking, especially at Easter.\n\nGlacier skills or a guide are needed for the higher tours. Check the Tyrol and Vorarlberg avalanche bulletins.",
+    "sources": [
+      {
+        "label": "Alpine club hut booking",
+        "url": "https://www.hut-reservation.org"
+      },
+      {
+        "label": "Avalanche.report (Tyrol, South Tyrol, Trentino)",
+        "url": "https://avalanche.report"
+      }
+    ],
+    "draft": true
+  },
+  "otztalhuts": {
+    "skiing": "High, glaciated hut touring from Vent, a small village at about 1,900 m at the head of the Ötztal. The huts sit high among big glaciers, and the Wildspitze (3,768 m), Austria's second-highest peak, is the classic summit. Days are long, with big glacier crossings.\n\nIt's more serious than the Silvretta or Stubai, with greater distances and altitude.",
+    "beyond": "Ötzi, the 5,000-year-old iceman, was found on a glacier pass near here in 1991. Vent is tiny and quiet, and the Aqua Dome spa down the valley is a good finish.",
+    "know": "Spring (roughly March to May) is the season. Book huts ahead. You need glacier skills, crampons and good fitness, or a guide.\n\nAbout 1.5 hours from Innsbruck. The inner-Alpine snowpack can be weak; check the Tyrol bulletin daily.",
+    "sources": [
+      {
+        "label": "Alpine club hut booking",
+        "url": "https://www.hut-reservation.org"
+      },
+      {
+        "label": "Avalanche.report (Tyrol, South Tyrol, Trentino)",
+        "url": "https://avalanche.report"
+      }
+    ],
+    "draft": true
+  },
+  "stubai": {
+    "skiing": "The Stubai Alps have one of the densest hut networks in Austria, with huts such as the Franz-Senn and Amberger as bases for lots of 3,000 m peaks. You can tour from one hut for several days or link several huts together.\n\nThe Zuckerhütl (3,507 m) is the highest summit. The Stubai Glacier ski area is close by for a warm-up day.",
+    "beyond": "Innsbruck is less than an hour away, so a city day is easy. The huts are traditional and welcoming, and the valley villages are quiet.",
+    "know": "Spring is the main season. Book huts ahead, especially at weekends and Easter.\n\nThe terrain mixes glaciers and steep slopes, so glacier skills or a guide are needed. The Tyrol bulletin covers the area.",
+    "sources": [
+      {
+        "label": "Alpine club hut booking",
+        "url": "https://www.hut-reservation.org"
+      },
+      {
+        "label": "Avalanche.report (Tyrol, South Tyrol, Trentino)",
+        "url": "https://avalanche.report"
+      }
+    ],
+    "draft": true
+  },
+  "ortler": {
+    "skiing": "High, glaciated touring in the Stelvio National Park, around the Ortler and Cevedale groups. Huts such as the Casati sit above 3,200 m, close to big, rounded glacier summits like the Cevedale (3,769 m) and Palon de la Mare (3,703 m). The Ortler itself (3,905 m) is more of a mountaineering objective.\n\nThe altitude keeps the snow good late into spring.",
+    "beyond": "The Stelvio National Park is one of the largest in the Alps. The area was on the front line of the First World War, and traces of it are still visible. Bormio, with its thermal baths, is close.",
+    "know": "Spring (roughly March to May) is the season. You need glacier skills, crampons and acclimatisation for the altitude, or a guide.\n\nAccess is from Santa Caterina Valfurva or Solda. Milan is about 3.5 hours away.",
+    "sources": [
+      {
+        "label": "Italian Alpine Club (CAI)",
+        "url": "https://www.cai.it"
+      },
+      {
+        "label": "Avalanche.report (Tyrol, South Tyrol, Trentino)",
+        "url": "https://avalanche.report"
+      }
+    ],
+    "draft": true
+  },
+  "fanes": {
+    "skiing": "Quieter Dolomites touring through the Fanes-Senes-Braies nature park: high limestone plateaus, gentle valleys and some steeper peaks. Rifugi such as Fanes, Lavarella and Sennes make bases for day tours or a multi-day traverse.\n\nThe terrain is generally moderate, which makes it a good introduction to Dolomites touring, though some peaks are steep and rocky.",
+    "beyond": "The rifugi serve excellent food. The area is full of Ladin legends about the lost Kingdom of Fanes, and the Lago di Braies is on the edge of the park.",
+    "know": "Access is from San Vigilio di Marebbe and the Pederü hut, with snowcat taxis to some rifugi. Rifugi open in winter and spring; book ahead.\n\nThe Dolomites' snowpack is often thin and weak: check the avalanche bulletin carefully.",
+    "sources": [
+      {
+        "label": "Alpine club hut booking",
+        "url": "https://www.hut-reservation.org"
+      },
+      {
+        "label": "Avalanche.report (Tyrol, South Tyrol, Trentino)",
+        "url": "https://avalanche.report"
+      }
+    ],
+    "draft": true
+  },
+  "julianalps": {
+    "skiing": "Slovenia's Julian Alps catch heavy snowfall from the Adriatic and offer limestone karst terrain unlike anywhere else in the Alps. Kanin, above Bovec, has lifts linking to Sella Nevea in Italy and gives access to touring and freeride terrain, though its lifts have had long closures in recent years, so check before you go.\n\nTriglav (2,864 m), Slovenia's highest peak, is a more serious goal.",
+    "beyond": "The Soča valley is famous for its emerald river, and Bovec is a small outdoor town. Ljubljana and Lake Bled are within reach for days off.",
+    "know": "Many mountain huts are closed in winter, so tours are often day trips from the valley. Ljubljana is about 2 hours away; Trieste and Venice are close too.\n\nThe karst terrain hides holes and drops: go with a local guide. Slovenia's avalanche bulletin is published by ARSO.",
+    "sources": [
+      {
+        "label": "Local tourism office: ski touring",
+        "url": "https://www.soca-valley.com/en/in-search-of-adventure/activities/winter-activities/2021020214013271/ski-touring/"
+      },
+      {
+        "label": "ARSO avalanche bulletin (Slovenia)",
+        "url": "https://meteo.arso.gov.si/met/en/app/webmet/"
+      }
+    ],
+    "draft": true
   }
 }

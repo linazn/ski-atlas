@@ -724,6 +724,7 @@ function openStory(id, push = true) {
     <h2>${esc(d.name)}</h2>
     <div class="muted">${esc(d.region)}, ${esc(d.country)}</div>
     <p class="pitch">${esc(d.pitch)}</p>
+    ${st.draft ? `<div class="callout"><b>Draft.</b> Not reviewed yet, and hidden on the live site.</div>` : ""}
     ${d.advisory ? `<div class="callout warn"><b>⚠ Travel advisory.</b> ${esc(d.advisory)}</div>` : ""}
     <h3>The skiing</h3>${richText(st.skiing)}
     <h3>Beyond the skiing</h3>${richText(st.beyond)}
@@ -749,7 +750,8 @@ function closeModal() {
 }
 function routeFromHash() {
   const m = location.hash.match(/^#place\/([\w-]+)$/);
-  if (m && BY_ID[m[1]]) { if (state.selected !== m[1]) openDetail(m[1], true); openStory(m[1], false); }
+  if (m && BY_ID[m[1]] && STORIES[m[1]]) { if (state.selected !== m[1]) openDetail(m[1], true); openStory(m[1], false); }
+  else if (m && BY_ID[m[1]]) { if (state.selected !== m[1]) openDetail(m[1], true); $("#modal").classList.add("hidden"); $("#modal").classList.remove("story-mode"); }
   else if (!$("#modal").classList.contains("hidden") && $("#modal").classList.contains("story-mode")) { $("#modal").classList.add("hidden"); $("#modal").classList.remove("story-mode"); }
 }
 
@@ -818,6 +820,9 @@ async function boot() {
     fetch("data/stories.json").then(r => r.ok ? r.json() : {}).catch(() => ({})),
   ]);
   DEST = dj.destinations; DEST.forEach(d => BY_ID[d.id] = d); SNOWDATA = sj; STORIES = stj; delete STORIES._about;
+  // pages marked "draft" stay hidden on the live site until reviewed; add ?drafts to the URL to see them
+  const showDrafts = new URLSearchParams(location.search).has("drafts");
+  for (const k of Object.keys(STORIES)) if (STORIES[k].draft && !showDrafts) delete STORIES[k];
   ZONES = dj.zones || {}; MACROS = dj.macros || {};
   state.compare = state.compare.filter(x => BY_ID[x.id]);
   const gen = sj.generated ? new Date(sj.generated) : null;
