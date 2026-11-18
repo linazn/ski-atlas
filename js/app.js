@@ -511,7 +511,9 @@ function bindControls() {
   $("#search").addEventListener("input", (e) => { state.search = e.target.value; refresh(); });
   $("#sortBy").addEventListener("change", (e) => { state.sort = e.target.value; refresh(); });
   $("#list").addEventListener("click", (e) => { const li = e.target.closest("li[data-id]"); if (li) openDetail(li.dataset.id, true); });
-  $("#toggleSidebar").addEventListener("click", () => $("#sidebar").classList.toggle("open"));
+  const setSidebar = (open) => { $("#sidebar").classList.toggle("open", open); document.body.classList.toggle("sb-open", open); };
+  $("#toggleSidebar").addEventListener("click", () => setSidebar(!$("#sidebar").classList.contains("open")));
+  for (const id of ["#closeSidebar", "#showMap", "#sbBackdrop"]) $(id).addEventListener("click", () => setSidebar(false));
 }
 
 function renderLegend() {
@@ -530,6 +532,7 @@ function renderList() {
   }[state.sort];
   list.sort(key);
   $("#count").textContent = list.length;
+  $("#countMap").textContent = list.length === 1 ? "1 place" : `${list.length} places`;
   const hidden = DEST.length - list.length;
   $("#hiddenNote").innerHTML = hidden ? `${hidden} of ${DEST.length} hidden by filters · <a href="#" id="resetFilters">show all</a>` : "";
   $("#resetFilters") && ($("#resetFilters").onclick = (e) => {
@@ -564,7 +567,7 @@ function openDetail(id, fly) {
   if (fly) map.flyTo({ center: [d.lon, d.lat], zoom: Math.max(map.getZoom(), d.children ? 7 : 7.5), speed: 1.4, padding: panelPadding() });
   map.getSource("children")?.setData({ type: "FeatureCollection", features: (d.children || []).map(c => ({ type: "Feature", geometry: { type: "Point", coordinates: [c.lon, c.lat] }, properties: { name: c.name } })) });
   map.getSource("sel")?.setData({ type: "Feature", geometry: { type: "Point", coordinates: [d.lon, d.lat] }, properties: {} });
-  $("#sidebar").classList.remove("open");
+  $("#sidebar").classList.remove("open"); document.body.classList.remove("sb-open");
   renderDetail(id);
 }
 // keep the target visible beside (desktop) or above (mobile) the detail panel
@@ -868,7 +871,7 @@ async function boot() {
   document.querySelector(".tray-tabs").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; state.tab = b.dataset.tab; refresh(); });
   $("#modalClose").onclick = closeModal;
   $("#modal").addEventListener("click", (e) => { if (e.target.id === "modal") closeModal(); });
-  document.addEventListener("keydown", (e) => { if (e.key === "Escape") { if (!$("#modal").classList.contains("hidden")) closeModal(); hideTip(); } });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") { if (!$("#modal").classList.contains("hidden")) closeModal(); else if ($("#sidebar").classList.contains("open")) { $("#sidebar").classList.remove("open"); document.body.classList.remove("sb-open"); } hideTip(); } });
   window.addEventListener("popstate", routeFromHash);
   window.addEventListener("hashchange", routeFromHash);
   if (location.hash.startsWith("#place/")) map.once("idle", routeFromHash);

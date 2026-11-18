@@ -12,6 +12,7 @@
   <div id="app">
     <aside id="sidebar">
       <header class="brand">
+        <button id="closeSidebar" class="sb-close" aria-label="Close filters and show the map">×</button>
         <h1>Snowmad</h1>
         <p class="tagline">Ski trips worth the journey</p>
         <p class="muted" id="asof">Loading snow data…</p>
@@ -63,12 +64,14 @@
         <input type="search" id="search" placeholder="Search name, country, region…" />
         <ul id="list" class="dest-list"></ul>
       </section>
+      <button id="showMap" class="show-map">Show <span id="countMap">0</span> on the map</button>
       <footer class="credits">
         Snow data: <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a> (ECMWF IFS, CC BY 4.0) · Map: <a href="https://openfreemap.org" target="_blank" rel="noopener">OpenFreeMap</a>, © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors · Terrain: Mapzen/AWS Terrain Tiles.
         Modelled data for early trip scoping. Always check official avalanche forecasts and local conditions.
       </footer>
     </aside>
 
+    <div id="sbBackdrop" aria-hidden="true"></div>
     <main id="mapWrap">
       <div id="map"></div>
       <div id="zoneLayer"><svg id="zoneLines"></svg></div>
