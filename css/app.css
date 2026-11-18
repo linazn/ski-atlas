@@ -37,9 +37,18 @@ button, select, input { font: inherit; }
 .block h2 { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--text-secondary); margin: 0 0 8px; font-weight: 600; }
 
 .cat-toggles { display: flex; flex-direction: column; gap: 6px; }
-.cat-row { display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; }
-.cat-row .dot { width: 12px; height: 12px; border-radius: 50%; flex: none; }
-.cat-row.off { opacity: .4; }
+.cat-row { display: flex; align-items: center; gap: 8px; font: inherit; font-size: 14px; color: inherit; text-align: left; cursor: pointer;
+  width: calc(100% + 12px); margin: 0 -6px; padding: 3px 6px; border: 0; border-radius: 6px; background: none; }
+.cat-row:hover { background: rgba(16,35,58,.05); }
+.cat-row:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+/* the dot doubles as the checkbox: filled + tick when on, hollow ring when off */
+.cat-row .dot { position: relative; width: 14px; height: 14px; border-radius: 50%; flex: none; box-sizing: border-box;
+  background: var(--c); border: 2px solid var(--c); transition: background .15s; }
+.cat-row .dot::after { content: ""; position: absolute; left: 3px; top: 0.5px; width: 3px; height: 6px;
+  border: solid #fff; border-width: 0 1.6px 1.6px 0; transform: rotate(45deg); }
+.cat-row.off .dot { background: transparent; }
+.cat-row.off .dot::after { display: none; }
+.cat-row.off b, .cat-row.off .muted { color: var(--text-secondary); opacity: .7; }
 .subs { display: flex; flex-wrap: wrap; gap: 4px; margin: 0 0 4px 20px; }
 .chip { border: 1px solid var(--border); background: var(--surface-1); border-radius: 999px; padding: 2px 9px; font-size: 12px; cursor: pointer; color: var(--text-secondary); }
 .chip.on { background: var(--accent); color: #fff; border-color: var(--accent); }

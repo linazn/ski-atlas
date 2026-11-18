@@ -465,7 +465,7 @@ function refresh() {
 // ---------- sidebar ----------
 function renderControls() {
   $("#catToggles").innerHTML = Object.entries(CAT).map(([k, c]) => `
-    <div class="cat-row ${state.cats[k] ? "" : "off"}" data-cat="${k}"><span class="dot" style="background:${c.color}"></span><b>${c.label}</b><span class="muted" style="font-size:12px">${c.desc}</span></div>
+    <button type="button" class="cat-row ${state.cats[k] ? "" : "off"}" data-cat="${k}" aria-pressed="${state.cats[k]}" style="--c:${c.color}"><span class="dot" aria-hidden="true"></span><b>${c.label}</b><span class="muted" style="font-size:12px">${c.desc}</span></button>
     ${k === "resort" ? `<div class="subs">${Object.entries(RESORT_LEVELS).map(([lk, l]) => `<button class="chip ${state.cats.resort && state.levels.includes(lk) ? "on" : ""}" data-level="${lk}">${l}</button>`).join("")}${info("levels")}</div>` : ""}
     ${k === "touring" ? `<div class="subs">${Object.entries(TOUR_TAGS).map(([tk, l]) => `<button class="chip ${state.cats.touring && state.tourTypes.includes(tk) ? "on" : ""}" data-tag="${tk}">${l}</button>`).join("")}${info("tourTags")}</div>` : ""}
   `).join("");
