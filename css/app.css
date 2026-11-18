@@ -56,6 +56,12 @@ button, select, input { font: inherit; }
 .cat-row.off .dot { background: transparent; }
 .cat-row.off .dot::after { display: none; }
 .cat-row.off b, .cat-row.off .muted { color: var(--text-secondary); opacity: .7; }
+/* selected as a whole: tinted row; partly selected (some chips): half-filled dot */
+.cat-row.sel { background: color-mix(in srgb, var(--c) 14%, transparent); }
+.cat-row.sel:hover { background: color-mix(in srgb, var(--c) 20%, transparent); }
+.cat-row.part .dot { background: linear-gradient(90deg, var(--c) 50%, transparent 50%); }
+.cat-row.part .dot::after { display: none; }
+.pick-note { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
 .subs { display: flex; flex-wrap: wrap; gap: 4px; margin: 0 0 4px 20px; }
 .chip { border: 1px solid var(--border); background: var(--surface-1); border-radius: 999px; padding: 2px 9px; font-size: 12px; cursor: pointer; color: var(--text-secondary); }
 .chip.on { background: var(--accent); color: #fff; border-color: var(--accent); }

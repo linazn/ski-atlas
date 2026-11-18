@@ -33,9 +33,10 @@ const AVY_LINKS = {
 // ---------- state ----------
 const saved = JSON.parse(localStorage.getItem("skiatlas") || "{}");
 const state = Object.assign({
-  cats: { resort: true, freeride: true, touring: true },
-  levels: [],         // resort levels to narrow to; empty = all levels
-  tourTypes: [],      // touring types to narrow to; empty = all types
+  picks: [],          // whole categories selected (resort/freeride/touring)
+  levels: [],         // resort levels selected
+  tourTypes: [],      // touring types selected
+                      // nothing selected anywhere = show everything; otherwise show only what's selected
   months: [],         // travel months (multi-select)
   hideOut: false,
   colorBy: "category",
@@ -53,6 +54,9 @@ delete state.trip; delete state.tab; // trip planning removed Nov 2026 (in git h
 if ((state.v || 1) < 3) { state.tourTypes = []; state.v = 3; }
 // v4 (Nov 2026): resort level chips work the same way (none selected = all levels)
 if (state.v < 4) { state.levels = []; state.v = 4; }
+// v5 (Nov 2026): one rule for the whole panel: select categories/types to show only those; start everyone at "everything"
+if (state.v < 5) { state.picks = []; state.levels = []; state.tourTypes = []; state.v = 5; }
+delete state.cats;
 const persist = () => {
   const { selected, ...rest } = state;
   localStorage.setItem("skiatlas", JSON.stringify(rest));
@@ -141,14 +145,19 @@ function seasonStatus(d) {
 
 // ---------- filtering ----------
 /** Resort/freeride pins with big, documented backcountry from the same base (Tahoe, Wasatch…) also count as day tours. */
-const alsoTouring = (d) => d.category !== "touring" && d.tags.includes("daytour") && state.cats.touring && (!state.tourTypes.length || state.tourTypes.includes("daytour"));
-function passes(d) {
-  const own = state.cats[d.category] && !(d.category === "resort" && state.levels.length && !state.levels.includes(d.level));
-  if (!own && !alsoTouring(d)) return false;
+const anyPicked = () => state.picks.length > 0 || state.levels.length > 0 || state.tourTypes.length > 0;
+const alsoTouring = (d) => d.category !== "touring" && d.tags.includes("daytour") && (state.picks.includes("touring") || state.tourTypes.includes("daytour"));
+function picked(d) {
+  if (!anyPicked() || state.picks.includes(d.category) || alsoTouring(d)) return true;
+  if (d.category === "resort") return state.levels.includes(d.level);
   if (d.category === "touring") {
     const tags = d.tags.includes("cat") ? [...d.tags, "heli"] : d.tags;
-    if (state.tourTypes.length && !state.tourTypes.some(t => tags.includes(t))) return false;
+    return state.tourTypes.some(t => tags.includes(t));
   }
+  return false;
+}
+function passes(d) {
+  if (!picked(d)) return false;
   if (state.crowdMax < 5 && d.crowds > state.crowdMax) return false;
   if (state.minPct > 0) { const p = livePct(d); if (p == null || p < state.minPct) return false; }
   if (state.hideOut && outForMonths(d)) return false;
@@ -494,11 +503,16 @@ function refresh() {
 
 // ---------- sidebar ----------
 function renderControls() {
+  const any = anyPicked(), chipKey = { resort: "levels", touring: "tourTypes" };
+  const rowState = (k) => state.picks.includes(k) ? "sel" : chipKey[k] && state[chipKey[k]].length ? "part" : any ? "off" : "";
+  const chips = (k, defs, attr) => `<div class="subs">${Object.entries(defs).map(([v, l]) => { const on = state[chipKey[k]].includes(v);
+    return `<button class="chip ${on ? "on" : ""}" ${attr}="${v}" aria-pressed="${on}">${l}</button>`; }).join("")}${info(k === "resort" ? "levels" : "tourTags")}</div>`;
   $("#catToggles").innerHTML = Object.entries(CAT).map(([k, c]) => `
-    <button type="button" class="cat-row ${state.cats[k] ? "" : "off"}" data-cat="${k}" aria-pressed="${state.cats[k]}" style="--c:${c.color}"><span class="dot" aria-hidden="true"></span><b>${c.label}</b><span class="muted" style="font-size:12px">${c.desc}</span></button>
-    ${k === "resort" ? `<div class="subs">${Object.entries(RESORT_LEVELS).map(([lk, l]) => `<button class="chip ${state.cats.resort && state.levels.includes(lk) ? "on" : ""}" data-level="${lk}" aria-pressed="${state.cats.resort && state.levels.includes(lk)}">${l}</button>`).join("")}${info("levels")}${state.cats.resort && !state.levels.length ? `<span class="muted" style="font-size:11px">All levels shown · tap to narrow</span>` : ""}</div>` : ""}
-    ${k === "touring" ? `<div class="subs">${Object.entries(TOUR_TAGS).map(([tk, l]) => `<button class="chip ${state.cats.touring && state.tourTypes.includes(tk) ? "on" : ""}" data-tag="${tk}" aria-pressed="${state.cats.touring && state.tourTypes.includes(tk)}">${l}</button>`).join("")}${info("tourTags")}${state.cats.touring && !state.tourTypes.length ? `<span class="muted" style="font-size:11px">All types shown · tap to narrow</span>` : ""}</div>` : ""}
-  `).join("");
+    <button type="button" class="cat-row ${rowState(k)}" data-cat="${k}" aria-pressed="${state.picks.includes(k)}" style="--c:${c.color}"><span class="dot" aria-hidden="true"></span><b>${c.label}</b><span class="muted" style="font-size:12px">${c.desc}</span></button>
+    ${k === "resort" ? chips(k, RESORT_LEVELS, "data-level") : ""}
+    ${k === "touring" ? chips(k, TOUR_TAGS, "data-tag") : ""}
+  `).join("") + `<div class="pick-note">${any ? `Showing only what you've selected · <a href="#" id="clearPicks">show everything</a>` : "Showing everything · tap any category or type to show only those"}</div>`;
+  $("#clearPicks") && ($("#clearPicks").onclick = (e) => { e.preventDefault(); state.picks = []; state.levels = []; state.tourTypes = []; renderControls(); refresh(); });
   $("#months").innerHTML = MONTHS.map((m, i) => `<button data-m="${i + 1}" class="${state.months.includes(i + 1) ? "on" : ""}">${m}</button>`).join("") +
     `<button data-m="" class="any ${state.months.length ? "" : "on"}">Any time</button>`;
   $("#hideOut").checked = state.hideOut;
@@ -513,16 +527,17 @@ function bindControls() {
   $("#catToggles").addEventListener("click", (e) => {
     const row = e.target.closest("[data-cat]"), lv = e.target.closest("[data-level]"), tg = e.target.closest("[data-tag]");
     const listKey = { resort: "levels", touring: "tourTypes" };
+    const toggle = (arr, v) => arr.includes(v) ? arr.filter(x => x !== v) : [...arr, v];
     if (lv || tg) {
-      // chips narrow their category to the selected ones; none selected = show all of it
+      // a chip selects just that kind; if its whole category was selected, narrow the category to this chip
       const cat = lv ? "resort" : "touring", key = listKey[cat], v = lv ? lv.dataset.level : tg.dataset.tag;
-      if (!state.cats[cat]) { state.cats[cat] = true; state[key] = [v]; }
-      else state[key] = state[key].includes(v) ? state[key].filter(x => x !== v) : [...state[key], v];
+      if (state.picks.includes(cat)) { state.picks = state.picks.filter(x => x !== cat); state[key] = [v]; }
+      else state[key] = toggle(state[key], v);
     } else if (row) {
-      // the category name toggles the whole category, and turning it on resets its chips to "all"
+      // a category row selects (or deselects) the whole category, replacing any chips within it
       const cat = row.dataset.cat;
-      state.cats[cat] = !state.cats[cat];
-      if (state.cats[cat] && listKey[cat]) state[listKey[cat]] = [];
+      state.picks = toggle(state.picks, cat);
+      if (listKey[cat]) state[listKey[cat]] = [];
     }
     renderControls(); refresh();
   });
@@ -565,7 +580,7 @@ function renderList() {
   $("#hiddenNote").innerHTML = hidden ? `${hidden} of ${DEST.length} hidden by filters · <a href="#" id="resetFilters">show all</a>` : "";
   $("#resetFilters") && ($("#resetFilters").onclick = (e) => {
     e.preventDefault();
-    Object.assign(state, { cats: { resort: true, freeride: true, touring: true }, levels: [], tourTypes: [],
+    Object.assign(state, { picks: [], levels: [], tourTypes: [],
       months: [], hideOut: false, minPct: 0, crowdMax: 5, search: "" });
     $("#search").value = ""; renderControls(); refresh();
   });
