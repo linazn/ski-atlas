@@ -1380,5 +1380,165 @@
     "know": "Kullu airport is small and flights are unreliable; many people drive from Delhi, which takes 12 hours or more.\n\nThe operator manages avalanche risk. Weather can ground the helicopter for days.",
     "sources": [],
     "draft": true
+  },
+  "riksgransen": {
+    "skiing": "Sweden's northernmost ski resort sits right on the Norwegian border, above the Arctic Circle. The lift-served terrain is small, but the open, treeless mountains around it are full of freeride and short tours, and heli-skiing runs from the resort.\n\nThe season starts late (around March) and runs to midsummer. In late May and June, under the midnight sun, the lifts run into the night.",
+    "beyond": "There's not much here besides the hotel and the mountains: it's about the skiing and the light. Narvik, on the Norwegian coast, is about 45 minutes away.",
+    "know": "The train between Kiruna and Narvik stops right at the resort, so you can arrive by rail. Kiruna airport is about 2 hours away; Narvik's airport at Evenes is a similar distance.\n\nWind is the main weather hazard on open terrain. The Swedish avalanche forecast (lavinprognoser.se) covers the area.",
+    "sources": [
+      {
+        "label": "Official site",
+        "url": "https://riksgransen.se"
+      },
+      {
+        "label": "Swedish avalanche forecast (Lavinprognoser)",
+        "url": "https://www.lavinprognoser.se/en"
+      }
+    ],
+    "draft": true
+  },
+  "kebnekaise": {
+    "skiing": "Ski touring around Kebnekaise, Sweden's highest mountain, and along the Kungsleden trail between staffed mountain huts. The terrain is arctic and open, with long, gentle valleys and steeper slopes on the bigger peaks.\n\nIt suits tourers who like long days and wide spaces rather than steep descents.",
+    "beyond": "Abisko is one of the best places in the world to see the northern lights. Dog-sledding and Sámi culture are part of the region's life.",
+    "know": "The night train from Stockholm reaches Abisko and Kiruna. The Swedish Tourist Association (STF) runs the huts and mountain stations; book ahead around Easter.\n\nWeather can be harsh, with strong winds and whiteouts. The Swedish avalanche forecast covers Kebnekaise.",
+    "sources": [
+      {
+        "label": "Swedish Tourist Association (STF) huts",
+        "url": "https://www.svenskaturistforeningen.se/en/"
+      },
+      {
+        "label": "Swedish avalanche forecast (Lavinprognoser)",
+        "url": "https://www.lavinprognoser.se/en"
+      }
+    ],
+    "draft": true
+  },
+  "are": {
+    "skiing": "Åre is the biggest ski resort in Scandinavia, on the slopes of Åreskutan. The runs are varied and well groomed, and the treeless top of the mountain has good off-piste. It hosted the Alpine World Ski Championships in 2007 and 2019.\n\nMidwinter days are short and dark; spring, with longer days, is the best time.",
+    "beyond": "Åre has a lively village with lots of restaurants and après. Cross-country skiing, dog-sledding and ice activities fill rest days.",
+    "know": "Åre Östersund airport is about 1.5 hours away, and the night train from Stockholm stops in the village.\n\nThe top of Åreskutan is exposed to wind and fog. The Swedish avalanche forecast covers the off-piste.",
+    "sources": [
+      {
+        "label": "Official site",
+        "url": "https://www.skistar.com/en/are/"
+      },
+      {
+        "label": "Swedish avalanche forecast (Lavinprognoser)",
+        "url": "https://www.lavinprognoser.se/en"
+      }
+    ],
+    "draft": true
+  },
+  "hemsedal": {
+    "skiing": "Hemsedal is one of Norway's leading resorts, often called the 'Scandinavian Alps'. It has varied terrain, from family slopes to some steep runs, and good off-piste and touring nearby.\n\nSpring is the best time, with longer days and more sun.",
+    "beyond": "A small village with a lively après scene. The area has good cross-country skiing too.",
+    "know": "About 3 hours by road from Oslo. Easter is very busy.\n\nNorway's avalanche forecast (varsom.no) covers the region.",
+    "sources": [
+      {
+        "label": "Official site",
+        "url": "https://www.skistar.com/en/hemsedal/"
+      },
+      {
+        "label": "Varsom avalanche forecast (NVE)",
+        "url": "https://www.varsom.no/en/"
+      }
+    ],
+    "draft": true
+  },
+  "lofoten": {
+    "skiing": "Dramatic peaks rising straight out of the sea, with ski tours from sea level to summit and back. Many trips use boats as a base to reach peaks along the coast.\n\nThe terrain is steep and varied, and the views of the sea and islands are spectacular.",
+    "beyond": "Fishing villages with red cabins (rorbuer) on stilts, cod drying on wooden racks in late winter, and the northern lights.",
+    "know": "Svolvær and Evenes are the nearest airports; there's also a ferry from Bodø. Coastal weather changes fast.\n\nNorway's avalanche forecast covers Lofoten.",
+    "sources": [
+      {
+        "label": "Varsom avalanche forecast (NVE)",
+        "url": "https://www.varsom.no/en/"
+      }
+    ],
+    "draft": true
+  },
+  "senja": {
+    "skiing": "Senja is Norway's second-largest island and a quieter alternative to Lyngen. Steep peaks rise from the fjords and sea, with tours from sea level to summit.\n\nThe terrain is varied and less crowded than the better-known areas.",
+    "beyond": "Small fishing villages, dramatic coastal roads and the northern lights.",
+    "know": "Tromsø and Bardufoss are the nearest airports; a car is essential. Coastal weather changes fast.\n\nNorway's avalanche forecast covers Senja.",
+    "sources": [
+      {
+        "label": "Varsom avalanche forecast (NVE)",
+        "url": "https://www.varsom.no/en/"
+      }
+    ],
+    "draft": true
+  },
+  "narvik": {
+    "skiing": "Narvikfjellet is a lift-served ski area right above the town of Narvik, with steep freeride terrain and views over the Ofotfjord. The descents run down towards the fjord.\n\nIt combines well with Riksgränsen, across the Swedish border.",
+    "beyond": "Narvik has a WWII history museum, and the Ofoten railway to Sweden is one of the most scenic train journeys in Scandinavia.",
+    "know": "Evenes airport is about 1 hour away. In the dark early season, the slopes are floodlit.\n\nNorway's avalanche forecast covers the area.",
+    "sources": [
+      {
+        "label": "Official site",
+        "url": "https://www.narvikfjellet.no"
+      },
+      {
+        "label": "Varsom avalanche forecast (NVE)",
+        "url": "https://www.varsom.no/en/"
+      }
+    ],
+    "draft": true
+  },
+  "sunnmore": {
+    "skiing": "The Sunnmøre Alps rise steeply from the Hjørundfjord and other fjords, with classic tours from fjord to summit. Peaks such as Slogen offer big, dramatic descents with sea views.\n\nThe terrain is steep and varied, and the season runs well into spring.",
+    "beyond": "Historic hotels such as the Hotel Union Øye, and the Art Nouveau town of Ålesund, rebuilt after a fire in 1904.",
+    "know": "Ålesund airport is about 1 hour away. Boats are used to reach some tours. Coastal weather changes fast.\n\nNorway's avalanche forecast covers the area.",
+    "sources": [
+      {
+        "label": "Varsom avalanche forecast (NVE)",
+        "url": "https://www.varsom.no/en/"
+      }
+    ],
+    "draft": true
+  },
+  "romsdal": {
+    "skiing": "Romsdal, around Åndalsnes, is a valley of big walls, steep couloirs and fjord descents. The Troll Wall, the tallest vertical rock face in Europe, is here, and the skiing matches the scale.\n\nThe terrain is steep and serious.",
+    "beyond": "The Romsdal Gondola, the Rauma railway and the village of Åndalsnes.",
+    "know": "Molde airport is about 1 hour away; the Rauma railway arrives from Dombås. Coastal weather changes fast.\n\nNorway's avalanche forecast covers Romsdal.",
+    "sources": [
+      {
+        "label": "Varsom avalanche forecast (NVE)",
+        "url": "https://www.varsom.no/en/"
+      }
+    ],
+    "draft": true
+  },
+  "jotunheimen": {
+    "skiing": "Jotunheimen has Norway's highest mountains, including Galdhøpiggen, the highest peak in Northern Europe, and Glittertind. A network of huts run by the Norwegian Trekking Association (DNT) supports multi-day trips, and lodges such as Juvasshytta and Spiterstulen are bases for glacier day tours.\n\nThe terrain is open and high, and the season runs from Easter into spring.",
+    "beyond": "Easter ski trips are a Norwegian tradition, and the huts are lively then. Lom, nearby, has a medieval stave church.",
+    "know": "About 5 hours by road from Oslo, or by train to Otta. Some huts are staffed at Easter; others are self-service with a DNT key.\n\nGlacier skills or a guide are needed on the glaciers. Norway's avalanche forecast covers the area.",
+    "sources": [
+      {
+        "label": "DNT huts",
+        "url": "https://www.dnt.no"
+      },
+      {
+        "label": "Varsom avalanche forecast (NVE)",
+        "url": "https://www.varsom.no/en/"
+      }
+    ],
+    "draft": true
+  },
+  "sarek": {
+    "skiing": "Sarek National Park is Sweden's wildest mountain area: no huts, no roads, no marked trails, and a lot of glaciated peaks. Trips are a week or more of tent and sled (pulk) touring.\n\nThis is serious winter expedition travel, not a ski resort trip.",
+    "beyond": "Sarek is part of the Laponia World Heritage area, recognised for its nature and for Sámi reindeer-herding culture.",
+    "know": "Kiruna and Gällivare are the nearest airports. You need winter camping, navigation and avalanche skills, or a guide.\n\nWeather can be extreme, with strong winds and long storms. The Swedish avalanche forecast covers the area.",
+    "sources": [
+      {
+        "label": "Official site",
+        "url": "https://laponia.nu/en/"
+      },
+      {
+        "label": "Swedish avalanche forecast (Lavinprognoser)",
+        "url": "https://www.lavinprognoser.se/en"
+      }
+    ],
+    "draft": true
   }
 }
