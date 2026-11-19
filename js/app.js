@@ -180,16 +180,31 @@ function markerColor(d) {
 const kidKind = (c, d) => c.kind || (d.category === "touring" ? "bc" : d.category === "freeride" ? "freeride" : "resort");
 const KID_KINDS = { resort: { label: "Ski area", cat: "resort" }, freeride: { label: "Freeride area", cat: "freeride" }, bc: { label: "Backcountry area / trailhead", cat: "touring" } };
 const kidColor = (c, d) => state.colorBy === "snow" ? markerColor(d) : CAT[KID_KINDS[kidKind(c, d)].cat].color;
+/** Where a sub-area dot is drawn. If it sits almost on top of its main dot at the current zoom (Sun Valley's
+ *  Bald Mountain, say), it is nudged out in screen space so both stay clickable; the dotted link still ties it home. */
+const KID_MIN_PX = 28;
+function kidPlace(d, c, i) {
+  if (!map || !map.getZoom || map.getZoom() < 5) return { pos: [c.lon, c.lat], anchor: "top" };
+  const P = map.project([d.lon, d.lat]), K = map.project([c.lon, c.lat]);
+  let dx = K.x - P.x, dy = K.y - P.y, dist = Math.hypot(dx, dy), pos = [c.lon, c.lat];
+  if (dist < 2) { const a = -Math.PI / 2 + i * 2.4; dx = Math.cos(a); dy = Math.sin(a); dist = 1; } // fan out spokes when they coincide
+  if (dist < KID_MIN_PX) { const q = map.unproject([P.x + dx / dist * KID_MIN_PX, P.y + dy / dist * KID_MIN_PX]); pos = [q.lng, q.lat]; }
+  // label on the far side from the main dot, so it never sits on top of it
+  const anchor = Math.abs(dy) >= Math.abs(dx) ? (dy < 0 ? "bottom" : "top") : (dx < 0 ? "right" : "left");
+  return { pos, anchor };
+}
+const kidPos = (d, c, i) => kidPlace(d, c, i).pos;
+const KID_LABEL_OFFSET = { top: [0, 0.8], bottom: [0, -0.8], left: [0.9, 0], right: [-0.9, 0] };
 function kidFeatures() {
   return { type: "FeatureCollection", features: DEST.filter(passes).flatMap(d => (d.children || []).map((c, i) => ({
-    type: "Feature", geometry: { type: "Point", coordinates: [c.lon, c.lat] },
-    properties: { name: c.name, note: c.note || "", parent: d.id, i, color: kidColor(c, d), dim: outForMonths(d), bc: kidKind(c, d) === "bc" },
+    type: "Feature", geometry: { type: "Point", coordinates: kidPos(d, c, i) },
+    properties: { anchor: kidPlace(d, c, i).anchor, name: c.name, note: c.note || "", parent: d.id, i, color: kidColor(c, d), dim: outForMonths(d), bc: kidKind(c, d) === "bc" },
   }))) };
 }
 /** thin lines tying each sub-area back to its destination, so groups read as groups */
 function kidLinkFeatures() {
-  return { type: "FeatureCollection", features: DEST.filter(passes).flatMap(d => (d.children || []).map(c => ({
-    type: "Feature", geometry: { type: "LineString", coordinates: [[d.lon, d.lat], [c.lon, c.lat]] }, properties: { dim: outForMonths(d) },
+  return { type: "FeatureCollection", features: DEST.filter(passes).flatMap(d => (d.children || []).map((c, i) => ({
+    type: "Feature", geometry: { type: "LineString", coordinates: [[d.lon, d.lat], kidPos(d, c, i)] }, properties: { dim: outForMonths(d) },
   }))) };
 }
 function features() {
@@ -255,8 +270,12 @@ function initMap() {
 
     // every sub-resort / sub-area as its own small dot once zoomed in (Vail, Breckenridge, A-Basin…)
     map.addSource("kidlinks", { type: "geojson", data: kidLinkFeatures() });
+    // light casing under the dashes so they read over hillshade
+    map.addLayer({ id: "kidlinks-casing", type: "line", source: "kidlinks", minzoom: 5, layout: { "line-cap": "round" }, paint: {
+      "line-color": "#fcfcfb", "line-width": ["interpolate", ["linear"], ["zoom"], 5, 3.5, 9, 5], "line-opacity": ["case", ["get", "dim"], 0.2, 0.75],
+    } }, "points");
     map.addLayer({ id: "kidlinks", type: "line", source: "kidlinks", minzoom: 5, paint: {
-      "line-color": "#17395c", "line-width": ["interpolate", ["linear"], ["zoom"], 5, 1.1, 9, 1.6], "line-dasharray": [2, 1.5], "line-opacity": ["case", ["get", "dim"], 0.2, 0.7],
+      "line-color": "#17395c", "line-width": ["interpolate", ["linear"], ["zoom"], 5, 1.8, 9, 2.8], "line-dasharray": [2, 1.2], "line-opacity": ["case", ["get", "dim"], 0.25, 0.9],
     } }, "points");
     map.addSource("kids", { type: "geojson", data: kidFeatures() });
     // every sub-area is a smaller version of a destination dot: filled with its own type colour (or the parent's snow colour), white ring
@@ -266,7 +285,7 @@ function initMap() {
       "circle-opacity": ["case", ["get", "dim"], 0.3, 1], "circle-stroke-opacity": ["case", ["get", "dim"], 0.3, 1],
     } });
     map.addLayer({ id: "kids-labels", type: "symbol", source: "kids", minzoom: 6.3, layout: {
-      "text-field": ["get", "name"], "text-size": 11, "text-font": ["case", ["get", "bc"], ["literal", ["Noto Sans Italic"]], ["literal", ["Noto Sans Regular"]]], "text-offset": [0, 0.8], "text-anchor": "top", "text-optional": true, "text-max-width": 10,
+      "text-field": ["get", "name"], "text-size": 11, "text-font": ["case", ["get", "bc"], ["literal", ["Noto Sans Italic"]], ["literal", ["Noto Sans Regular"]]], "text-offset": ["match", ["get", "anchor"], "bottom", ["literal", KID_LABEL_OFFSET.bottom], "left", ["literal", KID_LABEL_OFFSET.left], "right", ["literal", KID_LABEL_OFFSET.right], ["literal", KID_LABEL_OFFSET.top]], "text-anchor": ["get", "anchor"], "text-optional": true, "text-max-width": 10,
     }, paint: { "text-color": "#52514e", "text-halo-color": "#f5f8fb", "text-halo-width": 1.5, "text-opacity": ["case", ["get", "dim"], 0.4, 1] } });
     map.on("click", "kids", (e) => { const f = e.features[0].properties; openSub(f.parent, +f.i); });
     map.on("mouseenter", "kids", (e) => { map.getCanvas().style.cursor = "pointer"; const f = e.features[0].properties, d = BY_ID[f.parent];
@@ -398,7 +417,7 @@ function layoutZones() {
 }
 
 function setPinLayers(visible) {
-  ["points", "clusters", "cluster-count", "labels", "kids", "kids-labels", "kidlinks"].forEach(id => map.getLayer(id) && map.setLayoutProperty(id, "visibility", visible ? "visible" : "none"));
+  ["points", "clusters", "cluster-count", "labels", "kids", "kids-labels", "kidlinks", "kidlinks-casing"].forEach(id => map.getLayer(id) && map.setLayoutProperty(id, "visibility", visible ? "visible" : "none"));
 }
 
 /** Decide tier for the current zoom and (re)build. Called on zoomend and on filter changes. */
@@ -426,6 +445,7 @@ function renderZones() {
 
 function bindZoneEvents() {
   map.on("zoomend", renderZones);
+  map.on("zoom", refreshKidPositions);
   map.on("move", () => { if (zoneEls.length && !zoneRaf) zoneRaf = requestAnimationFrame(() => { zoneRaf = 0; layoutZones(); }); });
   map.on("resize", renderZones);
   const layer = $("#zoneLayer");
@@ -662,8 +682,21 @@ function openDetail(id, fly) {
   $("#sidebar").classList.remove("open"); document.body.classList.remove("sb-open");
   renderDetail(id);
 }
+let markedGroup = null;
 function markGroup(d, on = -1) {
-  map.getSource("children")?.setData({ type: "FeatureCollection", features: (d.children || []).map((c, i) => ({ type: "Feature", geometry: { type: "Point", coordinates: [c.lon, c.lat] }, properties: { on: i === on } })) });
+  markedGroup = d ? [d, on] : null;
+  map.getSource("children")?.setData({ type: "FeatureCollection", features: (d?.children || []).map((c, i) => ({ type: "Feature", geometry: { type: "Point", coordinates: kidPos(d, c, i) }, properties: { on: i === on } })) });
+}
+/** keep nudged sub-area dots (and their links and rings) in step with the zoom */
+let kidRaf = 0;
+function refreshKidPositions() {
+  if (kidRaf) return;
+  kidRaf = requestAnimationFrame(() => {
+    kidRaf = 0;
+    map.getSource("kids")?.setData(kidFeatures());
+    map.getSource("kidlinks")?.setData(kidLinkFeatures());
+    if (markedGroup) markGroup(...markedGroup);
+  });
 }
 const toursList = (d, filter) => `<ul class="tours">${d.tours.filter(t => !filter || filter(t)).map(t => `<li><b>${esc(t.name)}</b>${t.grade ? ` <span class="muted">· ${esc(t.grade)}</span>` : ""} ${searchLink(tourSearch(t, d), "search")}<div>${esc(t.note)}</div></li>`).join("")}</ul>`;
 /** A lighter card for one area inside a destination (Alta inside the Cottonwoods, Mount Baker inside the Cascade Volcanoes). */
@@ -707,7 +740,7 @@ function panelPadding() {
 function closeDetail() {
   state.selected = null;
   $("#detail").classList.add("hidden");
-  map.getSource("children")?.setData({ type: "FeatureCollection", features: [] });
+  markGroup(null);
   map.getSource("sel")?.setData({ type: "FeatureCollection", features: [] });
 }
 
