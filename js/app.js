@@ -232,6 +232,8 @@ function initMap() {
   });
   window.skiMap = map; // handy for debugging in the console
   map.addControl(new maplibregl.NavigationControl({ visualizePitch: false }), "top-right");
+  // hover previews only where there is a real hover (mouse/trackpad); on touch a tap opens the full panel directly
+  const canHover = matchMedia("(hover: hover) and (pointer: fine)").matches;
   popup = new maplibregl.Popup({ closeButton: false, closeOnClick: false, offset: 10, maxWidth: "280px" });
 
   map.on("style.load", () => {
@@ -288,7 +290,7 @@ function initMap() {
       "text-field": ["get", "name"], "text-size": 11, "text-font": ["case", ["get", "bc"], ["literal", ["Noto Sans Italic"]], ["literal", ["Noto Sans Regular"]]], "text-offset": ["match", ["get", "anchor"], "bottom", ["literal", KID_LABEL_OFFSET.bottom], "left", ["literal", KID_LABEL_OFFSET.left], "right", ["literal", KID_LABEL_OFFSET.right], ["literal", KID_LABEL_OFFSET.top]], "text-anchor": ["get", "anchor"], "text-optional": true, "text-max-width": 10,
     }, paint: { "text-color": "#52514e", "text-halo-color": "#f5f8fb", "text-halo-width": 1.5, "text-opacity": ["case", ["get", "dim"], 0.4, 1] } });
     map.on("click", "kids", (e) => { const f = e.features[0].properties; openSub(f.parent, +f.i); });
-    map.on("mouseenter", "kids", (e) => { map.getCanvas().style.cursor = "pointer"; const f = e.features[0].properties, d = BY_ID[f.parent];
+    map.on("mouseenter", "kids", (e) => { map.getCanvas().style.cursor = "pointer"; if (!canHover) return; const f = e.features[0].properties, d = BY_ID[f.parent];
       popup.setLngLat(e.lngLat).setHTML(`<div class="pop"><h4>${esc(f.name)}</h4><div class="row">${esc(f.note)}</div><div class="row muted">${f.bc ? "Backcountry area · " : ""}Part of ${esc(d.name)} · click for more</div></div>`).addTo(map); });
     map.on("mouseleave", "kids", () => { map.getCanvas().style.cursor = ""; popup.remove(); });
 
@@ -312,6 +314,7 @@ function initMap() {
   map.on("mouseleave", "clusters", () => map.getCanvas().style.cursor = "");
   map.on("mouseenter", "points", (e) => {
     map.getCanvas().style.cursor = "pointer";
+    if (!canHover) return;
     const d = BY_ID[e.features[0].properties.id];
     popup.setLngLat([d.lon, d.lat]).setHTML(popupHTML(d)).addTo(map);
   });
@@ -674,6 +677,7 @@ const hostLabel = (u) => { try { const h = new URL(u).hostname.replace(/^www\./,
 const rawUrl = (d, s) => `https://archive-api.open-meteo.com/v1/archive?latitude=${d.lat}&longitude=${d.lon}&elevation=${d.refElev}&start_date=${s.seasonStart}&end_date=${s.dataThrough}&daily=snowfall_sum,precipitation_sum,temperature_2m_mean,snow_depth_max&models=ecmwf_ifs&timezone=auto`;
 const fcUrl = (d) => `https://api.open-meteo.com/v1/forecast?latitude=${d.lat}&longitude=${d.lon}&elevation=${d.refElev}&daily=snowfall_sum,precipitation_sum,temperature_2m_max,temperature_2m_min&forecast_days=7&timezone=auto`;
 function openDetail(id, fly) {
+  popup?.remove(); // the full panel replaces the hover preview
   state.selected = id;
   const d = BY_ID[id];
   if (fly) map.flyTo({ center: [d.lon, d.lat], zoom: Math.max(map.getZoom(), d.children ? 7 : 7.5), speed: 1.4, padding: panelPadding() });
@@ -701,6 +705,7 @@ function refreshKidPositions() {
 const toursList = (d, filter) => `<ul class="tours">${d.tours.filter(t => !filter || filter(t)).map(t => `<li><b>${esc(t.name)}</b>${t.grade ? ` <span class="muted">· ${esc(t.grade)}</span>` : ""} ${searchLink(tourSearch(t, d), "search")}<div>${esc(t.note)}</div></li>`).join("")}</ul>`;
 /** A lighter card for one area inside a destination (Alta inside the Cottonwoods, Mount Baker inside the Cascade Volcanoes). */
 function openSub(id, i) {
+  popup?.remove(); // the full panel replaces the hover preview
   const d = BY_ID[id], c = d?.children?.[i]; if (!c) return;
   state.selected = id;
   const k = kidKind(c, d), kc = CAT[KID_KINDS[k].cat];
@@ -726,6 +731,7 @@ function openSub(id, i) {
     <div class="callout">Shared with the whole destination: <b>${esc(plainName(d.name))}</b>${s ? ` is at <b>${lp != null ? lp + "% of normal" : esc(st.label)}</b> this season` : ""}, best ${d.best.map(m => MONTHS[m - 1]).join(", ") || "any month"}.
       <div style="margin-top:8px"><button class="btn primary" id="parentCard">Full card for ${esc(plainName(d.name))}</button>${STORIES[id] ? ` <button class="btn" id="readMore">Read more →</button>` : ""}</div></div>
     ${d.children.length > 1 ? `<div class="section-title">Other areas in ${esc(plainName(d.name))}</div><ul class="children">${d.children.map((x, j) => j === i ? "" : `<li data-i="${j}"><span class="dot sm" style="background:${CAT[KID_KINDS[kidKind(x, d)].cat].color}"></span><div><b>${esc(x.name)}</b></div><span class="chev" aria-hidden="true">›</span></li>`).join("")}</ul>` : ""}
+    <div class="fb-line">Spot something off, or know this place well? <button type="button" class="link-btn" data-feedback="${esc(c.name + " (" + plainName(d.name) + ")")}">Send feedback</button></div>
   `;
   $("#detailClose").onclick = closeDetail;
   const back = (e) => { e?.preventDefault(); openDetail(id, true); };
@@ -817,6 +823,7 @@ function renderDetail(id) {
     ${d.children ? `<div class="section-title">Areas &amp; trailheads ${info("areas")}</div>
     <ul class="children">${d.children.map((c, i) => `<li data-i="${i}"><span class="dot sm" style="background:${CAT[KID_KINDS[kidKind(c, d)].cat].color}"></span><div><b>${esc(c.name)}</b>${kidKind(c, d) === "bc" ? ` <span class="bc-tag">backcountry</span>` : ""}<div class="muted" style="font-size:12px">${esc(c.note)}</div></div><span class="chev" aria-hidden="true">›</span></li>`).join("")}</ul>` : ""}
     ${d.tours?.length ? `<div class="section-title">Notable tours ${info("tours")}</div>${toursList(d)}` : ""}
+    <div class="fb-line">Spot something off, or know this place well? <button type="button" class="link-btn" data-feedback="${esc(plainName(d.name))}">Send feedback</button></div>
   `;
   $("#detailClose").onclick = closeDetail;
   $("#addCmp").onclick = () => addCompare(id);
@@ -886,10 +893,25 @@ function openStory(id, push = true) {
     <div class="story-links">${[...links.map(([l, u]) => `<a href="${u}" target="_blank" rel="noopener">${esc(l)} ↗</a>`), searchLink(destSearch(d))].join(" · ")}</div>
     ${st.sources?.length ? `<div class="note">Sources: ${st.sources.map(x => `<a href="${x.url}" target="_blank" rel="noopener">${esc(x.label)}</a>`).join(" · ")}</div>` : ""}
     <div class="note">This page describes what a place is like, not how to ski specific routes. Check current avalanche and travel conditions before you go.</div>
+    <div class="fb-line">Spot something off, or know this place well? <button type="button" class="link-btn" data-feedback="${esc(plainName(d.name))}">Send feedback</button></div>
   </article>`;
   $("#modal").classList.add("story-mode"); $("#modal").classList.remove("hidden");
   $("#modal .modal-card").scrollTop = 0;
   if (push && location.hash !== `#place/${id}`) history.pushState(null, "", `#place/${id}`);
+}
+/** Feedback form (Tally), opened as a pop-up over the page. Its script loads only on the first click. */
+const FEEDBACK_FORM = "LDK2Yv";
+let tallyLoad = null;
+function openFeedback(place = "") {
+  const page = !$("#modal").classList.contains("hidden") && $("#modal").classList.contains("story-mode") ? "read-more"
+    : !$("#detail").classList.contains("hidden") ? "detail" : "map";
+  const hiddenFields = { place, page };
+  const fallback = () => window.open(`https://tally.so/r/${FEEDBACK_FORM}?` + new URLSearchParams(hiddenFields), "_blank", "noopener");
+  tallyLoad ||= new Promise((ok, fail) => {
+    const sc = document.createElement("script"); sc.src = "https://tally.so/widgets/embed.js";
+    sc.onload = ok; sc.onerror = () => { tallyLoad = null; fail(); }; document.head.appendChild(sc);
+  });
+  tallyLoad.then(() => window.Tally ? window.Tally.openPopup(FEEDBACK_FORM, { layout: "modal", width: 460, overlay: true, hiddenFields }) : fallback()).catch(fallback);
 }
 function closeModal() {
   $("#modal").classList.add("hidden"); $("#modal").classList.remove("story-mode");
@@ -989,6 +1011,7 @@ async function boot() {
   document.addEventListener("focusout", (e) => { if (e.target.closest?.("[data-info]")) hideTip(); });
   document.addEventListener("click", (e) => { const el = e.target.closest?.("[data-info]"); if (el) { e.stopPropagation(); infoAt(el); } }, true);
   $("#showAll").onclick = () => fitAll(true);
+  document.addEventListener("click", (e) => { const b = e.target.closest?.("[data-feedback]"); if (b) { e.preventDefault(); openFeedback(b.dataset.feedback); } });
   $("#modalClose").onclick = closeModal;
   $("#modal").addEventListener("click", (e) => { if (e.target.id === "modal") closeModal(); });
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") { if (!$("#modal").classList.contains("hidden")) closeModal(); else if ($("#sidebar").classList.contains("open")) { $("#sidebar").classList.remove("open"); document.body.classList.remove("sb-open"); } hideTip(); } });
