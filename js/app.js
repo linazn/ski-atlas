@@ -100,6 +100,7 @@ const fmtDate = (iso) => { if (!iso) return "–"; const d = new Date(iso.length
 function status(d) {
   const s = snowOf(d);
   const now = new Date(), m = now.getMonth() + 1, iso = now.toISOString().slice(0, 10);
+  if (d.tags.includes("indoor")) return { key: "indoor", live: false, label: "Indoor · snow all year" };
   if (!s) return { key: "nodata", live: false, label: "No snow data yet" };
   if (inSeason(d, m)) return { key: "in", live: true, label: "In season" };
   if (iso < s.seasonStart || iso > s.seasonEnd) return { key: "off", live: false, label: "Off-season" };
@@ -125,6 +126,7 @@ function staleNote(d) {
 const livePct = (d) => status(d).live ? snowOf(d)?.pctNormal ?? null : null;
 function pctText(d) {
   const s = snowOf(d), st = status(d);
+  if (d.tags.includes("indoor")) return "Indoor · snow all year";
   if (!s) return "No snow data yet";
   if (!st.live) return st.key === "over" && s.pctNormal != null ? `Season over · finished at ${s.pctNormal}% of normal` : st.label;
   if (s.pctNormal == null) return s.nSeasons ? "Too early to tell" : "Normal pending";
@@ -497,11 +499,24 @@ function refresh() {
   renderZones();
   renderList();
   renderLegend();
+  renderFilterBar();
   renderTray();
   if (state.selected) renderDetail(state.selected);
 }
 
 // ---------- sidebar ----------
+const FILTER_DEFAULTS = { picks: [], levels: [], tourTypes: [], months: [], hideOut: false, minPct: 0, crowdMax: 5, search: "" };
+const activeFilters = () => state.picks.length + state.levels.length + state.tourTypes.length + state.months.length + (state.hideOut ? 1 : 0) + (state.minPct ? 1 : 0) + (state.crowdMax < 5 ? 1 : 0) + (state.search.trim() ? 1 : 0);
+function clearFilters() {
+  Object.assign(state, structuredClone(FILTER_DEFAULTS));
+  $("#search").value = ""; $("#minPct").value = 0; $("#minPctVal").textContent = "any";
+  renderControls(); refresh();
+}
+function renderFilterBar() {
+  const n = activeFilters();
+  $("#filterCount").textContent = n ? `· ${n} on` : "";
+  $("#clearAll").disabled = !n;
+}
 function renderControls() {
   const any = anyPicked(), chipKey = { resort: "levels", touring: "tourTypes" };
   const rowState = (k) => state.picks.includes(k) ? "sel" : chipKey[k] && state[chipKey[k]].length ? "part" : any ? "off" : "";
@@ -554,8 +569,18 @@ function bindControls() {
   $("#search").addEventListener("input", (e) => { state.search = e.target.value; refresh(); });
   $("#sortBy").addEventListener("change", (e) => { state.sort = e.target.value; refresh(); });
   $("#list").addEventListener("click", (e) => { const li = e.target.closest("li[data-id]"); if (li) openDetail(li.dataset.id, true); });
-  const setSidebar = (open) => { $("#sidebar").classList.toggle("open", open); document.body.classList.toggle("sb-open", open); };
-  $("#toggleSidebar").addEventListener("click", () => setSidebar(!$("#sidebar").classList.contains("open")));
+  $("#clearAll").addEventListener("click", clearFilters);
+  const desktop = () => window.innerWidth > 820;
+  const setSidebar = (open) => {
+    if (desktop()) {
+      document.body.classList.toggle("sb-collapsed", !open); state.sbCollapsed = !open; persist();
+      map?.resize(); renderZones();
+      return;
+    }
+    $("#sidebar").classList.toggle("open", open); document.body.classList.toggle("sb-open", open);
+  };
+  document.body.classList.toggle("sb-collapsed", !!state.sbCollapsed);
+  $("#toggleSidebar").addEventListener("click", () => setSidebar(desktop() ? true : !$("#sidebar").classList.contains("open")));
   for (const id of ["#closeSidebar", "#showMap", "#sbBackdrop"]) $(id).addEventListener("click", () => setSidebar(false));
 }
 
@@ -578,12 +603,7 @@ function renderList() {
   $("#countMap").textContent = list.length === 1 ? "1 place" : `${list.length} places`;
   const hidden = DEST.length - list.length;
   $("#hiddenNote").innerHTML = hidden ? `${hidden} of ${DEST.length} hidden by filters · <a href="#" id="resetFilters">show all</a>` : "";
-  $("#resetFilters") && ($("#resetFilters").onclick = (e) => {
-    e.preventDefault();
-    Object.assign(state, { picks: [], levels: [], tourTypes: [],
-      months: [], hideOut: false, minPct: 0, crowdMax: 5, search: "" });
-    $("#search").value = ""; renderControls(); refresh();
-  });
+  $("#resetFilters") && ($("#resetFilters").onclick = (e) => { e.preventDefault(); clearFilters(); });
   let lastZone = null;
   $("#list").innerHTML = list.map(d => {
     const s = snowOf(d), lp = livePct(d);
@@ -598,9 +618,18 @@ function renderList() {
 }
 
 // ---------- detail ----------
-// Universal links generated from coordinates: piste/lift map (OpenSkiMap, from OpenStreetMap) and nearby live webcams (Windy).
+// Map links generated from coordinates.
+// Piste map: OpenSkiMap (OpenStreetMap pistes and lifts) — only offered where there are lifts, since it is blank elsewhere.
+// Topo map: CalTopo's free worldwide topo with slope-angle shading switched on, for judging terrain anywhere.
 const trailMapUrl = (lat, lon, z = 13) => `https://openskimap.org/#${z}/${lat}/${lon}`;
-const webcamUrl = (lat, lon, z = 11) => `https://www.windy.com/-Webcams/webcams?${lat},${lon},${z}`;
+const topoUrl = (lat, lon, z = 13) => `https://caltopo.com/map.html#ll=${lat},${lon}&z=${z}&b=mbt&a=sf`;
+const hasLifts = (d) => d.category !== "touring" && !d.tags.includes("indoor");
+const mapLinks = (d, short = false) => {
+  if (d.tags.includes("indoor")) return [];
+  const z = d.children ? 11 : 13;
+  return [hasLifts(d) && `<a href="${trailMapUrl(d.lat, d.lon, z)}" target="_blank" rel="noopener">${short ? "piste map" : "piste map"} ↗</a>`,
+    `<a href="${topoUrl(d.lat, d.lon, z)}" target="_blank" rel="noopener">${short ? "topo" : "topo + slope angles"} ↗</a>`].filter(Boolean);
+};
 const hostLabel = (u) => { try { const h = new URL(u).hostname.replace(/^www\./, ""); return h; } catch { return u; } };
 const rawUrl = (d, s) => `https://archive-api.open-meteo.com/v1/archive?latitude=${d.lat}&longitude=${d.lon}&elevation=${d.refElev}&start_date=${s.seasonStart}&end_date=${s.dataThrough}&daily=snowfall_sum,precipitation_sum,temperature_2m_mean,snow_depth_max&models=ecmwf_ifs&timezone=auto`;
 const fcUrl = (d) => `https://api.open-meteo.com/v1/forecast?latitude=${d.lat}&longitude=${d.lon}&elevation=${d.refElev}&daily=snowfall_sum,precipitation_sum,temperature_2m_max,temperature_2m_min&forecast_days=7&timezone=auto`;
@@ -633,20 +662,20 @@ function renderDetail(id) {
   const el = $("#detail");
   el.classList.remove("hidden");
   el.innerHTML = `
-    <button class="close" id="detailClose" aria-label="Close">×</button>
+    <div class="sticky-close"><button class="close" id="detailClose" aria-label="Close">×</button></div>
     <div class="d-type"><span class="dot" style="background:${CAT[d.category].color}"></span>${CAT[d.category].label}${subLabel(d) ? " · " + esc(subLabel(d)) : ""}${d.tags.includes("volcano") ? " · Volcano" : ""}${d.tags.includes("spring") ? " · Spring" : ""}${d.tags.includes("park") ? " · Park" : ""}</div>
     <h3>${esc(d.name)}</h3>
     <div class="muted" style="font-size:13px">${esc(d.region)}, ${esc(d.country)}</div>
     <p class="pitch">${esc(d.pitch)}</p>
     ${d.advisory ? `<div class="callout warn"><b>⚠ Travel advisory.</b> ${esc(d.advisory)}</div>` : ""}
-    ${d.tags.includes("novelty") ? `<div class="callout"><b>Go for the place.</b> The location is the draw more than the skiing: expect a small area, a short or unreliable season, and weather that can cancel plans. Have a non-ski backup and treat good snow as a bonus.</div>` : ""}
+    ${d.tags.includes("indoor") ? `<div class="callout"><b>Indoor slope.</b> Real snow under a roof, kept below freezing all year. It's a novelty stop rather than a ski trip: a few short runs, rental gear included, and a fun way to ski somewhere hot.</div>` : d.tags.includes("novelty") ? `<div class="callout"><b>Go for the place.</b> The location is the draw more than the skiing: expect a small area, a short or unreliable season, and weather that can cancel plans. Have a non-ski backup and treat good snow as a bonus.</div>` : ""}
     <div class="actions">
       <button class="btn primary" id="addCmp" ${inCmp || state.compare.length >= 6 ? "disabled" : ""}>${inCmp ? "In compare ✓" : "+ Compare"}</button>
       <button class="btn" id="zoomTo">Zoom to</button>
       ${STORIES[id] ? `<button class="btn" id="readMore">Read more →</button>` : ""}
     </div>
 
-    <div class="section-title">This season · ${s?.season ?? ""}</div>
+    <div class="section-title">${d.tags.includes("indoor") ? "Snow" : `This season · ${s?.season ?? ""}`}</div>
     ${staleNote(d) ? `<div class="callout"><b>Out of date.</b> ${staleNote(d)}</div>` : ""}
     <div class="snowcard">
       ${s ? `
@@ -665,35 +694,36 @@ function renderDetail(id) {
       </div>
       <div id="seasonChart" style="margin-top:10px"></div>
       <div class="note">Modelled snowfall (ECMWF 9 km via Open-Meteo) at ~${d.refElev} m. Data through ${fmtDate(s.dataThrough)}. Raw data: <a href="${rawUrl(d, s)}" target="_blank" rel="noopener">this season, daily ↗</a> · <a href="${fcUrl(d)}" target="_blank" rel="noopener">forecast ↗</a>. A 9 km model under-reads resort-reported totals, especially in Japan and coastal ranges, so trust the % and rank more than the cm.</div>`
+      : d.tags.includes("indoor") ? `<p class="note">Indoor: the snow is made inside and kept below freezing, so there's no season to track. Open every day of the year.</p>`
       : `<p class="note">No snow data yet for this destination.</p>`}
     </div>
 
     <div class="section-title">When to go ${info("whenToGo")}</div>
     <div class="season-bar">${MONTHS.map((m, i) => `<div class="${isBest(d, i + 1) ? "best" : inSeason(d, i + 1) ? "in" : ""} ${state.months.includes(i + 1) ? "sel" : ""}">${m[0]}</div>`).join("")}</div>
-    <div class="note" style="margin-top:4px">Light = in season · dark = best months</div>
+    <div class="note" style="margin-top:4px">${d.tags.includes("indoor") ? "Open all year" : "Blue = in season · dark = best months · grey = off season"}</div>
 
-    <div class="section-title">Typical weather by month ${info("weather")}</div>
+    ${d.tags.includes("indoor") ? "" : `<div class="section-title">Typical weather by month ${info("weather")}</div>
     <div id="monthBars"></div>
-    <div class="note">Average modelled snowfall (cm, bars) and mean temperature (°C), past ${s?.nSeasons ?? "–"} seasons. Hover for sunshine, wind and variability.${relLabel ? ` Season totals are <b>${relLabel}</b>.` : ""}${d.weather ? " " + esc(d.weather) : ""}</div>
+    <div class="note">Average modelled snowfall (cm, bars) and mean temperature (°C), past ${s?.nSeasons ?? "–"} seasons. Hover for sunshine, wind and variability.${relLabel ? ` Season totals are <b>${relLabel}</b>.` : ""}${d.weather ? " " + esc(d.weather) : ""}</div>`}
 
     <div class="section-title">Essentials</div>
     <dl class="facts">
       <dt>Crowds ${info("crowds")}</dt><dd>${meter(d.crowds)} ${d.crowdNote ? `<div class="note" style="margin-top:2px">${esc(d.crowdNote)}</div>` : ""}</dd>
       <dt>Cost ${info("cost")}</dt><dd>${meter(d.cost, 5)}</dd>
       <dt>Guide ${info("guide")}</dt><dd>${esc(d.guide)}</dd>
-      <dt>Elevation ${info("elevation")}</dt><dd>${d.elev[0]}–${d.elev[1]} m (${d.elev[1] - d.elev[0]} m vertical)</dd>
+      <dt>${d.slope ? "Slopes" : `Elevation ${info("elevation")}`}</dt><dd>${d.slope ? esc(d.slope) : `${d.elev[0]}–${d.elev[1]} m (${d.elev[1] - d.elev[0]} m vertical)`}</dd>
       <dt>Snowpack ${info("snowpack")}</dt><dd>${esc(d.snowpack)}</dd>
-      <dt>Avalanche ${info("avalanche")}</dt><dd>${esc(d.avalanche)}${avy ? `<div class="note" style="margin-top:2px">Live bulletin: <a href="${avy[1]}" target="_blank" rel="noopener">${avy[0]} ↗</a></div>` : `<div class="note" style="margin-top:2px">No official public forecast service: rely on guides.</div>`}</dd>
+      <dt>Avalanche ${info("avalanche")}</dt><dd>${esc(d.avalanche)}${avy ? `<div class="note" style="margin-top:2px">Live bulletin: <a href="${avy[1]}" target="_blank" rel="noopener">${avy[0]} ↗</a></div>` : d.tags.includes("indoor") ? "" : `<div class="note" style="margin-top:2px">No official public forecast service: rely on guides.</div>`}</dd>
       ${d.pass.length ? `<dt>Pass ${info("pass")}</dt><dd>${d.pass.join(", ")} <span class="muted">(verify)</span></dd>` : ""}
       <dt>Getting there</dt><dd>${esc(d.airport)}</dd>
-      <dt>Look around ${info("lookAround")}</dt><dd><a href="${trailMapUrl(d.lat, d.lon, d.children ? 11 : 13)}" target="_blank" rel="noopener">${d.category === "touring" ? "ski map" : "trail map"} ↗</a> · <a href="${webcamUrl(d.lat, d.lon)}" target="_blank" rel="noopener">webcams ↗</a></dd>
+      ${mapLinks(d).length ? `<dt>Maps ${info("lookAround")}</dt><dd>${mapLinks(d).join(" · ")}</dd>` : ""}
       ${d.links?.permits ? `<dt>Permits ${info("permits")}</dt><dd><a href="${d.links.permits.url}" target="_blank" rel="noopener">${esc(d.links.permits.label)} ↗</a></dd>` : ""}
       ${d.links?.website ? `<dt>Website</dt><dd><a href="${d.links.website}" target="_blank" rel="noopener">${hostLabel(d.links.website)} ↗</a></dd>` : ""}
       ${d.links?.huts ? `<dt>Huts ${info("huts")}</dt><dd><a href="${d.links.huts}" target="_blank" rel="noopener">${hostLabel(d.links.huts)} ↗</a></dd>` : ""}
     </dl>
 
     ${d.children ? `<div class="section-title">Areas in this destination</div>
-    <ul class="children">${d.children.map((c, i) => `<li data-i="${i}"><b>${esc(c.name)}</b>${c.kind === "bc" ? ` <span class="bc-tag">backcountry</span>` : ""}<span class="kid-link">${c.url ? `<a href="${c.url}" target="_blank" rel="noopener" title="${hostLabel(c.url)}">website ↗</a> · ` : ""}<a href="${trailMapUrl(c.lat, c.lon)}" target="_blank" rel="noopener">trail map ↗</a></span><div class="muted" style="font-size:12px">${esc(c.note)}</div></li>`).join("")}</ul>` : ""}
+    <ul class="children">${d.children.map((c, i) => `<li data-i="${i}"><b>${esc(c.name)}</b>${c.kind === "bc" ? ` <span class="bc-tag">backcountry</span>` : ""}<span class="kid-link">${c.url ? `<a href="${c.url}" target="_blank" rel="noopener" title="${hostLabel(c.url)}">website ↗</a> · ` : ""}${c.kind === "bc" ? `<a href="${topoUrl(c.lat, c.lon)}" target="_blank" rel="noopener">topo ↗</a>` : `<a href="${trailMapUrl(c.lat, c.lon)}" target="_blank" rel="noopener">piste map ↗</a>`}</span><div class="muted" style="font-size:12px">${esc(c.note)}</div></li>`).join("")}</ul>` : ""}
   `;
   $("#detailClose").onclick = closeDetail;
   $("#addCmp").onclick = () => addCompare(id);
@@ -701,7 +731,7 @@ function renderDetail(id) {
   $("#zoomTo").onclick = () => map.flyTo({ center: [d.lon, d.lat], zoom: d.children ? 8 : 9.5, padding: panelPadding() });
   el.querySelectorAll(".children li").forEach(li => li.onclick = (e) => { if (e.target.closest("a")) return; const c = d.children[+li.dataset.i]; map.flyTo({ center: [c.lon, c.lat], zoom: 11, padding: panelPadding() }); });
   if (s) seasonChart($("#seasonChart"), s, "#0b0b0b");
-  monthBars($("#monthBars"), s?.climate, { months: state.months, best: d.best });
+  if ($("#monthBars")) monthBars($("#monthBars"), s?.climate, { months: state.months, best: d.best });
 }
 
 // ---------- compare ----------
@@ -731,7 +761,7 @@ function renderTray() {
 const richText = (t) => esc(t).split(/\n\s*\n/).map(p => `<p>${p.replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/\*(.+?)\*/g, "<i>$1</i>")}</p>`).join("");
 function openStory(id, push = true) {
   const d = BY_ID[id], st = STORIES[id]; if (!d || !st) return;
-  const mo = (m) => m.map(x => MONTHS[x - 1]).join(", ");
+  const mo = (m) => m.length ? m.map(x => MONTHS[x - 1]).join(", ") : "any month";
   const avy = d.links?.avalanche || AVY_LINKS[d.country]?.[1];
   const links = [d.links?.website && [hostLabel(d.links.website), d.links.website], avy && ["Avalanche forecast", avy],
     d.links?.permits && [d.links.permits.label, d.links.permits.url], d.links?.huts && ["Huts", d.links.huts]].filter(Boolean);
@@ -746,7 +776,7 @@ function openStory(id, push = true) {
     <h3>Beyond the skiing</h3>${richText(st.beyond)}
     <h3>Good to know</h3>${richText(st.know)}
     <dl class="facts">
-      <dt>Season</dt><dd>${MONTHS[d.season[0] - 1]}–${MONTHS[d.season[1] - 1]} · best ${mo(d.best)}</dd>
+      <dt>Season</dt><dd>${d.tags.includes("indoor") ? "All year, indoors" : `${MONTHS[d.season[0] - 1]}–${MONTHS[d.season[1] - 1]} · best ${mo(d.best)}`}</dd>
       <dt>Cost ${info("cost")}</dt><dd>${meter(d.cost, 5)}</dd>
       <dt>Crowds ${info("crowds")}</dt><dd>${meter(d.crowds, 5)}</dd>
       <dt>Guide ${info("guide")}</dt><dd>${esc(d.guide)}</dd>
@@ -775,7 +805,7 @@ function openCompare() {
   const items = state.compare.map(x => ({ d: BY_ID[x.id], s: snowOf(BY_ID[x.id]), color: SLOTS[x.slot] }));
   let mode = "pct";
   const m = state.months[0] || null;
-  const monthOf = (it) => state.months.find(x => inSeason(it.d, x)) || m || it.d.best[0];
+  const monthOf = (it) => state.months.find(x => inSeason(it.d, x)) || m || it.d.best[0] || 1;
   const clim = (it) => it.s?.climate?.[monthOf(it)];
   const yMax = Math.max(1, ...items.flatMap(it => Object.values(it.s?.climate || {}).map(c => c.snow)));
   const row = (label, f) => `<tr><th>${label}</th>${items.map(it => `<td>${f(it)}</td>`).join("")}</tr>`;
@@ -806,10 +836,10 @@ function openCompare() {
         ${row(`Next 7 days ${info("next7")}`, it => it.s?.next7 != null ? `${it.s.next7} cm` : "–")}
         ${row(`Typical season total ${info("normalTotal")}`, it => it.s?.normalTotal != null ? `${it.s.normalTotal} cm <span class="muted">(modelled)</span>` : "–")}
         ${row(`Year-to-year swing ${info("swing")}`, it => it.s?.reliabilityCV != null ? `±${Math.round(it.s.reliabilityCV * 100)}%` : "–")}
-        ${row(`Season / best ${info("whenToGo")}`, it => `${MONTHS[it.d.season[0] - 1]}–${MONTHS[it.d.season[1] - 1]} / <b>${it.d.best.map(b => MONTHS[b - 1]).join(", ")}</b>`)}
+        ${row(`Season / best ${info("whenToGo")}`, it => `${MONTHS[it.d.season[0] - 1]}–${MONTHS[it.d.season[1] - 1]} / <b>${it.d.best.map(b => MONTHS[b - 1]).join(", ") || "any month"}</b>`)}
         ${row((m ? `In ${monthsLabel()}` : "Timing fit") + " " + info("timing"), it => { const ft = fitText(it.d); return ft ? `<span class="${ft.cls}">● ${ft.text}</span>` : "<span class='muted'>pick months</span>"; })}
         ${row(`Weather in ${m ? "your months" : "best month"} ${info("weather")}`, it => { const c = clim(it); return c ? `${c.temp}°C · ${c.sun} h sun/day · ${c.snow} cm snow · wind ${c.wind} km/h <span class="muted">(${MONTHS[monthOf(it) - 1]})</span>` : "–"; })}
-        ${row(`Elevation ${info("elevation")}`, it => `${it.d.elev[0]}–${it.d.elev[1]} m<br><span class="muted">${it.d.elev[1] - it.d.elev[0]} m vertical</span>`)}
+        ${row(`Elevation ${info("elevation")}`, it => it.d.slope ? esc(it.d.slope) : `${it.d.elev[0]}–${it.d.elev[1]} m<br><span class="muted">${it.d.elev[1] - it.d.elev[0]} m vertical</span>`)}
         ${row(`Snowpack ${info("snowpack")}`, it => esc(it.d.snowpack))}
         ${row(`Crowds ${info("crowds")}`, it => `${meter(it.d.crowds)}${it.d.crowdNote ? `<div class="note">${esc(it.d.crowdNote)}</div>` : ""}`)}
         ${row(`Cost ${info("cost")}`, it => meter(it.d.cost, 5))}
@@ -817,7 +847,7 @@ function openCompare() {
         ${row(`Pass ${info("pass")}`, it => it.d.pass.join(", ") || "–")}
         ${items.some(it => it.d.advisory) ? row("Travel advisory", it => it.d.advisory ? `<span style="color:#a3341f">⚠ ${esc(it.d.advisory)}</span>` : "–") : ""}
         ${row("Getting there", it => esc(it.d.airport))}
-        ${row("Links", it => [it.d.links?.website && `<a href="${it.d.links.website}" target="_blank" rel="noopener">website ↗</a>`, `<a href="${trailMapUrl(it.d.lat, it.d.lon, it.d.children ? 11 : 13)}" target="_blank" rel="noopener">map ↗</a>`, `<a href="${webcamUrl(it.d.lat, it.d.lon)}" target="_blank" rel="noopener">webcams ↗</a>`, it.d.links?.permits && `<a href="${it.d.links.permits.url}" target="_blank" rel="noopener">permits ↗</a>`, (it.d.links?.avalanche || AVY_LINKS[it.d.country]) && `<a href="${it.d.links?.avalanche || AVY_LINKS[it.d.country][1]}" target="_blank" rel="noopener">avalanche ↗</a>`, it.d.links?.huts && `<a href="${it.d.links.huts}" target="_blank" rel="noopener">huts ↗</a>`].filter(Boolean).join(" · ") || "–")}
+        ${row("Links", it => [it.d.links?.website && `<a href="${it.d.links.website}" target="_blank" rel="noopener">website ↗</a>`, ...mapLinks(it.d, true), it.d.links?.permits && `<a href="${it.d.links.permits.url}" target="_blank" rel="noopener">permits ↗</a>`, (it.d.links?.avalanche || AVY_LINKS[it.d.country]) && `<a href="${it.d.links?.avalanche || AVY_LINKS[it.d.country][1]}" target="_blank" rel="noopener">avalanche ↗</a>`, it.d.links?.huts && `<a href="${it.d.links.huts}" target="_blank" rel="noopener">huts ↗</a>`].filter(Boolean).join(" · ") || "–")}
         ${row(`Avalanche ${info("avalanche")}`, it => `<span class="muted">${esc(it.d.avalanche)}</span>`)}
       </tbody>
     </table>`;

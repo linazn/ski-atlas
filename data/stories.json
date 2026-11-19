@@ -2318,5 +2318,38 @@
     "beyond": "Kamchatka has hot springs, geysers and brown bears. The Valley of Geysers is one of the largest geyser fields in the world.",
     "know": "Check your government's travel advice: many Western governments advise against all travel to Russia, and bank cards issued abroad don't work there.\n\nPetropavlovsk-Kamchatsky is the nearest airport. Heli-skiing is weather-dependent, so allow for down days.\n\nTrips are usually sold as a week, run by a few operators. Old Soviet helicopters are often used. Spring (March to May) brings longer days and more stable snow.",
     "sources": []
+  },
+  "skidubai": {
+    "skiing": "Ski Dubai opened in 2005 inside the Mall of the Emirates, and it's still the most famous indoor slope in the world. Behind a glass wall next to the shops, a sloping hall of real snow holds five runs, the longest about 400 m with a drop of about 60 m, served by a chairlift and a tow. There's a small terrain park, and a snow park for tobogganing and snowball fights.\n\nIt's a novelty, not a ski trip: a couple of hours is plenty for most skiers. But skiing laps while it's 40 °C outside is a strange and memorable experience, and it's a good place to learn.",
+    "beyond": "The penguins are the other star: a colony lives in the snow hall, and you can book an encounter. Outside, Dubai has the Burj Khalifa, the old souks along Dubai Creek, desert drives and the beach, all within a short taxi ride.",
+    "know": "Dubai airport is about 25 minutes away by taxi or metro; the mall has its own metro station. Tickets are sold in time slots, and jackets, boots, skis or boards are included; bring gloves and a hat, or buy them there.\n\nWeekday mornings are quietest. It's a good stopover on a long-haul flight through Dubai.",
+    "sources": [
+      {
+        "label": "Official site",
+        "url": "https://www.skidxb.com/en-ae/ski-dubai"
+      }
+    ]
+  },
+  "skiegypt": {
+    "skiing": "Ski Egypt, inside the Mall of Egypt on the western edge of Cairo, opened in 2017 as Africa's first indoor ski slope. It's run by the same company as Ski Dubai, on a smaller scale: one main slope of about 210 m, with sections for beginners and more confident skiers, plus tubing runs and a snow play area, all kept at about −2 °C.\n\nThe skiing itself takes an hour or two. The point is the contrast: real snow a few kilometres from the desert, in one of the hottest, driest countries on Earth.",
+    "beyond": "Like Dubai, it has penguins: King, Gentoo and Chinstrap penguins live in the snow hall. The Pyramids of Giza and the Grand Egyptian Museum are about half an hour away, so snow in the morning and pyramids in the afternoon is a real option. Cairo's Khan el-Khalili bazaar and Nile felucca rides fill the rest of a city stay.",
+    "know": "Cairo airport is about an hour away, depending on traffic. Tickets usually include jackets, boots and skis or boards; bring gloves and a hat.\n\nFridays, Saturdays and holidays are busiest. Pair it with a trip to Cairo rather than travelling for the snow alone.",
+    "sources": [
+      {
+        "label": "Official site",
+        "url": "https://www.skidxb.com/en-eg/ski-egypt"
+      }
+    ]
+  },
+  "lsnow": {
+    "skiing": "L+SNOW, in Shanghai's Lingang area, opened in September 2024 and was certified by Guinness as the world's largest indoor ski resort. The snow hall covers more than 90,000 m², with slopes for four levels stacked on three floors, like a mountain built indoors. The longest is an advanced run of 340 m at up to 26°, steeper than most indoor slopes, and there are beginner areas and a teaching trail.\n\nIt's still indoor skiing, with short runs and a roof overhead, but it's the closest an indoor slope gets to the real thing.",
+    "beyond": "The resort is a whole complex: about 20 snow activities, a water park, and three snow-themed hotels with close to 1,000 rooms, including ski-in, ski-out suites that open straight onto the slopes. Central Shanghai, with the Bund and the old lanes of the French Concession, is about an hour away.",
+    "know": "Shanghai Pudong airport is about an hour away. It's busiest in Chinese school holidays and on summer weekends, when people come to escape the heat.\n\nThe official site and booking are mainly in Chinese, so plan ahead or book through an agent.",
+    "sources": [
+      {
+        "label": "Shanghai government: opening",
+        "url": "https://english.shanghai.gov.cn/en-Latest-WhatsNew/20240906/1f70f21767e4432ba4372e747d0e337c.html"
+      }
+    ]
   }
 }

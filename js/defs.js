@@ -26,7 +26,7 @@ export const DEFS = {
   pass: `Multi-resort season passes (Ikon, Epic, Mountain Collective) that include this destination. Partnerships change every year, so verify before buying.`,
   elevation: `Base to top lift (or valley to summit for touring) in metres. Snow stats are modelled at a single reference elevation (shown under the snow chart), usually mid-to-upper mountain.`,
   timing: `For the travel month you picked: <b>prime</b> = one of the best months · <b>in season</b> = skiable · <b>out of season</b> = typically closed or no snow.`,
-  lookAround: `<b>Trail map</b>: pistes, lifts and (where mapped) touring routes from OpenSkiMap, built on OpenStreetMap. Coverage is good for resorts and patchy for backcountry.<br><b>Webcams</b>: live cameras near this spot on Windy; useful for checking cover before you go.`,
+  lookAround: `<b>Piste map</b> (places with lifts): runs and lifts from OpenSkiMap, built on OpenStreetMap.<br><b>Topo + slope angles</b>: CalTopo's free worldwide topo map, centred here, with slopes shaded by steepness (the 30–45° avalanche band stands out). Good for sizing up terrain; it doesn't show which lines are skied, and it's no substitute for a guide or the avalanche forecast.`,
   permits: `Official page for a permit, registration or rules that apply here (e.g. Rogers Pass winter permits, Rainier climbing permits, Japan's mountain-plan filing, Svalbard travel rules). Requirements change, so read the page.`,
   huts: `The hut network or booking system for this area (alpine club huts usually need booking weeks or months ahead in spring).`,
 };

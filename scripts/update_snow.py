@@ -267,6 +267,8 @@ def main():
 
     with open(os.path.join(DATA, "destinations.json")) as f:
         dests = json.load(f)["destinations"]
+    # indoor slopes have no weather-driven season to track
+    dests = [d for d in dests if "indoor" not in d.get("tags", [])]
     if args.only:
         keep = set(args.only.split(","))
         dests = [d for d in dests if d["id"] in keep]
