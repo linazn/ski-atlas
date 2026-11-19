@@ -615,6 +615,7 @@ function bindControls() {
     $("#sidebar").classList.toggle("open", open); document.body.classList.toggle("sb-open", open);
   };
   document.body.classList.toggle("sb-collapsed", !!state.sbCollapsed);
+  $("#brandChip").addEventListener("click", () => setSidebar(true));
   $("#toggleSidebar").addEventListener("click", () => setSidebar(desktop() ? true : !$("#sidebar").classList.contains("open")));
   for (const id of ["#closeSidebar", "#showMap", "#sbBackdrop"]) $(id).addEventListener("click", () => setSidebar(false));
 }
