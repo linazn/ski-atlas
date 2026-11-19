@@ -902,16 +902,24 @@ function openStory(id, push = true) {
 /** Feedback form (Tally), opened as a pop-up over the page. Its script loads only on the first click. */
 const FEEDBACK_FORM = "LDK2Yv";
 let tallyLoad = null;
-function openFeedback(place = "") {
+function loadTally() {
+  return tallyLoad ||= new Promise((ok, fail) => {
+    const sc = document.createElement("script"); sc.src = "https://tally.so/widgets/embed.js";
+    sc.onload = ok; sc.onerror = () => { tallyLoad = null; fail(); }; document.head.appendChild(sc);
+  });
+}
+function openFeedback(place = "", btn = null) {
   const page = !$("#modal").classList.contains("hidden") && $("#modal").classList.contains("story-mode") ? "read-more"
     : !$("#detail").classList.contains("hidden") ? "detail" : "map";
   const hiddenFields = { place, page };
   const fallback = () => window.open(`https://tally.so/r/${FEEDBACK_FORM}?` + new URLSearchParams(hiddenFields), "_blank", "noopener");
-  tallyLoad ||= new Promise((ok, fail) => {
-    const sc = document.createElement("script"); sc.src = "https://tally.so/widgets/embed.js";
-    sc.onload = ok; sc.onerror = () => { tallyLoad = null; fail(); }; document.head.appendChild(sc);
-  });
-  tallyLoad.then(() => window.Tally ? window.Tally.openPopup(FEEDBACK_FORM, { layout: "modal", width: 460, overlay: true, hiddenFields }) : fallback()).catch(fallback);
+  // the first open fetches Tally's script and the form, which takes a moment: say so on the button
+  const label = btn?.textContent;
+  if (btn) { btn.textContent = "Opening…"; btn.disabled = true; }
+  const done = () => { if (btn) { btn.textContent = label; btn.disabled = false; } };
+  setTimeout(done, 8000);
+  loadTally().then(() => window.Tally ? window.Tally.openPopup(FEEDBACK_FORM, { layout: "modal", width: 460, overlay: true, hiddenFields, onOpen: done }) : (done(), fallback()))
+    .catch(() => { done(); fallback(); });
 }
 function closeModal() {
   $("#modal").classList.add("hidden"); $("#modal").classList.remove("story-mode");
@@ -1011,7 +1019,10 @@ async function boot() {
   document.addEventListener("focusout", (e) => { if (e.target.closest?.("[data-info]")) hideTip(); });
   document.addEventListener("click", (e) => { const el = e.target.closest?.("[data-info]"); if (el) { e.stopPropagation(); infoAt(el); } }, true);
   $("#showAll").onclick = () => fitAll(true);
-  document.addEventListener("click", (e) => { const b = e.target.closest?.("[data-feedback]"); if (b) { e.preventDefault(); openFeedback(b.dataset.feedback); } });
+  document.addEventListener("click", (e) => { const b = e.target.closest?.("[data-feedback]"); if (b) { e.preventDefault(); openFeedback(b.dataset.feedback, b); } });
+  // start fetching Tally as soon as someone heads for a feedback link
+  const warmTally = (e) => { if (e.target.closest?.("[data-feedback]")) loadTally().catch(() => {}); };
+  document.addEventListener("pointerover", warmTally); document.addEventListener("focusin", warmTally);
   $("#modalClose").onclick = closeModal;
   $("#modal").addEventListener("click", (e) => { if (e.target.id === "modal") closeModal(); });
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") { if (!$("#modal").classList.contains("hidden")) closeModal(); else if ($("#sidebar").classList.contains("open")) { $("#sidebar").classList.remove("open"); document.body.classList.remove("sb-open"); } hideTip(); } });
