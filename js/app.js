@@ -100,7 +100,7 @@ const fmtDate = (iso) => { if (!iso) return "–"; const d = new Date(iso.length
 function status(d) {
   const s = snowOf(d);
   const now = new Date(), m = now.getMonth() + 1, iso = now.toISOString().slice(0, 10);
-  if (!s) return { key: "nodata", live: false, label: "No data yet" };
+  if (!s) return { key: "nodata", live: false, label: "No snow data yet" };
   if (inSeason(d, m)) return { key: "in", live: true, label: "In season" };
   if (iso < s.seasonStart || iso > s.seasonEnd) return { key: "off", live: false, label: "Off-season" };
   // within the snow year: has the ski season opened yet?
@@ -125,7 +125,7 @@ function staleNote(d) {
 const livePct = (d) => status(d).live ? snowOf(d)?.pctNormal ?? null : null;
 function pctText(d) {
   const s = snowOf(d), st = status(d);
-  if (!s) return "No data yet";
+  if (!s) return "No snow data yet";
   if (!st.live) return st.key === "over" && s.pctNormal != null ? `Season over · finished at ${s.pctNormal}% of normal` : st.label;
   if (s.pctNormal == null) return s.nSeasons ? "Too early to tell" : "Normal pending";
   return `${s.pctNormal}% of normal`;
@@ -561,7 +561,7 @@ function bindControls() {
 
 function renderLegend() {
   $("#legend").innerHTML = state.colorBy === "snow"
-    ? SNOW.map(c => `<span><i style="background:${c.color}"></i>${c.label}</span>`).join("") + `<span><i style="background:#fff;border:1px solid #8a8984"></i>out of season / no data</span><span class="muted" style="width:100%">Snowfall this season vs the same date in past seasons. Ring colour = type.</span>`
+    ? SNOW.map(c => `<span><i style="background:${c.color}"></i>${c.label}</span>`).join("") + `<span><i style="background:#fff;border:1px solid #8a8984"></i>out of season / no snow data yet</span><span class="muted" style="width:100%">Snowfall this season vs the same date in past seasons. Ring colour = type.</span>`
     : Object.values(CAT).map(c => `<span><i style="background:${c.color}"></i>${c.label}</span>`).join("") + (state.months.length ? `<span class="muted" style="width:100%">Ringed dot = a best month · faded = out of season in all picked months</span>` : "");
 }
 
