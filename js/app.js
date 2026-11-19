@@ -165,7 +165,7 @@ function passes(d) {
   if (state.hideOut && outForMonths(d)) return false;
   if (state.search) {
     const q = state.search.toLowerCase();
-    const hay = [d.name, d.country, d.region, ...(d.children || []).map(c => c.name)].join(" ").toLowerCase();
+    const hay = [d.name, d.country, d.region, d.tags.includes("offradar") ? "off the radar" : "", ...(d.children || []).map(c => c.name)].join(" ").toLowerCase();
     if (!hay.includes(q)) return false;
   }
   return true;
@@ -176,10 +176,20 @@ function markerColor(d) {
 }
 
 // ---------- map ----------
+/** Sub-areas: "resort" (a lift area), "freeride" (lift-served freeride), "bc" (backcountry area or trailhead). */
+const kidKind = (c, d) => c.kind || (d.category === "touring" ? "bc" : d.category === "freeride" ? "freeride" : "resort");
+const KID_KINDS = { resort: { label: "Ski area", cat: "resort" }, freeride: { label: "Freeride area", cat: "freeride" }, bc: { label: "Backcountry area / trailhead", cat: "touring" } };
+const kidColor = (c, d) => state.colorBy === "snow" ? markerColor(d) : CAT[KID_KINDS[kidKind(c, d)].cat].color;
 function kidFeatures() {
-  return { type: "FeatureCollection", features: DEST.filter(passes).flatMap(d => (d.children || []).map(c => ({
+  return { type: "FeatureCollection", features: DEST.filter(passes).flatMap(d => (d.children || []).map((c, i) => ({
     type: "Feature", geometry: { type: "Point", coordinates: [c.lon, c.lat] },
-    properties: { name: c.name, note: c.note || "", parent: d.id, color: CAT[d.category].color, dim: outForMonths(d), bc: c.kind === "bc" },
+    properties: { name: c.name, note: c.note || "", parent: d.id, i, color: kidColor(c, d), dim: outForMonths(d), bc: kidKind(c, d) === "bc" },
+  }))) };
+}
+/** thin lines tying each sub-area back to its destination, so groups read as groups */
+function kidLinkFeatures() {
+  return { type: "FeatureCollection", features: DEST.filter(passes).flatMap(d => (d.children || []).map(c => ({
+    type: "Feature", geometry: { type: "LineString", coordinates: [[d.lon, d.lat], [c.lon, c.lat]] }, properties: { dim: outForMonths(d) },
   }))) };
 }
 function features() {
@@ -244,26 +254,27 @@ function initMap() {
     }, paint: { "text-color": "#10233a", "text-halo-color": "#f5f8fb", "text-halo-width": 1.5, "text-opacity": ["case", ["get", "dim"], 0.35, 1] } });
 
     // every sub-resort / sub-area as its own small dot once zoomed in (Vail, Breckenridge, A-Basin…)
+    map.addSource("kidlinks", { type: "geojson", data: kidLinkFeatures() });
+    map.addLayer({ id: "kidlinks", type: "line", source: "kidlinks", minzoom: 5, paint: {
+      "line-color": "#17395c", "line-width": ["interpolate", ["linear"], ["zoom"], 5, 1.1, 9, 1.6], "line-dasharray": [2, 1.5], "line-opacity": ["case", ["get", "dim"], 0.2, 0.7],
+    } }, "points");
     map.addSource("kids", { type: "geojson", data: kidFeatures() });
+    // every sub-area is a smaller version of a destination dot: filled with its own type colour (or the parent's snow colour), white ring
     map.addLayer({ id: "kids", type: "circle", source: "kids", minzoom: 5, paint: {
-      "circle-radius": ["interpolate", ["linear"], ["zoom"], 5, 3, 9, 5.5],
-      // backcountry areas: filled touring teal with a white ring; lift areas: white with the parent's colour ring
-      "circle-color": ["case", ["get", "bc"], CAT.touring.color, "#fcfcfb"], "circle-stroke-color": ["case", ["get", "bc"], "#fcfcfb", ["get", "color"]], "circle-stroke-width": 2,
+      "circle-radius": ["interpolate", ["linear"], ["zoom"], 5, 3.5, 9, 6.5],
+      "circle-color": ["get", "color"], "circle-stroke-color": "#fcfcfb", "circle-stroke-width": 1.5,
       "circle-opacity": ["case", ["get", "dim"], 0.3, 1], "circle-stroke-opacity": ["case", ["get", "dim"], 0.3, 1],
     } });
     map.addLayer({ id: "kids-labels", type: "symbol", source: "kids", minzoom: 6.3, layout: {
       "text-field": ["get", "name"], "text-size": 11, "text-font": ["case", ["get", "bc"], ["literal", ["Noto Sans Italic"]], ["literal", ["Noto Sans Regular"]]], "text-offset": [0, 0.8], "text-anchor": "top", "text-optional": true, "text-max-width": 10,
     }, paint: { "text-color": "#52514e", "text-halo-color": "#f5f8fb", "text-halo-width": 1.5, "text-opacity": ["case", ["get", "dim"], 0.4, 1] } });
-    map.on("click", "kids", (e) => openDetail(e.features[0].properties.parent, false));
+    map.on("click", "kids", (e) => { const f = e.features[0].properties; openSub(f.parent, +f.i); });
     map.on("mouseenter", "kids", (e) => { map.getCanvas().style.cursor = "pointer"; const f = e.features[0].properties, d = BY_ID[f.parent];
-      popup.setLngLat(e.lngLat).setHTML(`<div class="pop"><h4>${esc(f.name)}</h4><div class="row">${esc(f.note)}</div><div class="row muted">${f.bc ? "Backcountry area · " : ""}Part of ${esc(d.name)} · click for details</div></div>`).addTo(map); });
+      popup.setLngLat(e.lngLat).setHTML(`<div class="pop"><h4>${esc(f.name)}</h4><div class="row">${esc(f.note)}</div><div class="row muted">${f.bc ? "Backcountry area · " : ""}Part of ${esc(d.name)} · click for more</div></div>`).addTo(map); });
     map.on("mouseleave", "kids", () => { map.getCanvas().style.cursor = ""; popup.remove(); });
 
     map.addSource("children", { type: "geojson", data: { type: "FeatureCollection", features: [] } });
-    map.addLayer({ id: "children", type: "circle", source: "children", paint: { "circle-radius": 4.5, "circle-color": "#fcfcfb", "circle-stroke-color": "#0b0b0b", "circle-stroke-width": 1.5 } });
-    map.addLayer({ id: "children-labels", type: "symbol", source: "children", minzoom: 6, layout: {
-      "text-field": ["get", "name"], "text-size": 11, "text-font": ["Noto Sans Regular"], "text-offset": [0, 0.9], "text-anchor": "top",
-    }, paint: { "text-color": "#52514e", "text-halo-color": "#f5f8fb", "text-halo-width": 1.5 } });
+    map.addLayer({ id: "children", type: "circle", source: "children", paint: { "circle-radius": 9, "circle-color": "transparent", "circle-stroke-color": "#17395c", "circle-stroke-width": ["case", ["get", "on"], 2.5, 1.2] } }, "kids");
     map.addSource("sel", { type: "geojson", data: { type: "FeatureCollection", features: [] } });
     map.addLayer({ id: "sel", type: "circle", source: "sel", paint: { "circle-radius": 14, "circle-color": "transparent", "circle-stroke-color": "#17395c", "circle-stroke-width": 2 } }, "points");
 
@@ -387,7 +398,7 @@ function layoutZones() {
 }
 
 function setPinLayers(visible) {
-  ["points", "clusters", "cluster-count", "labels", "kids", "kids-labels"].forEach(id => map.getLayer(id) && map.setLayoutProperty(id, "visibility", visible ? "visible" : "none"));
+  ["points", "clusters", "cluster-count", "labels", "kids", "kids-labels", "kidlinks"].forEach(id => map.getLayer(id) && map.setLayoutProperty(id, "visibility", visible ? "visible" : "none"));
 }
 
 /** Decide tier for the current zoom and (re)build. Called on zoomend and on filter changes. */
@@ -496,6 +507,7 @@ function refresh() {
   persist();
   if (map?.getSource("dest")) map.getSource("dest").setData(features());
   if (map?.getSource("kids")) map.getSource("kids").setData(kidFeatures());
+  if (map?.getSource("kidlinks")) map.getSource("kidlinks").setData(kidLinkFeatures());
   renderZones();
   renderList();
   renderLegend();
@@ -612,7 +624,7 @@ function renderList() {
     lastZone = d.zone;
     const dim = outForMonths(d);
     return `${head}<li data-id="${d.id}" class="${dim ? "dim" : ""}"><span class="dot" style="background:${markerColor(d)};${markerColor(d) === NODATA ? "border:1px solid #8a8984" : ""}"></span>
-      <span>${esc(d.name)}<div class="sub">${esc(d.country)}${subLabel(d) ? " · " + esc(subLabel(d)) : ""}</div></span>
+      <span>${esc(d.name)}${d.tags.includes("offradar") ? ` <span class="offradar-tag">off the radar</span>` : ""}<div class="sub">${esc(d.country)}${subLabel(d) ? " · " + esc(subLabel(d)) : ""}</div></span>
       <span class="pill" title="${esc(status(d).label)}">${pill}</span></li>`;
   }).join("");
 }
@@ -623,6 +635,14 @@ function renderList() {
 // Topo map: CalTopo's free worldwide topo with slope-angle shading switched on, for judging terrain anywhere.
 const trailMapUrl = (lat, lon, z = 13) => `https://openskimap.org/#${z}/${lat}/${lon}`;
 const topoUrl = (lat, lon, z = 13) => `https://caltopo.com/map.html#ll=${lat},${lon}&z=${z}&b=mbt&a=sf`;
+// A web search that lands on useful pages: the place's plain name (no bracketed lists), where it is, and what kind of skiing.
+const plainName = (n) => n.replace(/\s*\(.*?\)\s*/g, " ").replace(/\s+/g, " ").trim();
+const searchUrl = (q) => `https://www.google.com/search?q=${encodeURIComponent(q)}`;
+const skiWord = (kind) => kind === "bc" || kind === "touring" ? "ski touring" : kind === "freeride" ? "freeride" : "skiing";
+const destSearch = (d) => searchUrl(d.tags.includes("indoor") ? `${plainName(d.name)} indoor skiing` : `${plainName(d.name)} ${d.country} ${skiWord(d.category)}`);
+const kidSearch = (c, d) => searchUrl(`${plainName(c.name)} ${d.region} ${skiWord(kidKind(c, d))}`);
+const tourSearch = (t, d) => searchUrl(`${plainName(t.name)} ${d.region} ski tour`);
+const searchLink = (url, label = "web search") => `<a href="${url}" target="_blank" rel="noopener" class="search-link" title="Search the web for this place"><svg viewBox="0 0 16 16" width="11" height="11" aria-hidden="true"><circle cx="6.5" cy="6.5" r="4.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 10l4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>${label} ↗</a>`;
 const hasLifts = (d) => d.category !== "touring" && !d.tags.includes("indoor");
 const mapLinks = (d, short = false) => {
   if (d.tags.includes("indoor")) return [];
@@ -637,10 +657,48 @@ function openDetail(id, fly) {
   state.selected = id;
   const d = BY_ID[id];
   if (fly) map.flyTo({ center: [d.lon, d.lat], zoom: Math.max(map.getZoom(), d.children ? 7 : 7.5), speed: 1.4, padding: panelPadding() });
-  map.getSource("children")?.setData({ type: "FeatureCollection", features: (d.children || []).map(c => ({ type: "Feature", geometry: { type: "Point", coordinates: [c.lon, c.lat] }, properties: { name: c.name } })) });
+  markGroup(d);
   map.getSource("sel")?.setData({ type: "Feature", geometry: { type: "Point", coordinates: [d.lon, d.lat] }, properties: {} });
   $("#sidebar").classList.remove("open"); document.body.classList.remove("sb-open");
   renderDetail(id);
+}
+function markGroup(d, on = -1) {
+  map.getSource("children")?.setData({ type: "FeatureCollection", features: (d.children || []).map((c, i) => ({ type: "Feature", geometry: { type: "Point", coordinates: [c.lon, c.lat] }, properties: { on: i === on } })) });
+}
+const toursList = (d, filter) => `<ul class="tours">${d.tours.filter(t => !filter || filter(t)).map(t => `<li><b>${esc(t.name)}</b>${t.grade ? ` <span class="muted">· ${esc(t.grade)}</span>` : ""} ${searchLink(tourSearch(t, d), "search")}<div>${esc(t.note)}</div></li>`).join("")}</ul>`;
+/** A lighter card for one area inside a destination (Alta inside the Cottonwoods, Mount Baker inside the Cascade Volcanoes). */
+function openSub(id, i) {
+  const d = BY_ID[id], c = d?.children?.[i]; if (!c) return;
+  state.selected = id;
+  const k = kidKind(c, d), kc = CAT[KID_KINDS[k].cat];
+  map.getSource("sel")?.setData({ type: "Feature", geometry: { type: "Point", coordinates: [d.lon, d.lat] }, properties: {} });
+  markGroup(d, i);
+  map.flyTo({ center: [c.lon, c.lat], zoom: Math.max(map.getZoom(), 9.5), speed: 1.4, padding: panelPadding() });
+  $("#sidebar").classList.remove("open"); document.body.classList.remove("sb-open");
+  const s = snowOf(d), st = status(d), lp = livePct(d);
+  const tours = d.tours?.filter(t => t.area === c.name) || [];
+  const el = $("#detail"); el.classList.remove("hidden"); el.scrollTop = 0;
+  el.innerHTML = `
+    <div class="sticky-close"><button class="close" id="detailClose" aria-label="Close">×</button></div>
+    <a href="#" class="crumb" id="toParent">‹ ${esc(plainName(d.name))}</a>
+    <div class="d-type"><span class="dot" style="background:${kc.color}"></span>${KID_KINDS[k].label} · part of ${esc(plainName(d.name))}</div>
+    <h3>${esc(c.name)}</h3>
+    <div class="muted" style="font-size:13px">${esc(d.region)}, ${esc(d.country)}</div>
+    <p class="pitch">${esc(c.note)}</p>
+    ${c.more ? `<p style="font-size:14px;line-height:1.5">${esc(c.more)}</p>` : ""}
+    ${tours.length ? `<div class="section-title">Notable tours here</div>${toursList(d, t => t.area === c.name)}` : ""}
+    <div class="section-title">Look it up</div>
+    <div class="sub-links">${[c.url && `<a href="${c.url}" target="_blank" rel="noopener">${hostLabel(c.url)} ↗</a>`, k === "bc" ? `<a href="${topoUrl(c.lat, c.lon, 13)}" target="_blank" rel="noopener">topo + slope angles ↗</a>` : `<a href="${trailMapUrl(c.lat, c.lon)}" target="_blank" rel="noopener">piste map ↗</a>`, k !== "bc" ? `<a href="${topoUrl(c.lat, c.lon, 13)}" target="_blank" rel="noopener">topo ↗</a>` : "", searchLink(kidSearch(c, d))].filter(Boolean).join(" · ")}</div>
+    <div class="section-title">Snow, season &amp; essentials</div>
+    <div class="callout">Shared with the whole destination: <b>${esc(plainName(d.name))}</b>${s ? ` is at <b>${lp != null ? lp + "% of normal" : esc(st.label)}</b> this season` : ""}, best ${d.best.map(m => MONTHS[m - 1]).join(", ") || "any month"}.
+      <div style="margin-top:8px"><button class="btn primary" id="parentCard">Full card for ${esc(plainName(d.name))}</button>${STORIES[id] ? ` <button class="btn" id="readMore">Read more →</button>` : ""}</div></div>
+    ${d.children.length > 1 ? `<div class="section-title">Other areas in ${esc(plainName(d.name))}</div><ul class="children">${d.children.map((x, j) => j === i ? "" : `<li data-i="${j}"><span class="dot sm" style="background:${CAT[KID_KINDS[kidKind(x, d)].cat].color}"></span><div><b>${esc(x.name)}</b></div><span class="chev" aria-hidden="true">›</span></li>`).join("")}</ul>` : ""}
+  `;
+  $("#detailClose").onclick = closeDetail;
+  const back = (e) => { e?.preventDefault(); openDetail(id, true); };
+  $("#toParent").onclick = back; $("#parentCard").onclick = back;
+  if (STORIES[id]) $("#readMore").onclick = () => openStory(id);
+  el.querySelectorAll(".children li").forEach(li => li.onclick = () => openSub(id, +li.dataset.i));
 }
 // keep the target visible beside (desktop) or above (mobile) the detail panel
 function panelPadding() {
@@ -665,6 +723,7 @@ function renderDetail(id) {
     <div class="sticky-close"><button class="close" id="detailClose" aria-label="Close">×</button></div>
     <div class="d-type"><span class="dot" style="background:${CAT[d.category].color}"></span>${CAT[d.category].label}${subLabel(d) ? " · " + esc(subLabel(d)) : ""}${d.tags.includes("volcano") ? " · Volcano" : ""}${d.tags.includes("spring") ? " · Spring" : ""}${d.tags.includes("park") ? " · Park" : ""}</div>
     <h3>${esc(d.name)}</h3>
+    ${d.tags.includes("offradar") ? `<div class="offradar">${OFFRADAR}</div>` : ""}
     <div class="muted" style="font-size:13px">${esc(d.region)}, ${esc(d.country)}</div>
     <p class="pitch">${esc(d.pitch)}</p>
     ${d.advisory ? `<div class="callout warn"><b>⚠ Travel advisory.</b> ${esc(d.advisory)}</div>` : ""}
@@ -716,20 +775,21 @@ function renderDetail(id) {
       <dt>Avalanche ${info("avalanche")}</dt><dd>${esc(d.avalanche)}${avy ? `<div class="note" style="margin-top:2px">Live bulletin: <a href="${avy[1]}" target="_blank" rel="noopener">${avy[0]} ↗</a></div>` : d.tags.includes("indoor") ? "" : `<div class="note" style="margin-top:2px">No official public forecast service: rely on guides.</div>`}</dd>
       ${d.pass.length ? `<dt>Pass ${info("pass")}</dt><dd>${d.pass.join(", ")} <span class="muted">(verify)</span></dd>` : ""}
       <dt>Getting there</dt><dd>${esc(d.airport)}</dd>
-      ${mapLinks(d).length ? `<dt>Maps ${info("lookAround")}</dt><dd>${mapLinks(d).join(" · ")}</dd>` : ""}
+      <dt>Look it up ${info("lookAround")}</dt><dd>${[...mapLinks(d), searchLink(destSearch(d))].join(" · ")}</dd>
       ${d.links?.permits ? `<dt>Permits ${info("permits")}</dt><dd><a href="${d.links.permits.url}" target="_blank" rel="noopener">${esc(d.links.permits.label)} ↗</a></dd>` : ""}
       ${d.links?.website ? `<dt>Website</dt><dd><a href="${d.links.website}" target="_blank" rel="noopener">${hostLabel(d.links.website)} ↗</a></dd>` : ""}
       ${d.links?.huts ? `<dt>Huts ${info("huts")}</dt><dd><a href="${d.links.huts}" target="_blank" rel="noopener">${hostLabel(d.links.huts)} ↗</a></dd>` : ""}
     </dl>
 
-    ${d.children ? `<div class="section-title">Areas in this destination</div>
-    <ul class="children">${d.children.map((c, i) => `<li data-i="${i}"><b>${esc(c.name)}</b>${c.kind === "bc" ? ` <span class="bc-tag">backcountry</span>` : ""}<span class="kid-link">${c.url ? `<a href="${c.url}" target="_blank" rel="noopener" title="${hostLabel(c.url)}">website ↗</a> · ` : ""}${c.kind === "bc" ? `<a href="${topoUrl(c.lat, c.lon)}" target="_blank" rel="noopener">topo ↗</a>` : `<a href="${trailMapUrl(c.lat, c.lon)}" target="_blank" rel="noopener">piste map ↗</a>`}</span><div class="muted" style="font-size:12px">${esc(c.note)}</div></li>`).join("")}</ul>` : ""}
+    ${d.children ? `<div class="section-title">Areas &amp; trailheads ${info("areas")}</div>
+    <ul class="children">${d.children.map((c, i) => `<li data-i="${i}"><span class="dot sm" style="background:${CAT[KID_KINDS[kidKind(c, d)].cat].color}"></span><div><b>${esc(c.name)}</b>${kidKind(c, d) === "bc" ? ` <span class="bc-tag">backcountry</span>` : ""}<div class="muted" style="font-size:12px">${esc(c.note)}</div></div><span class="chev" aria-hidden="true">›</span></li>`).join("")}</ul>` : ""}
+    ${d.tours?.length ? `<div class="section-title">Notable tours ${info("tours")}</div>${toursList(d)}` : ""}
   `;
   $("#detailClose").onclick = closeDetail;
   $("#addCmp").onclick = () => addCompare(id);
   if (STORIES[id]) $("#readMore").onclick = () => openStory(id);
   $("#zoomTo").onclick = () => map.flyTo({ center: [d.lon, d.lat], zoom: d.children ? 8 : 9.5, padding: panelPadding() });
-  el.querySelectorAll(".children li").forEach(li => li.onclick = (e) => { if (e.target.closest("a")) return; const c = d.children[+li.dataset.i]; map.flyTo({ center: [c.lon, c.lat], zoom: 11, padding: panelPadding() }); });
+  el.querySelectorAll(".children li").forEach(li => li.onclick = () => openSub(id, +li.dataset.i));
   if (s) seasonChart($("#seasonChart"), s, "#0b0b0b");
   if ($("#monthBars")) monthBars($("#monthBars"), s?.climate, { months: state.months, best: d.best });
 }
@@ -759,6 +819,9 @@ function renderTray() {
 
 // ---------- "More about this place" pages (linkable: #place/<id>) ----------
 const richText = (t) => esc(t).split(/\n\s*\n/).map(p => `<p>${p.replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/\*(.+?)\*/g, "<i>$1</i>")}</p>`).join("");
+const OFFRADAR = `<b>Off the radar.</b> Few travelling skiers have heard of it, but there's an official avalanche forecast here, a sign of a real local ski scene. Expect fewer services, less English-language information and more self-reliance. ${info("offradar")}`;
+/** A photo with its credit. Photos are Wikimedia Commons files under free licences, shown with author and licence as they require. */
+const photoFig = (p, cls = "") => `<figure class="photo ${cls}"><a href="${p.page}" target="_blank" rel="noopener"><img src="${p.src}" alt="${esc(p.alt)}" loading="lazy" /></a><figcaption>${esc(p.caption)} <span class="credit">Photo: ${esc(p.author)}, ${p.licenseUrl ? `<a href="${p.licenseUrl}" target="_blank" rel="noopener">${esc(p.license)}</a>` : esc(p.license)}, via <a href="${p.page}" target="_blank" rel="noopener">Wikimedia Commons</a></span></figcaption></figure>`;
 function openStory(id, push = true) {
   const d = BY_ID[id], st = STORIES[id]; if (!d || !st) return;
   const mo = (m) => m.length ? m.map(x => MONTHS[x - 1]).join(", ") : "any month";
@@ -769,11 +832,16 @@ function openStory(id, push = true) {
     <div class="d-type"><span class="dot" style="background:${CAT[d.category].color}"></span>${CAT[d.category].label}${subLabel(d) ? " · " + esc(subLabel(d)) : ""}</div>
     <h2>${esc(d.name)}</h2>
     <div class="muted">${esc(d.region)}, ${esc(d.country)}</div>
+    ${d.tags.includes("offradar") ? `<div class="offradar">${OFFRADAR}</div>` : ""}
     <p class="pitch">${esc(d.pitch)}</p>
     ${st.draft ? `<div class="callout"><b>Draft.</b> Not reviewed yet, and hidden on the live site.</div>` : ""}
     ${d.advisory ? `<div class="callout warn"><b>⚠ Travel advisory.</b> ${esc(d.advisory)}</div>` : ""}
+    ${st.photos?.length ? photoFig(st.photos[0], "hero") : ""}
     <h3>The skiing</h3>${richText(st.skiing)}
+    ${st.photos?.length > 1 ? photoFig(st.photos[1]) : ""}
+    ${d.tours?.length ? `<h3>Notable tours</h3><p class="note" style="margin-top:0">Starting points for your own research: names to look up, not route descriptions.</p>${toursList(d)}` : ""}
     <h3>Beyond the skiing</h3>${richText(st.beyond)}
+    ${st.photos?.length > 2 ? `<div class="photo-grid">${st.photos.slice(2).map(p => photoFig(p)).join("")}</div>` : ""}
     <h3>Good to know</h3>${richText(st.know)}
     <dl class="facts">
       <dt>Season</dt><dd>${d.tags.includes("indoor") ? "All year, indoors" : `${MONTHS[d.season[0] - 1]}–${MONTHS[d.season[1] - 1]} · best ${mo(d.best)}`}</dd>
@@ -782,7 +850,7 @@ function openStory(id, push = true) {
       <dt>Guide ${info("guide")}</dt><dd>${esc(d.guide)}</dd>
       <dt>Getting there</dt><dd>${esc(d.airport)}</dd>
     </dl>
-    ${links.length ? `<div class="story-links">${links.map(([l, u]) => `<a href="${u}" target="_blank" rel="noopener">${esc(l)} ↗</a>`).join(" · ")}</div>` : ""}
+    <div class="story-links">${[...links.map(([l, u]) => `<a href="${u}" target="_blank" rel="noopener">${esc(l)} ↗</a>`), searchLink(destSearch(d))].join(" · ")}</div>
     ${st.sources?.length ? `<div class="note">Sources: ${st.sources.map(x => `<a href="${x.url}" target="_blank" rel="noopener">${esc(x.label)}</a>`).join(" · ")}</div>` : ""}
     <div class="note">This page describes what a place is like, not how to ski specific routes. Check current avalanche and travel conditions before you go.</div>
   </article>`;
