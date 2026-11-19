@@ -55,5 +55,7 @@ jobs:
             echo "No changes"
           else
             git commit -m "Snow data update ($(date -u +%Y-%m-%d))"
+            # someone may have pushed site changes during the hour-long run: catch up first
+            git pull --rebase origin main
             git push
           fi
