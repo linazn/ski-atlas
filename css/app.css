@@ -25,7 +25,7 @@ button, select, input { font: inherit; }
 .muted { color: var(--text-muted); }
 .hidden { display: none !important; }
 
-#app { display: grid; grid-template-columns: 330px 1fr; grid-template-rows: 1fr auto; height: 100vh; }
+#app { display: grid; grid-template-columns: 330px 1fr; grid-template-rows: 1fr auto; height: 100vh; height: 100dvh; /* dvh = the height actually visible between a phone browser's toolbars */ }
 #sidebar { grid-row: 1 / 3; overflow-y: auto; background: linear-gradient(180deg, #eef4fa 0, var(--surface-1) 140px); border-right: 1px solid var(--border); padding: 18px 18px 8px; display: flex; flex-direction: column; gap: 4px; }
 #mapWrap { position: relative; grid-column: 2; grid-row: 1; }
 #map { position: absolute; inset: 0; }
