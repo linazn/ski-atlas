@@ -1,8 +1,14 @@
 name: Daily snow data update
 
 on:
+  # GitHub often starts scheduled runs hours late, so there are three tries a night.
+  # Off-the-hour minutes dodge GitHub's busiest moment. The first one that gets
+  # through does the update; the later ones see it's done and stop straight away.
+  # 05:17 UTC = 10:17pm PT / 11:17pm MT; 11:17 UTC = 4:17am PT / 5:17am MT
   schedule:
-    - cron: "0 6 * * *"   # every day 06:00 UTC
+    - cron: "17 5 * * *"
+    - cron: "17 8 * * *"
+    - cron: "17 11 * * *"
   workflow_dispatch:       # "Run workflow" button in the Actions tab
 
 permissions:
@@ -18,16 +24,29 @@ jobs:
     timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main   # latest main, so a queued try sees an update that just landed
+
+      - name: Skip if today's update already landed
+        id: check
+        run: |
+          today=$(date -u +%Y-%m-%d)
+          if [ "${{ github.event_name }}" = "schedule" ] && grep -q "\"generated\":\"$today" data/snow.json; then
+            echo "Already updated today ($today); nothing to do."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
 
       - uses: actions/setup-python@v5
+        if: steps.check.outputs.skip != 'true'
         with:
           python-version: "3.12"
 
       - name: Fetch latest snow data (Open-Meteo)
+        if: steps.check.outputs.skip != 'true'
         run: python3 scripts/update_snow.py --pause 1.0 --budget 90
 
       - name: Commit if anything changed
-        if: always()   # save whatever was fetched, even if the step above failed
+        if: always() && steps.check.outputs.skip != 'true'   # save whatever was fetched, even if the step above failed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
