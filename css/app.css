@@ -316,3 +316,9 @@ svg.chart .grid { stroke: var(--border); stroke-width: 1; }
 .fb-line .link-btn, .fb-foot .link-btn { font-size: inherit; padding: 0; }
 .fb-foot { margin-top: 6px; }
 @media (max-width: 820px) { .map-btn.fb-btn { display: none; } }
+/* site links under the logo, and the About page */
+.site-links { font-size: 13px; margin: 2px 0 0; color: var(--text-secondary); }
+.site-links a, .site-links .link-btn { color: var(--accent); font-size: inherit; padding: 0; }
+.about-sites { font-size: 15px; line-height: 1.6; padding-left: 18px; margin: 0 0 12px; }
+.about .link-btn { font-size: inherit; padding: 0; }
+.about .about-sign { font-style: italic; color: var(--text-secondary); margin-top: 16px; }
