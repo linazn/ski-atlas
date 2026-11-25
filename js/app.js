@@ -2,6 +2,7 @@ import { MONTHS, seasonChart, monthBars, compareLines, daysBetween, showTip, hid
 import { DEFS, info } from "./defs.js";
 import { aboutHTML, siteLinksHTML } from "./about.js";
 import { track, initTracking } from "./track.js";
+import { wxStripHTML, bindWxStrips } from "./strip.js";
 
 const CAT = {
   resort:   { label: "Resort",   color: "#9085e9", desc: "On-piste is the draw" },
@@ -804,6 +805,7 @@ function renderDetail(id) {
         <div class="stat"><b>${s.normalTotal ?? "–"} cm</b><span>typical full season ${info("normalTotal")}</span></div>
         <div class="stat"><b>${s.reliabilityCV != null ? "±" + Math.round(s.reliabilityCV * 100) + "%" : "–"}</b><span>season-to-season swing ${info("swing")}</span></div>
       </div>
+      ${s.wx ? wxStripHTML(s.wx, { kind: "snow", where: `at ~${d.refElev.toLocaleString("en")} m, mid-mountain (modelled)` }) : ""}
       <div id="seasonChart" style="margin-top:10px"></div>
       <div class="note">Modelled snowfall (ECMWF 9 km via Open-Meteo) at ~${d.refElev} m. Data through ${fmtDate(s.dataThrough)}. Raw data: <a href="${rawUrl(d, s)}" target="_blank" rel="noopener">this season, daily ↗</a> · <a href="${fcUrl(d)}" target="_blank" rel="noopener">forecast ↗</a>. A 9 km model under-reads resort-reported totals, especially in Japan and coastal ranges, so trust the % and rank more than the cm.</div>`
       : d.tags.includes("indoor") ? `<p class="note">Indoor: the snow is made inside and kept below freezing, so there's no season to track. Open every day of the year.</p>`
@@ -845,6 +847,7 @@ function renderDetail(id) {
   $("#zoomTo").onclick = () => map.flyTo({ center: [d.lon, d.lat], zoom: d.children ? 8 : 9.5, padding: panelPadding() });
   el.querySelectorAll(".children li").forEach(li => li.onclick = () => openSub(id, +li.dataset.i));
   if (s) seasonChart($("#seasonChart"), s, "#0b0b0b");
+  bindWxStrips($("#detail") || document);
   if ($("#monthBars")) monthBars($("#monthBars"), s?.climate, { months: state.months, best: d.best });
 }
 

@@ -3,7 +3,7 @@
 Build data/snow.json for Ski Atlas.
 
 Source: Open-Meteo (free, no key). Model: ECMWF IFS 9 km archive (2017 -> yesterday),
-plus the Open-Meteo forecast API for next-7-day snowfall and current modelled snow depth.
+plus the Open-Meteo forecast API for the last 10 / next 10 days (snow, rain, sun) and current modelled snow depth.
 
 For each destination (at its refElev):
   * current season cumulative snowfall (season window start -> yesterday)
@@ -29,6 +29,7 @@ FORECAST = "https://api.open-meteo.com/v1/forecast"
 MODEL = "ecmwf_ifs"
 DAILY = "snowfall_sum,temperature_2m_mean,sunshine_duration,wind_speed_10m_max,precipitation_sum"
 N_CLIM = 8  # past seasons used as "normal"
+PAST_DAYS, AHEAD_DAYS = 10, 10  # weather strip window around today
 
 
 class DailyLimit(Exception):
@@ -202,6 +203,8 @@ def build_entry(d, today, cur_daily, clim, fc):
         e["next7"] = fc.get("next7")
         e["snowDepth"] = fc.get("depth")
         e["forecastAsOf"] = fc.get("asof")
+        if fc.get("wx"):
+            e["wx"] = fc["wx"]
     if past and n:
         at = [p[1][min(n, len(p[1])) - 1] for p in past]
         normal = statistics.mean(at)
@@ -302,13 +305,20 @@ def main():
         # The forecast is a separate API; if it is down, keep last week's values and stop asking.
         if forecast_fails < 3:
             try:
+                # 10 days back + today + 10 ahead, for the strip in the detail panel
                 fj = get(FORECAST, {"latitude": d["lat"], "longitude": d["lon"], "elevation": d["refElev"],
-                                    "daily": "snowfall_sum", "current": "snow_depth", "forecast_days": 7,
+                                    "daily": "snowfall_sum,rain_sum,sunshine_duration", "current": "snow_depth",
+                                    "past_days": PAST_DAYS, "forecast_days": AHEAD_DAYS + 1,
                                     "timezone": "auto"}, tries=2, timeout=20)
                 sd = (fj.get("current") or {}).get("snow_depth")
-                forecast[d["id"]] = {"next7": round(sum(v or 0 for v in fj["daily"]["snowfall_sum"])),
+                dd = fj["daily"]
+                snow = [round(v or 0, 1) for v in dd["snowfall_sum"]]
+                forecast[d["id"]] = {"next7": round(sum(snow[PAST_DAYS:PAST_DAYS + 7])),
                                      "depth": round(sd * 100) if sd is not None else None,
-                                     "asof": today.isoformat()}
+                                     "asof": today.isoformat(),
+                                     "wx": {"start": dd["time"][0], "today": PAST_DAYS, "snow": snow,
+                                            "rain": [round(v or 0, 1) for v in dd["rain_sum"]],
+                                            "sun": [round((v or 0) / 3600, 1) for v in dd["sunshine_duration"]]}}
                 forecast_fails = 0
             except DailyLimit as e:
                 print("Daily API limit reached during forecast fetch:", e)
@@ -320,7 +330,7 @@ def main():
                     print("  forecast API looks down; skipping it for the rest of this run")
         if d["id"] not in forecast and d["id"] in prev:
             p = prev[d["id"]]
-            forecast[d["id"]] = {"next7": p.get("next7"), "depth": p.get("snowDepth"),
+            forecast[d["id"]] = {"next7": p.get("next7"), "depth": p.get("snowDepth"), "wx": p.get("wx"),
                                  "asof": p.get("forecastAsOf") or (p.get("dataThrough") and
                                          (dt.date.fromisoformat(p["dataThrough"]) + dt.timedelta(days=1)).isoformat())}
         time.sleep(args.pause)
