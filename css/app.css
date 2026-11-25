@@ -68,6 +68,9 @@ button, select, input { font: inherit; }
 .subs { display: flex; flex-wrap: wrap; gap: 4px; margin: 0 0 4px 20px; }
 .chip { border: 1px solid var(--border); background: var(--surface-1); border-radius: 999px; padding: 2px 9px; font-size: 12px; cursor: pointer; color: var(--text-secondary); }
 .chip.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+.pass-chips { display: flex; flex-wrap: wrap; gap: 4px; }
+.pass-chips .chip { font-size: 13px; padding: 3px 10px; }
+.chip .n { opacity: .6; font-size: 11px; margin-left: 2px; }
 
 .months { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; margin-bottom: 8px; }
 .months button { border: 1px solid var(--border); background: var(--surface-1); border-radius: 6px; padding: 4px 0; font-size: 12px; cursor: pointer; }

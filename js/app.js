@@ -44,10 +44,12 @@ const state = Object.assign({
   colorBy: "category",
   minPct: 0,
   crowdMax: 5,
+  liftPasses: [],     // pass filter: show places on any of these
   search: "",
   sort: "zone",
   compare: [],        // [{id, slot}]
 }, saved, { selected: null, search: "" });
+if (!Array.isArray(state.liftPasses)) state.liftPasses = [];
 if (!Array.isArray(state.months)) state.months = state.month ? [state.month] : [];
 delete state.month; delete state.tourTags; delete state.iconicOnly;
 delete state.trip; delete state.tab; // trip planning removed Nov 2026 (in git history if it comes back)
@@ -165,6 +167,7 @@ function passes(d) {
   if (state.crowdMax < 5 && d.crowds > state.crowdMax) return false;
   if (state.minPct > 0) { const p = livePct(d); if (p == null || p < state.minPct) return false; }
   if (state.hideOut && outForMonths(d)) return false;
+  if (state.liftPasses.length && !d.pass.some(p => state.liftPasses.includes(p))) return false;
   if (state.search) {
     const q = state.search.toLowerCase();
     const hay = [d.name, d.country, d.region, d.tags.includes("offradar") ? "off the radar" : "", ...(d.children || []).map(c => c.name)].join(" ").toLowerCase();
@@ -543,8 +546,9 @@ function refresh() {
 }
 
 // ---------- sidebar ----------
-const FILTER_DEFAULTS = { picks: [], levels: [], tourTypes: [], months: [], hideOut: false, minPct: 0, crowdMax: 5, search: "" };
-const activeFilters = () => state.picks.length + state.levels.length + state.tourTypes.length + state.months.length + (state.hideOut ? 1 : 0) + (state.minPct ? 1 : 0) + (state.crowdMax < 5 ? 1 : 0) + (state.search.trim() ? 1 : 0);
+const LIFT_PASSES = ["Ikon", "Epic", "Mountain Collective", "Indy", "Magic Pass"];
+const FILTER_DEFAULTS = { picks: [], levels: [], tourTypes: [], months: [], hideOut: false, minPct: 0, crowdMax: 5, liftPasses: [], search: "" };
+const activeFilters = () => state.picks.length + state.levels.length + state.tourTypes.length + state.months.length + (state.hideOut ? 1 : 0) + (state.minPct ? 1 : 0) + (state.crowdMax < 5 ? 1 : 0) + state.liftPasses.length + (state.search.trim() ? 1 : 0);
 function clearFilters() {
   Object.assign(state, structuredClone(FILTER_DEFAULTS));
   $("#search").value = ""; $("#minPct").value = 0; $("#minPctVal").textContent = "any";
@@ -571,6 +575,8 @@ function renderControls() {
   $("#hideOut").checked = state.hideOut;
   document.querySelectorAll("#colorBy button").forEach(b => b.classList.toggle("on", b.dataset.v === state.colorBy));
   document.querySelectorAll("#crowdMax button").forEach(b => b.classList.toggle("on", +b.dataset.v === state.crowdMax));
+  $("#liftPasses").innerHTML = LIFT_PASSES.map(p => { const on = state.liftPasses.includes(p), n = DEST.filter(d => d.pass.includes(p)).length;
+    return `<button class="chip ${on ? "on" : ""}" data-pass="${p}" aria-pressed="${on}">${p} <span class="n">${n}</span></button>`; }).join("");
   $("#minPct").value = state.minPct;
   $("#minPctVal").textContent = state.minPct ? state.minPct + "%" : "any";
   $("#sortBy").value = state.sort;
@@ -603,6 +609,8 @@ function bindControls() {
   $("#hideOut").addEventListener("change", (e) => { state.hideOut = e.target.checked; refresh(); });
   $("#colorBy").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; state.colorBy = b.dataset.v; renderControls(); refresh(); });
   $("#crowdMax").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; state.crowdMax = +b.dataset.v; renderControls(); refresh(); });
+  $("#liftPasses").addEventListener("click", (e) => { const b = e.target.closest("[data-pass]"); if (!b) return; const p = b.dataset.pass;
+    state.liftPasses = state.liftPasses.includes(p) ? state.liftPasses.filter(x => x !== p) : [...state.liftPasses, p]; renderControls(); refresh(); });
   $("#minPct").addEventListener("input", (e) => { state.minPct = +e.target.value; $("#minPctVal").textContent = state.minPct ? state.minPct + "%" : "any"; refresh(); });
   $("#search").addEventListener("input", (e) => { state.search = e.target.value; refresh(); });
   $("#sortBy").addEventListener("change", (e) => { state.sort = e.target.value; refresh(); });
