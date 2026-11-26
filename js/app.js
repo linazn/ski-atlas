@@ -628,6 +628,8 @@ function bindControls() {
   $("#sortBy").addEventListener("change", (e) => { state.sort = e.target.value; refresh(); });
   $("#list").addEventListener("click", (e) => { const li = e.target.closest("li[data-id]"); if (li) openDetail(li.dataset.id, true); });
   $("#clearAll").addEventListener("click", clearFilters);
+  // count clicks on the plan-it links (forecast, directions, flights)
+  document.addEventListener("click", (e) => { const a = e.target.closest("a[data-out]"); if (a) track(`out ${a.dataset.out} ${state.selected || ""}`.trim(), a.textContent.replace(" ↗", "")); });
   const desktop = () => window.innerWidth > 820;
   const setSidebar = (open) => {
     if (desktop()) {
@@ -699,6 +701,15 @@ const mapLinks = (d, short = false) => {
 };
 const hostLabel = (u) => { try { const h = new URL(u).hostname.replace(/^www\./, ""); return h; } catch { return u; } };
 const rawUrl = (d, s) => `https://archive-api.open-meteo.com/v1/archive?latitude=${d.lat}&longitude=${d.lon}&elevation=${d.refElev}&start_date=${s.seasonStart}&end_date=${s.dataThrough}&daily=snowfall_sum,precipitation_sum,temperature_2m_mean,snow_depth_max&models=ecmwf_ifs&timezone=auto`;
+// Plan-it links, built from coordinates (SnowBrains pages are matched by hand in destinations.json)
+const meteoblueUrl = (d) => `https://www.meteoblue.com/en/weather/week/${(+d.lat).toFixed(3)}N${(+d.lon).toFixed(3)}E${d.refElev ? Math.round(d.refElev) : ""}`;
+const windyUrl = (d) => `https://www.windy.com/?${d.lat},${d.lon},10`;
+const directionsUrl = (d) => `https://www.google.com/maps/dir/?api=1&destination=${d.lat},${d.lon}`;
+const flightsTo = (d) => { const a = d.airport || "", m = /\(([A-Z]{3})\)/.exec(a); return m ? m[1] : a.split(/[,/;~(]| \d| then /)[0].trim(); };
+const outLink = (url, label, kind) => `<a href="${url}" target="_blank" rel="noopener" data-out="${kind}">${label} ↗</a>`;
+const forecastLinks = (d) => [d.links?.snowbrains && outLink(d.links.snowbrains.url, `SnowBrains <span class="muted">(${esc(d.links.snowbrains.label)})</span>`, "snowbrains"),
+  outLink(meteoblueUrl(d), "meteoblue", "meteoblue"), outLink(windyUrl(d), "Windy", "windy")].filter(Boolean);
+const travelLinks = (d) => [outLink(directionsUrl(d), "Directions", "directions"), flightsTo(d) && outLink(`https://www.google.com/travel/flights?q=${encodeURIComponent("Flights to " + flightsTo(d))}`, `Flights to ${esc(flightsTo(d))}`, "flights")].filter(Boolean);
 const fcUrl = (d) => `https://api.open-meteo.com/v1/forecast?latitude=${d.lat}&longitude=${d.lon}&elevation=${d.refElev}&daily=snowfall_sum,precipitation_sum,temperature_2m_max,temperature_2m_min&forecast_days=7&timezone=auto`;
 function openDetail(id, fly) {
   popup?.remove(); // the full panel replaces the hover preview
@@ -840,7 +851,8 @@ function renderDetail(id) {
       <dt>Snowpack ${info("snowpack")}</dt><dd>${esc(d.snowpack)}</dd>
       <dt>Avalanche ${info("avalanche")}</dt><dd>${esc(d.avalanche)}${avy ? `<div class="note" style="margin-top:2px">Live bulletin: <a href="${avy[1]}" target="_blank" rel="noopener">${avy[0]} ↗</a></div>` : d.tags.includes("indoor") ? "" : `<div class="note" style="margin-top:2px">No official public forecast service: rely on guides.</div>`}</dd>
       ${d.pass.length ? `<dt>Pass ${info("pass")}</dt><dd>${d.pass.join(", ")} <span class="muted">(verify)</span></dd>` : ""}
-      <dt>Getting there</dt><dd>${esc(d.airport)}</dd>
+      ${d.tags.includes("indoor") ? "" : `<dt>Forecast ${info("forecastLinks")}</dt><dd>${forecastLinks(d).join(" · ")}</dd>`}
+      <dt>Getting there</dt><dd>${esc(d.airport)}<div class="note" style="margin-top:2px">${travelLinks(d).join(" · ")}</div></dd>
       <dt>Look it up ${info("lookAround")}</dt><dd>${[...mapLinks(d), searchLink(destSearch(d))].join(" · ")}</dd>
       ${d.links?.permits ? `<dt>Permits ${info("permits")}</dt><dd><a href="${d.links.permits.url}" target="_blank" rel="noopener">${esc(d.links.permits.label)} ↗</a></dd>` : ""}
       ${d.links?.website ? `<dt>Website</dt><dd><a href="${d.links.website}" target="_blank" rel="noopener">${hostLabel(d.links.website)} ↗</a></dd>` : ""}
@@ -917,7 +929,7 @@ function openStory(id, push = true) {
       <dt>Cost ${info("cost")}</dt><dd>${meter(d.cost, 5)}</dd>
       <dt>Crowds ${info("crowds")}</dt><dd>${meter(d.crowds, 5)}</dd>
       <dt>Guide ${info("guide")}</dt><dd>${esc(d.guide)}</dd>
-      <dt>Getting there</dt><dd>${esc(d.airport)}</dd>
+      <dt>Getting there</dt><dd>${esc(d.airport)}<div class="note" style="margin-top:2px">${travelLinks(d).join(" · ")}</div></dd>
     </dl>
     <div class="story-links">${[...links.map(([l, u]) => `<a href="${u}" target="_blank" rel="noopener">${esc(l)} ↗</a>`), searchLink(destSearch(d))].join(" · ")}</div>
     ${st.sources?.length ? `<div class="note">Sources: ${st.sources.map(x => `<a href="${x.url}" target="_blank" rel="noopener">${esc(x.label)}</a>`).join(" · ")}</div>` : ""}
