@@ -52,14 +52,9 @@
 
       <section class="block">
         <h2>Season so far <span class="info" data-info="pct" tabindex="0" role="button" aria-label="What does this mean?">i</span></h2>
-        <div class="seg" id="colorBy">
-          <button data-v="category">Colour by type</button>
-          <button data-v="snow">Colour by snow</button>
-        </div>
         <label class="range-label">Minimum % of normal snowfall to date: <b id="minPctVal">any</b>
           <input type="range" id="minPct" min="0" max="150" step="10" value="0" />
         </label>
-        <div class="legend" id="legend"></div>
       </section>
 
       <section class="block">
@@ -84,7 +79,7 @@
       <section class="block grow">
         <div class="list-top">
         <div class="list-head">
-          <h2><span id="count">0</span> destinations</h2>
+          <h2><span id="count">…</span> destinations</h2>
           <select id="sortBy" aria-label="Sort list">
             <option value="zone">By region</option>
             <option value="name">A–Z</option>
@@ -97,7 +92,7 @@
         </div>
         <ul id="list" class="dest-list"></ul>
       </section>
-      <button id="showMap" class="show-map">Show <span id="countMap">0</span> on the map</button>
+      <button id="showMap" class="show-map">Show <span id="countMap">…</span> on the map</button>
       <footer class="credits">
         Snow data: <a href="https://open-meteo.com" target="_blank" rel="noopener">Open-Meteo</a> (ECMWF IFS, CC BY 4.0) · Map: <a href="https://openfreemap.org" target="_blank" rel="noopener">OpenFreeMap</a>, © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors · Terrain: Mapzen/AWS Terrain Tiles.
         Modelled data for early trip scoping. Always check official avalanche forecasts and local conditions.
@@ -110,6 +105,15 @@
       <div id="map"></div>
       <div id="zoneLayer"><svg id="zoneLines"></svg></div>
       <button id="brandChip" class="brand-chip" aria-label="Wayward Ski: open filters"><img src="assets/brand/wordmark.svg" width="1390" height="254" alt="Wayward Ski" /></button>
+      <div id="mapLegend" class="map-legend" aria-label="Map colours">
+        <div class="seg" id="colorBy">
+          <button data-v="category">Destination type</button>
+          <button data-v="snow">Snow this season</button>
+        </div>
+        <div class="legend" id="legend"></div>
+      </div>
+      <div id="loadingNote" class="loading-note">Loading places…</div>
+      <div id="welcome" class="welcome hidden" role="dialog" aria-labelledby="welcomeTitle"></div>
       <button id="toggleSidebar" class="fab" aria-label="Filters">☰ Filters</button>
       <button id="showAll" class="map-btn" title="Zoom out to show every destination">World view</button>
       <button id="feedbackBtn" class="map-btn fb-btn" data-feedback="" title="Ideas, corrections, places I've missed">Feedback</button>

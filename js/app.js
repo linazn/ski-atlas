@@ -65,6 +65,9 @@ if (state.v < 4) { state.levels = []; state.v = 4; }
 // v5 (Nov 2026): one rule for the whole panel: select categories/types to show only those; start everyone at "everything"
 if (state.v < 5) { state.picks = []; state.levels = []; state.tourTypes = []; state.v = 5; }
 delete state.cats;
+// Map colours: snow this season in the northern ski months (Dec–Apr), destination type otherwise,
+// until someone picks one on the map legend (colorByChosen)
+if (!state.colorByChosen) state.colorBy = [11, 0, 1, 2, 3].includes(new Date().getMonth()) ? "snow" : "category";
 const persist = () => {
   const { selected, ...rest } = state;
   localStorage.setItem("skiatlas", JSON.stringify(rest));
@@ -613,7 +616,7 @@ function bindControls() {
     renderControls(); refresh();
   });
   $("#hideOut").addEventListener("change", (e) => { state.hideOut = e.target.checked; refresh(); });
-  $("#colorBy").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; state.colorBy = b.dataset.v; renderControls(); refresh(); });
+  $("#colorBy").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; state.colorBy = b.dataset.v; state.colorByChosen = true; renderControls(); refresh(); });
   $("#crowdMax").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; state.crowdMax = +b.dataset.v; renderControls(); refresh(); });
   $("#liftPasses").addEventListener("click", (e) => { const b = e.target.closest("[data-pass]"); if (!b) return; const p = b.dataset.pass;
     state.liftPasses = state.liftPasses.includes(p) ? state.liftPasses.filter(x => x !== p) : [...state.liftPasses, p]; renderControls(); refresh(); });
@@ -643,11 +646,38 @@ function bindControls() {
   $("#brandChip").addEventListener("click", () => setSidebar(true));
   $("#toggleSidebar").addEventListener("click", () => setSidebar(desktop() ? true : !$("#sidebar").classList.contains("open")));
   for (const id of ["#closeSidebar", "#showMap", "#sbBackdrop"]) $(id).addEventListener("click", () => setSidebar(false));
+  openSidebar = () => setSidebar(true);
+}
+let openSidebar = () => {};
+
+// One-time welcome card: two ways in, then it never shows again
+function showWelcome() {
+  if (state.welcomed || new URLSearchParams(location.search).has("nowelcome")) return;
+  const el = $("#welcome");
+  el.innerHTML = `
+    <h2 id="welcomeTitle">Welcome to Wayward Ski</h2>
+    <p>A map of ${Math.floor(DEST.length / 10) * 10}+ places to ski worldwide, from big resorts to fjords, huts and heli lodges, with this season's snow updated daily.</p>
+    <div class="welcome-btns">
+      <button class="primary" data-welcome="now">Where's good right now?</button>
+      <button data-welcome="explore">Explore beyond the usual</button>
+    </div>
+    <p class="muted">Tap any dot for its card. Filters live in the side panel.</p>`;
+  el.classList.remove("hidden");
+  el.onclick = (e) => {
+    const b = e.target.closest("[data-welcome]"); if (!b) return;
+    state.welcomed = true; el.classList.add("hidden"); track(`welcome ${b.dataset.welcome}`);
+    if (b.dataset.welcome === "now") {
+      state.colorBy = "snow"; state.colorByChosen = true; renderControls(); refresh();
+      openSidebar();
+      const sec = $("#wxChips").closest("section");
+      setTimeout(() => { sec.scrollIntoView({ behavior: "smooth", block: "start" }); sec.classList.add("flash"); setTimeout(() => sec.classList.remove("flash"), 2200); }, 250);
+    } else persist();
+  };
 }
 
 function renderLegend() {
   $("#legend").innerHTML = state.colorBy === "snow"
-    ? SNOW.map(c => `<span><i style="background:${c.color}"></i>${c.label}</span>`).join("") + `<span><i style="background:#fff;border:1px solid #8a8984"></i>out of season / no snow data yet</span><span class="muted" style="width:100%">Snowfall this season vs the same date in past seasons. Ring colour = type.</span>`
+    ? SNOW.map(c => `<span><i style="background:${c.color}"></i>${c.label}</span>`).join("") + `<span><i style="background:#fff;border:1px solid #8a8984"></i>no data / off-season</span><span class="muted" style="width:100%">Snowfall so far vs normal for the date. Ring = type.</span>`
     : Object.values(CAT).map(c => `<span><i style="background:${c.color}"></i>${c.label}</span>`).join("") + (state.months.length ? `<span class="muted" style="width:100%">Ringed dot = a best month · faded = out of season in all picked months</span>` : "");
 }
 
@@ -1064,6 +1094,7 @@ async function boot() {
     $("#asof").innerHTML += `<br>⚠ Not updated for ${age} days (it normally updates daily), so figures may be out of date.`;
   }
   renderControls(); bindControls(); initMap(); refresh();
+  $("#loadingNote").remove(); showWelcome();
   const infoAt = (el) => { const r = el.getBoundingClientRect(); showTip(DEFS[el.dataset.info] || "", r.right, r.top); };
   document.addEventListener("mouseover", (e) => { const el = e.target.closest?.("[data-info]"); if (el) infoAt(el); });
   document.addEventListener("mouseout", (e) => { if (e.target.closest?.("[data-info]")) hideTip(); });
