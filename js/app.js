@@ -814,6 +814,7 @@ function renderDetail(id) {
     ${staleNote(d) ? `<div class="callout"><b>Out of date.</b> ${staleNote(d)}</div>` : ""}
     <div class="snowcard">
       ${s ? `
+      <div class="wx-sub">Summary</div>
       <div class="snow-head">
         <div><div class="hero" style="${st.live ? "" : "color:#8a8984"}">${s.pctNormal != null ? s.pctNormal + "%" : "–"}</div><div class="hero-sub">${st.live ? "of normal to date" : "of normal (final)"} ${info("pct")} ${c && st.live ? `<span class="badge"><i style="width:8px;height:8px;border-radius:50%;background:${c.color};display:inline-block"></i>${c.word}</span>` : ""}</div></div>
         <div class="hero-sub" style="flex:1">${rankText(s) ? `<b style="color:var(--text-primary)">${rankText(s, !st.live)}</b> ${info("rank")}<br>` : ""}<span class="badge">${esc(st.label)}</span> ${info("status")}<br>counting since ${fmtDay(s.seasonStart)} (day ${s.dayOfSeason})</div>
@@ -827,8 +828,9 @@ function renderDetail(id) {
         <div class="stat"><b>${s.normalTotal ?? "–"} cm</b><span>typical full season ${info("normalTotal")}</span></div>
         <div class="stat"><b>${s.reliabilityCV != null ? "±" + Math.round(s.reliabilityCV * 100) + "%" : "–"}</b><span>season-to-season swing ${info("swing")}</span></div>
       </div>
-      ${s.wx ? wxStripHTML(s.wx, { kind: "snow", where: `at ~${d.refElev.toLocaleString("en")} m, mid-mountain (modelled)` }) : ""}
-      <div id="seasonChart" style="margin-top:10px"></div>
+      ${s.wx ? `<div class="wx-sub">Right now</div>${wxStripHTML(s.wx, { kind: "snow", where: `at ~${d.refElev.toLocaleString("en")} m, mid-mountain (modelled)` })}` : ""}
+      <div class="wx-sub">Season so far</div>
+      <div id="seasonChart"></div>
       <div class="note">Modelled snowfall (ECMWF 9 km via Open-Meteo) at ~${d.refElev} m. Data through ${fmtDate(s.dataThrough)}. Raw data: <a href="${rawUrl(d, s)}" target="_blank" rel="noopener">this season, daily ↗</a> · <a href="${fcUrl(d)}" target="_blank" rel="noopener">forecast ↗</a>. A 9 km model under-reads resort-reported totals, especially in Japan and coastal ranges, so trust the % and rank more than the cm.</div>`
       : d.tags.includes("indoor") ? `<p class="note">Indoor: the snow is made inside and kept below freezing, so there's no season to track. Open every day of the year.</p>`
       : `<p class="note">No snow data yet for this destination.</p>`}
